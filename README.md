@@ -1,4 +1,4 @@
-# 🎓 AriranG Plataforma
+# 🎓 Gestão Escolar Completa
 
 > Sistema completo de gestão para escolas de idiomas
 
