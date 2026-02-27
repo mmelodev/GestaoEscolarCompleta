@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulário de Aluno - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/cadastro.css?v=1.0}" />
+    <link rel="stylesheet" th:href="@{/css/forms.css?v=1.1}" />
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <link rel="stylesheet" th:href="@{/css/home.css?v=1.0}" />
+    <style>
+        .form-card, .form-card h1, .form-card label { color: #1a1a1a; }
+        .form-card input { color: #1a1a1a; }
+        .form-card select { 
+            color: #1a1a1a; 
+            width: 100%; 
+            padding: 0.5rem; 
+            margin-bottom: 0.5rem; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+        .responsavel-fields { display: none; }
+        .responsavel-fields.active { display: block; }
+        .turma-fechada { 
+            background-color: #f5f5f5; 
+            color: #999; 
+            font-style: italic; 
+        }
+        .warning-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #d32f2f;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            display: none;
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+        }
+        .toast-message.success {
+            background-color: #2e7d32;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        .field-error-inline {
+            color: #d32f2f;
+            font-size: 0.875rem;
+            margin-top: 4px;
+            display: block;
+        }
+        .cep-loading {
+            display: inline-block;
+            margin-left: 8px;
+            color: #1976d2;
+            font-size: 0.875rem;
+        }
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="main-nav" style="margin-bottom: 1rem;">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element active">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<div class="page-container">
+    <div class="form-card">
+        <h1 style="margin-top:0">Formulário de Aluno</h1>
+        <form class="form-root form-aluno" th:action="@{${isNew} ? '/alunos' : '/alunos/atualizar/' + ${aluno.id}}" th:object="${aluno}" method="post">
+            <!-- CSRF Token -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            
+            <label>Nome Completo: <input type="text" th:field="*{nomeCompleto}" required /></label>
+            <div th:if="${#fields.hasErrors('nomeCompleto')}" class="field-error" th:errors="*{nomeCompleto}"></div><br/>
+
+            <label>Email: <input type="email" th:field="*{email}" /></label>
+            <div th:if="${#fields.hasErrors('email')}" class="field-error" th:errors="*{email}"></div><br/>
+
+            <label>CPF: <input type="text" th:field="*{cpf}" placeholder="000.000.000-00" id="cpfInput" /></label>
+            <div th:if="${#fields.hasErrors('cpf')}" class="field-error" th:errors="*{cpf}"></div>
+            <div id="cpfError" class="field-error-inline" style="display: none;"></div><br/>
+
+            <label>RG: <input type="text" th:field="*{rg}" /></label><br/>
+
+            <label>Órgão Expeditor RG: <input type="text" th:field="*{orgaoExpeditorRg}" maxlength="200" /></label><br/>
+
+            <label>Nacionalidade: <input type="text" th:field="*{nacionalidade}" /></label><br/>
+
+            <label>UF:
+                <select th:field="*{uf}">
+                    <option value="">Selecione uma UF</option>
+                    <option value="AC">AC - Acre</option>
+                    <option value="AL">AL - Alagoas</option>
+                    <option value="AP">AP - Amapá</option>
+                    <option value="AM">AM - Amazonas</option>
+                    <option value="BA">BA - Bahia</option>
+                    <option value="CE">CE - Ceará</option>
+                    <option value="DF">DF - Distrito Federal</option>
+                    <option value="ES">ES - Espírito Santo</option>
+                    <option value="GO">GO - Goiás</option>
+                    <option value="MA">MA - Maranhão</option>
+                    <option value="MT">MT - Mato Grosso</option>
+                    <option value="MS">MS - Mato Grosso do Sul</option>
+                    <option value="MG">MG - Minas Gerais</option>
+                    <option value="PA">PA - Pará</option>
+                    <option value="PB">PB - Paraíba</option>
+                    <option value="PR">PR - Paraná</option>
+                    <option value="PE">PE - Pernambuco</option>
+                    <option value="PI">PI - Piauí</option>
+                    <option value="RJ">RJ - Rio de Janeiro</option>
+                    <option value="RN">RN - Rio Grande do Norte</option>
+                    <option value="RS">RS - Rio Grande do Sul</option>
+                    <option value="RO">RO - Rondônia</option>
+                    <option value="RR">RR - Roraima</option>
+                    <option value="SC">SC - Santa Catarina</option>
+                    <option value="SP">SP - São Paulo</option>
+                    <option value="SE">SE - Sergipe</option>
+                    <option value="TO">TO - Tocantins</option>
+                </select>
+            </label>
+            <div th:if="${#fields.hasErrors('uf')}" class="field-error" th:errors="*{uf}"></div><br/>
+
+
+            <label>Telefone: <input type="text" th:field="*{telefone}" placeholder="(11) 99999-9999" /></label>
+            <div th:if="${#fields.hasErrors('telefone')}" class="field-error" th:errors="*{telefone}"></div><br/>
+
+            <label>Data de Nascimento: <input type="date" id="dataNascimento" th:field="*{dataNascimento}" required /></label>
+            <div th:if="${#fields.hasErrors('dataNascimento')}" class="field-error" th:errors="*{dataNascimento}"></div><br/>
+
+            <label>Nome Social: <input type="text" th:field="*{nomeSocial}" /></label><br/>
+
+            <label>Apelido: <input type="text" th:field="*{apelido}" placeholder="Como gosta de ser chamado" /></label><br/>
+
+            <label>Gênero:
+                <select th:field="*{genero}">
+                    <option value="">Selecione</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                    <option value="Não-binário">Não-binário</option>
+                    <option value="Prefiro não informar">Prefiro não informar</option>
+                    <option value="Outro">Outro</option>
+                </select>
+            </label>
+            <div th:if="${#fields.hasErrors('genero')}" class="field-error" th:errors="*{genero}"></div><br/>
+
+            <label>Endereço CEP: 
+                <input type="text" id="enderecoCep" th:field="*{endereco.cep}" placeholder="00000-000" maxlength="9" />
+                <span id="cepLoading" class="cep-loading" style="display: none;">Buscando...</span>
+            </label>
+            <div th:if="${#fields.hasErrors('endereco.cep')}" class="field-error" th:errors="*{endereco.cep}"></div>
+            <div id="cepError" class="field-error-inline" style="display: none;"></div>
+            <label>Endereço Logradouro: <input type="text" id="enderecoLogradouro" th:field="*{endereco.logradouro}" placeholder="Logradouro" /></label>
+            <label>Endereço Número: <input type="text" id="enderecoNumero" th:field="*{endereco.numero}" placeholder="Número" /></label>
+            <label>Endereço Complemento: <input type="text" id="enderecoComplemento" th:field="*{endereco.complemento}" placeholder="Complemento" /></label>
+            <label>Endereço Bairro: <input type="text" id="enderecoBairro" th:field="*{endereco.bairro}" placeholder="Bairro" /></label>
+            <label>Endereço Cidade: <input type="text" id="enderecoCidade" th:field="*{endereco.cidade}" placeholder="Cidade" /></label>
+            <label>Endereço Estado: 
+                <select id="enderecoEstado" th:field="*{endereco.estado}">
+                    <option value="">Selecione um Estado</option>
+                    <option value="AC">AC - Acre</option>
+                    <option value="AL">AL - Alagoas</option>
+                    <option value="AP">AP - Amapá</option>
+                    <option value="AM">AM - Amazonas</option>
+                    <option value="BA">BA - Bahia</option>
+                    <option value="CE">CE - Ceará</option>
+                    <option value="DF">DF - Distrito Federal</option>
+                    <option value="ES">ES - Espírito Santo</option>
+                    <option value="GO">GO - Goiás</option>
+                    <option value="MA">MA - Maranhão</option>
+                    <option value="MT">MT - Mato Grosso</option>
+                    <option value="MS">MS - Mato Grosso do Sul</option>
+                    <option value="MG">MG - Minas Gerais</option>
+                    <option value="PA">PA - Pará</option>
+                    <option value="PB">PB - Paraíba</option>
+                    <option value="PR">PR - Paraná</option>
+                    <option value="PE">PE - Pernambuco</option>
+                    <option value="PI">PI - Piauí</option>
+                    <option value="RJ">RJ - Rio de Janeiro</option>
+                    <option value="RN">RN - Rio Grande do Norte</option>
+                    <option value="RS">RS - Rio Grande do Sul</option>
+                    <option value="RO">RO - Rondônia</option>
+                    <option value="RR">RR - Roraima</option>
+                    <option value="SC">SC - Santa Catarina</option>
+                    <option value="SP">SP - São Paulo</option>
+                    <option value="SE">SE - Sergipe</option>
+                    <option value="TO">TO - Tocantins</option>
+                </select>
+            </label>
+            <div th:if="${#fields.hasErrors('endereco')}" class="field-error" th:errors="*{endereco}"></div><br/>
+
+            <label>Responsável Financeiro: 
+                <input type="checkbox" id="responsavelFinanceiro" th:field="*{responsavelFinanceiro}" />
+                <!-- Campo hidden para garantir que o valor seja enviado mesmo quando checkbox está desabilitado -->
+                <input type="hidden" name="_responsavelFinanceiro" value="on" />
+            </label><br/>
+
+            <div id="responsavelFields" class="responsavel-fields">
+                <label>Grau de Parentesco: <input type="text" th:field="*{grauParentesco}" /></label><br/>
+                
+                <label>Nome do Responsável: <input type="text" th:field="*{nomeResponsavel}" /></label>
+                <div th:if="${#fields.hasErrors('nomeResponsavel')}" class="field-error" th:errors="*{nomeResponsavel}"></div><br/>
+
+                <label>CPF do Responsável:
+                    <input
+                        type="text"
+                        id="cpfResponsavelInput"
+                        th:field="*{cpfResponsavel}"
+                        placeholder="000.000.000-00"
+                        pattern="^\d{3}\.\d{3}\.\d{3}-\d{2}$"
+                        title="Informe o CPF no formato 000.000.000-00" />
+                </label>
+                <div th:if="${#fields.hasErrors('cpfResponsavel')}" class="field-error" th:errors="*{cpfResponsavel}"></div>
+                <div id="cpfResponsavelError" class="field-error-inline" style="display: none;"></div><br/>
+
+                <label>Telefone do Responsável:
+                    <input
+                        type="tel"
+                        th:field="*{telefoneResponsavel}"
+                        placeholder="(DD) 90000-0000"
+                        pattern="^\(\d{2}\)\s?\d{4,5}-\d{4}$"
+                        title="Informe o telefone com DDD no formato (DD) 90000-0000" />
+                </label><br/>
+
+                <label>Email do Responsável: <input type="email" th:field="*{emailResponsavel}" /></label>
+                <div th:if="${#fields.hasErrors('emailResponsavel')}" class="field-error" th:errors="*{emailResponsavel}"></div><br/>
+            </div>
+
+            <label>Turmas: <select th:field="*{turmaIds}" multiple id="turmaSelect">
+                <option th:each="turma : ${turmas}" 
+                        th:value="${turma.id}" 
+                        th:text="${turma.nomeTurma} + (${turma.situacaoTurma == 'FECHADA'} ? ' (FECHADA)' : '')"
+                        th:disabled="${turma.situacaoTurma == 'FECHADA'}"
+                        th:class="${turma.situacaoTurma == 'FECHADA'} ? 'turma-fechada'">
+                </option>
+            </select></label>
+            <div id="turmaWarning" class="warning-message">
+                ⚠️ Atenção: Turmas marcadas como "FECHADA" não podem receber novos alunos. Para adicionar alunos a essas turmas, primeiro reabra a turma.
+            </div><br/>
+
+            <div class="actions">
+                <button type="submit" class="btn-primary">Salvar</button>
+                <a th:href="@{/alunos/lista}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Message Container -->
+<div id="toastMessage" class="toast-message"></div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        /* ============================================
+           MENU HAMBÚRGUER - Mobile Navigation
+           ============================================ */
+        const menuToggle = document.getElementById('menuToggle');
+        const navList = document.getElementById('navList');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const body = document.body;
+        let scrollYBeforeMenu = 0;
+
+        if (menuToggle && navList) {
+            function lockPageScroll() {
+                scrollYBeforeMenu = window.pageYOffset || document.documentElement.scrollTop || 0;
+                body.dataset.scrollYBeforeMenu = String(scrollYBeforeMenu);
+                body.style.position = 'fixed';
+                body.style.top = `-${scrollYBeforeMenu}px`;
+                body.style.left = '0';
+                body.style.right = '0';
+                body.style.width = '100%';
+                body.style.overflow = 'hidden';
+            }
+
+            function unlockPageScroll() {
+                const y = parseInt(body.dataset.scrollYBeforeMenu || '0', 10) || 0;
+                body.style.position = '';
+                body.style.top = '';
+                body.style.left = '';
+                body.style.right = '';
+                body.style.width = '';
+                body.style.overflow = '';
+                delete body.dataset.scrollYBeforeMenu;
+                window.scrollTo(0, y);
+            }
+
+            function openMenu() {
+                navList.classList.add('menu-open');
+                menuToggle.classList.add('active');
+                menuToggle.setAttribute('aria-expanded', 'true');
+                if (menuOverlay) {
+                    menuOverlay.classList.add('active');
+                    menuOverlay.setAttribute('aria-hidden', 'false');
+                }
+                if (window.innerWidth < 1024) lockPageScroll();
+            }
+
+            function closeMenu() {
+                navList.classList.remove('menu-open');
+                menuToggle.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                if (menuOverlay) {
+                    menuOverlay.classList.remove('active');
+                    menuOverlay.setAttribute('aria-hidden', 'true');
+                }
+                unlockPageScroll();
+            }
+
+            function toggleMenu() {
+                const isOpen = navList.classList.contains('menu-open');
+                if (isOpen) closeMenu(); else openMenu();
+            }
+
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            if (menuOverlay) menuOverlay.addEventListener('click', closeMenu);
+
+            navList.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 1024) closeMenu();
+                });
+            });
+
+            const logoutButton = navList.querySelector('.logout-button');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function() {
+                    if (window.innerWidth < 1024) closeMenu();
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && navList.classList.contains('menu-open')) {
+                    closeMenu();
+                    menuToggle.focus();
+                }
+            });
+
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function() {
+                    if (window.innerWidth >= 1024 && navList.classList.contains('menu-open')) {
+                        closeMenu();
+                    }
+                }, 250);
+            });
+        }
+
+        // Função reutilizável para formatação de CPF
+        function aplicarMascaraCPF(input) {
+            if (!input) return;
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+                if (value.length === 11) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+                } else if (value.length >= 9) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d+)/, '$1.$2.$3-$4');
+                } else if (value.length >= 6) {
+                    value = value.replace(/(\d{3})(\d{3})(\d+)/, '$1.$2.$3-');
+                } else if (value.length >= 3) {
+                    value = value.replace(/(\d{3})(\d+)/, '$1.$2.');
+                }
+                e.target.value = value;
+            });
+        }
+
+        // Função reutilizável para formatação de telefone
+        function aplicarMascaraTelefone(input) {
+            if (!input) return;
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+                // Telefone celular (11 dígitos): (XX) 9XXXX-XXXX
+                if (value.length === 11) {
+                    value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                } else if (value.length >= 7) {
+                    // Telefone fixo (10 dígitos): (XX) XXXX-XXXX
+                    if (value.length === 10) {
+                        value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+                    } else {
+                        value = value.replace(/(\d{2})(\d{4})(\d+)/, '($1) $2-$3');
+                    }
+                } else if (value.length >= 3) {
+                    value = value.replace(/(\d{2})(\d+)/, '($1) $2');
+                } else if (value.length >= 1) {
+                    value = value.replace(/(\d+)/, '($1');
+                }
+                e.target.value = value;
+            });
+        }
+
+        // Aplicar máscaras e validação de CPF nos campos do aluno
+        const cpfInputAluno = document.querySelector('input[name="cpf"]');
+        if (cpfInputAluno) {
+            aplicarMascaraCPF(cpfInputAluno);
+            // Adicionar validação de CPF ao perder o foco
+            cpfInputAluno.addEventListener('blur', function() {
+                const cpf = this.value.replace(/\D/g, '');
+                if (cpf.length === 11 && !validarCPF(cpf)) {
+                    showInlineError('cpfError', 'CPF inválido. Verifique os dígitos informados.');
+                    this.style.borderColor = '#d32f2f';
+                } else {
+                    hideInlineError('cpfError');
+                    this.style.borderColor = '';
+                }
+            });
+        }
+        
+        aplicarMascaraTelefone(document.querySelector('input[name="telefone"]'));
+
+        // Aplicar máscaras e validação de CPF nos campos do responsável
+        const cpfInputResponsavel = document.querySelector('input[name="cpfResponsavel"]');
+        if (cpfInputResponsavel) {
+            aplicarMascaraCPF(cpfInputResponsavel);
+            // Adicionar validação de CPF ao perder o foco
+            cpfInputResponsavel.addEventListener('blur', function() {
+                const cpf = this.value.replace(/\D/g, '');
+                if (cpf.length === 11 && !validarCPF(cpf)) {
+                    showInlineError('cpfResponsavelError', 'CPF inválido. Verifique os dígitos informados.');
+                    this.style.borderColor = '#d32f2f';
+                } else {
+                    hideInlineError('cpfResponsavelError');
+                    this.style.borderColor = '';
+                }
+            });
+        }
+        aplicarMascaraTelefone(document.querySelector('input[name="telefoneResponsavel"]'));
+
+        // Função para validar CPF completo (incluindo dígitos verificadores)
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            
+            if (cpf.length !== 11) return false;
+            
+            // Verificar se todos os dígitos são iguais (CPF inválido)
+            if (/^(\d)\1{10}$/.test(cpf)) return false;
+            
+            // Validar primeiro dígito verificador
+            let soma = 0;
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpf.charAt(i)) * (10 - i);
+            }
+            let resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(9))) return false;
+            
+            // Validar segundo dígito verificador
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = (soma * 10) % 11;
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(10))) return false;
+            
+            return true;
+        }
+
+        // Função para exibir mensagens toast
+        function showToast(message, isSuccess = false) {
+            const toast = document.getElementById('toastMessage');
+            if (!toast) return;
+            
+            toast.textContent = message;
+            toast.className = 'toast-message' + (isSuccess ? ' success' : '');
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 5000);
+        }
+
+        // Função para exibir erro inline
+        function showInlineError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Função para ocultar erro inline
+        function hideInlineError(elementId) {
+            const errorDiv = document.getElementById(elementId);
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        // Busca automática de CEP via ViaCEP
+        const cepInput = document.getElementById('enderecoCep');
+        const cepLoading = document.getElementById('cepLoading');
+        const cepError = document.getElementById('cepError');
+        // Selecionar o campo UF - procurar pelo select dentro do label que contém "UF:"
+        let ufSelect = null;
+        const labels = document.querySelectorAll('label');
+        for (let label of labels) {
+            if (label.textContent.includes('UF:')) {
+                ufSelect = label.querySelector('select');
+                break;
+            }
+        }
+        const enderecoEstado = document.getElementById('enderecoEstado');
+        
+        if (cepInput) {
+            // Formatação de CEP
+            cepInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 8) {
+                    value = value.substring(0, 8);
+                    value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+                } else if (value.length >= 5) {
+                    value = value.replace(/(\d{5})/, '$1-');
+                }
+                e.target.value = value;
+                hideInlineError('cepError');
+            });
+
+            // Buscar CEP quando completar 8 dígitos
+            cepInput.addEventListener('blur', function(e) {
+                const cep = e.target.value.replace(/\D/g, '');
+                if (cep.length === 8) {
+                    buscarCEP(cep);
+                }
+            });
+        }
+
+        function buscarCEP(cep) {
+            cepLoading.style.display = 'inline';
+            hideInlineError('cepError');
+            
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    cepLoading.style.display = 'none';
+                    
+                    if (data.erro) {
+                        showInlineError('cepError', 'CEP não encontrado. Por favor, preencha o endereço manualmente.');
+                        return;
+                    }
+                    
+                    // Preencher campos automaticamente
+                    if (data.logradouro) {
+                        document.getElementById('enderecoLogradouro').value = data.logradouro;
+                    }
+                    if (data.bairro) {
+                        document.getElementById('enderecoBairro').value = data.bairro;
+                    }
+                    if (data.localidade) {
+                        document.getElementById('enderecoCidade').value = data.localidade;
+                    }
+                    if (data.uf) {
+                        // Sincronizar com o campo UF do aluno
+                        if (ufSelect) {
+                            ufSelect.value = data.uf;
+                        }
+                        // Sincronizar com o campo Estado do endereço
+                        if (enderecoEstado) {
+                            enderecoEstado.value = data.uf;
+                        }
+                    }
+                    
+                    // Focar no campo número após preencher
+                    document.getElementById('enderecoNumero').focus();
+                })
+                .catch(error => {
+                    cepLoading.style.display = 'none';
+                    showInlineError('cepError', 'Erro ao buscar CEP. Por favor, preencha o endereço manualmente.');
+                    console.error('Erro ao buscar CEP:', error);
+                });
+        }
+
+        // Sincronizar UF com Estado do endereço
+        if (ufSelect && enderecoEstado) {
+            ufSelect.addEventListener('change', function() {
+                enderecoEstado.value = this.value;
+            });
+            
+            enderecoEstado.addEventListener('change', function() {
+                ufSelect.value = this.value;
+            });
+        }
+
+        // Formatação de RG (padrão Manaus - 8 dígitos)
+        const rgInput = document.querySelector('input[name="rg"]');
+        if (rgInput) {
+            rgInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length >= 8) {
+                    value = value.substring(0, 8);
+                    value = value.replace(/(\d{2})(\d{3})(\d{3})/, '$1.$2.$3');
+                } else if (value.length >= 5) {
+                    value = value.replace(/(\d{2})(\d{3})/, '$1.$2.');
+                } else if (value.length >= 2) {
+                    value = value.replace(/(\d{2})/, '$1.');
+                }
+                e.target.value = value;
+            });
+        }
+
+        const checkbox = document.getElementById('responsavelFinanceiro');
+        const responsavelFields = document.getElementById('responsavelFields');
+        const dataNascimentoInput = document.getElementById('dataNascimento');
+
+        if (!checkbox) {
+            console.error('Checkbox with id "responsavelFinanceiro" not found');
+            return;
+        }
+
+        // Função para calcular idade
+        function calcularIdade(dataNascimento) {
+            if (!dataNascimento) return 0;
+            const hoje = new Date();
+            const nascimento = new Date(dataNascimento);
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mesAtual = hoje.getMonth();
+            const mesNascimento = nascimento.getMonth();
+            
+            if (mesAtual < mesNascimento || (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())) {
+                idade--;
+            }
+            return idade;
+        }
+
+        // Função para verificar se deve mostrar campos de responsável
+        function verificarResponsavel() {
+            const dataNascimento = dataNascimentoInput.value;
+            const idade = calcularIdade(dataNascimento);
+            
+            if (idade < 18 && idade > 0) {
+                // Menor de 18 anos - mostrar campos de responsável e marcar checkbox
+                checkbox.checked = true;
+                responsavelFields.classList.add('active');
+                checkbox.disabled = true; // Desabilitar checkbox para menores
+            } else if (idade >= 18) {
+                // Maior de 18 anos - permitir controle manual
+                checkbox.disabled = false;
+                if (!checkbox.checked) {
+                    responsavelFields.classList.remove('active');
+                }
+            }
+        }
+
+        // Sincronizar com o estado inicial renderizado pelo Thymeleaf
+        if (checkbox.checked) {
+            responsavelFields.classList.add('active');
+        }
+
+        // Verificar responsável ao carregar a página
+        verificarResponsavel();
+
+        // Adicionar evento de mudança na data de nascimento
+        dataNascimentoInput.addEventListener('change', verificarResponsavel);
+
+        // Adicionar evento de mudança no checkbox (apenas para maiores de 18)
+        checkbox.addEventListener('change', function() {
+            if (!this.disabled) {
+                if (this.checked) {
+                    responsavelFields.classList.add('active');
+                } else {
+                    responsavelFields.classList.remove('active');
+                }
+            }
+        });
+
+        // Validação de turmas fechadas
+        const turmaSelect = document.getElementById('turmaSelect');
+        const turmaWarning = document.getElementById('turmaWarning');
+        
+        if (turmaSelect) {
+            turmaSelect.addEventListener('change', function() {
+                const selectedOptions = Array.from(this.selectedOptions);
+                const hasClosedTurma = selectedOptions.some(option => 
+                    option.textContent.includes('(FECHADA)')
+                );
+                
+                if (hasClosedTurma) {
+                    turmaWarning.style.display = 'block';
+                } else {
+                    turmaWarning.style.display = 'none';
+                }
+            });
+        }
+
+        // Garantir que checkbox sempre envie valor correto no submit
+        const form = document.querySelector('form');
+        if (form) {
+            // Antes de enviar, garantir que checkbox desabilitado também envie valor
+            form.addEventListener('submit', function(e) {
+                const checkbox = document.getElementById('responsavelFinanceiro');
+                if (checkbox && checkbox.disabled && checkbox.checked) {
+                    // Se checkbox está desabilitado mas marcado, criar input hidden para garantir envio
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'responsavelFinanceiro';
+                    hiddenInput.value = 'true';
+                    form.appendChild(hiddenInput);
+                }
+            });
+            
+            form.addEventListener('submit', function(e) {
+                let hasErrors = false;
+                
+                // Validar data de nascimento
+                const dataNascimentoValue = dataNascimentoInput.value;
+                if (!dataNascimentoValue || dataNascimentoValue.trim() === '') {
+                    e.preventDefault();
+                    showToast('Por favor, preencha a data de nascimento.');
+                    dataNascimentoInput.focus();
+                    return false;
+                }
+                
+                // Validar formato da data (yyyy-MM-dd)
+                const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!dateRegex.test(dataNascimentoValue)) {
+                    e.preventDefault();
+                    showToast('A data de nascimento está em formato inválido. Por favor, selecione uma data válida.');
+                    dataNascimentoInput.focus();
+                    return false;
+                }
+                
+                // Validar CPF do aluno se preenchido
+                const cpfInput = document.querySelector('input[name="cpf"]');
+                if (cpfInput && cpfInput.value && cpfInput.value.trim() !== '') {
+                    const cpfLimpo = cpfInput.value.replace(/\D/g, '');
+                    if (cpfLimpo.length !== 11) {
+                        e.preventDefault();
+                        showToast('O CPF do aluno deve conter exatamente 11 dígitos. Por favor, verifique o CPF informado.');
+                        cpfInput.focus();
+                        return false;
+                    }
+                    if (!validarCPF(cpfLimpo)) {
+                        e.preventDefault();
+                        showToast('O CPF do aluno é inválido. Verifique os dígitos informados.');
+                        cpfInput.focus();
+                        return false;
+                    }
+                }
+                
+                // Validar CPF do responsável se checkbox marcado e CPF preenchido
+                const cpfResponsavelInput = document.querySelector('input[name="cpfResponsavel"]');
+                const responsavelCheckbox = document.getElementById('responsavelFinanceiro');
+                if (responsavelCheckbox && responsavelCheckbox.checked && 
+                    cpfResponsavelInput && cpfResponsavelInput.value && cpfResponsavelInput.value.trim() !== '') {
+                    const cpfResponsavelLimpo = cpfResponsavelInput.value.replace(/\D/g, '');
+                    if (cpfResponsavelLimpo.length !== 11) {
+                        e.preventDefault();
+                        showToast('O CPF do responsável deve conter exatamente 11 dígitos. Por favor, verifique o CPF informado.');
+                        cpfResponsavelInput.focus();
+                        return false;
+                    }
+                    if (!validarCPF(cpfResponsavelLimpo)) {
+                        e.preventDefault();
+                        showToast('O CPF do responsável é inválido. Verifique os dígitos informados.');
+                        cpfResponsavelInput.focus();
+                        return false;
+                    }
+                }
+                
+                const selectedOptions = Array.from(turmaSelect.selectedOptions);
+                const hasClosedTurma = selectedOptions.some(option => 
+                    option.textContent.includes('(FECHADA)')
+                );
+                
+                if (hasClosedTurma) {
+                    e.preventDefault();
+                    showToast('Não é possível vincular alunos a turmas fechadas. Por favor, selecione apenas turmas ativas ou reabra a turma desejada.');
+                    return false;
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

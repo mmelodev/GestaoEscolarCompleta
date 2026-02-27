@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <title>Deletar Pagamento - AriranG Financeiro</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/financeiro}"><li class="nav-element active">Financeiro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Confirmar Exclusão de Pagamento</h1>
+        <div class="top-actions">
+            <a th:href="@{/financeiro/pagamentos}" class="btn cadastrar">← Voltar para Pagamentos</a>
+        </div>
+    </section>
+
+    <div class="tabela-container" style="max-width: 800px; margin: 20px auto;">
+        <div style="background-color: rgba(220, 53, 69, 0.1); border: 2px solid #dc3545; padding: 30px; border-radius: 1rem; margin-bottom: 25px;">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="font-size: 64px; margin-bottom: 15px;">⚠️</div>
+                <h2 style="color: #dc3545 !important; text-decoration: none !important; margin: 0 0 15px 0; font-size: 28px;">Atenção!</h2>
+                <p style="color: aliceblue !important; text-decoration: none !important; font-size: 16px; line-height: 1.6;">
+                    Você está prestes a deletar este pagamento. Esta ação <strong>não pode ser desfeita</strong>.
+                </p>
+            </div>
+
+            <!-- Informações do Pagamento -->
+            <div style="background-color: rgba(26, 26, 26, 0.95); padding: 25px; border-radius: 0.5rem; margin-bottom: 25px;" th:if="${pagamento != null}">
+                <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 20px 0; font-size: 20px;">💰 Informações do Pagamento</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="color: #00bfff; font-weight: bold; display: block; margin-bottom: 5px;">Aluno</label>
+                        <p style="color: aliceblue; margin: 0;" th:text="${pagamento.alunoNome != null ? pagamento.alunoNome : 'Não informado'}">-</p>
+                    </div>
+                    <div>
+                        <label style="color: #00bfff; font-weight: bold; display: block; margin-bottom: 5px;">Valor Pago</label>
+                        <p style="color: #28a745; font-weight: bold; margin: 0;" th:text="${pagamento.valorPago != null ? #numbers.formatCurrency(pagamento.valorPago) : 'R$ 0,00'}">R$ 0,00</p>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: #00bfff; font-weight: bold; display: block; margin-bottom: 5px;">Endereço do aluno</label>
+                        <p style="color: aliceblue; margin: 0;">
+                            <th:block th:if="${aluno != null and aluno.endereco != null}">
+                                <span th:if="${aluno.endereco.logradouro != null and !aluno.endereco.logradouro.isEmpty()}" th:text="${aluno.endereco.logradouro}">Rua Exemplo</span><span th:if="${aluno.endereco.numero != null and !aluno.endereco.numero.isEmpty()}" th:text="${', nº ' + aluno.endereco.numero}">, 123</span><span th:if="${aluno.endereco.complemento != null and !aluno.endereco.complemento.isEmpty()}" th:text="${' - ' + aluno.endereco.complemento}"> - Sala 1</span><span th:if="${aluno.endereco.bairro != null and !aluno.endereco.bairro.isEmpty()}" th:text="${'. ' + aluno.endereco.bairro}">. Centro</span><span th:if="${aluno.endereco.cidade != null and !aluno.endereco.cidade.isEmpty()}"><span th:if="${aluno.endereco.estado != null and !aluno.endereco.estado.isEmpty()}" th:text="${'. ' + aluno.endereco.cidade + ' - ' + aluno.endereco.estado}">. Manaus - AM</span><span th:unless="${aluno.endereco.estado != null and !aluno.endereco.estado.isEmpty()}" th:text="${'. ' + aluno.endereco.cidade}">. Manaus</span></span><span th:if="${aluno.endereco.cep != null and !aluno.endereco.cep.isEmpty()}" th:text="${'. CEP: ' + aluno.endereco.cep}">. CEP: 69000-000</span>
+                            </th:block>
+                            <span th:unless="${aluno != null and aluno.endereco != null}">—</span>
+                        </p>
+                    </div>
+                    <div>
+                        <label style="color: #00bfff; font-weight: bold; display: block; margin-bottom: 5px;">Data do Pagamento</label>
+                        <p style="color: aliceblue; margin: 0;" th:text="${pagamento.dataPagamento != null ? #temporals.format(pagamento.dataPagamento, 'dd/MM/yyyy') : 'Não informado'}">-</p>
+                    </div>
+                    <div>
+                        <label style="color: #00bfff; font-weight: bold; display: block; margin-bottom: 5px;">Forma de Pagamento</label>
+                        <p style="color: aliceblue; margin: 0;" th:text="${pagamento.formaPagamento != null ? pagamento.formaPagamento : 'Não informado'}">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário de Confirmação -->
+            <form th:action="@{'/financeiro/pagamentos/deletar/' + ${pagamento.id}}" method="post" style="margin-top: 25px;">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; color: aliceblue; cursor: pointer;">
+                        <input type="checkbox" required style="margin-right: 10px; width: 20px; height: 20px; cursor: pointer;" />
+                        <span>Confirmo que desejo deletar este pagamento permanentemente</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button type="submit" class="btn" style="background-color: #dc3545; color: white; padding: 12px 30px; font-size: 16px; font-weight: bold;">
+                        🗑️ Confirmar Exclusão
+                    </button>
+                    <a th:href="@{/financeiro/pagamentos}" class="btn cadastrar" style="padding: 12px 30px; font-size: 16px;">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer></footer>
+
+</body>
+</html>
+

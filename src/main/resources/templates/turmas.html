@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Turmas - AriranG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <link rel="stylesheet" th:href="@{/css/turmas-mobile.css?v=1.0}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo AriranG" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element active">Turmas</li></a>
+                <a th:href="@{/frequencia}"><li class="nav-element">📊 Frequência</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Gerenciamento de Turmas</h1>
+        <div class="top-actions">
+            <form method="get" th:action="@{/turmas}" class="filter-form">
+                <input type="text" name="search" placeholder="Pesquisar..." class="search-bar" th:value="${searchTerm}" />
+                <button type="submit" class="btn cadastrar">Filtrar</button>
+                <a th:href="@{/turmas}" class="btn cadastrar">Limpar</a>
+            </form>
+            <a th:href="@{/turmas/novo}" class="btn cadastrar">+ Cadastrar Turma</a>
+            <a th:href="@{/turmas/verificar-duplicatas}" class="btn" style="background-color: #ffc107; color: #000;">🔍 Verificar Duplicatas</a>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <div class="table-responsive">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Professor Responsável</th>
+                <th>Nível</th>
+                <th>Turno</th>
+                <th>Formato</th>
+                <th>Modalidade</th>
+                <th>Situação</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="turma : ${turmas}">
+                <td data-label="ID" th:text="${turma.id}"></td>
+                <td data-label="Nome" th:text="${turma.nomeTurma}"></td>
+                <td data-label="Professor Responsável" th:text="${turma.professorResponsavel != null and turma.professorResponsavel.nomeCompleto != null ? turma.professorResponsavel.nomeCompleto : 'Não atribuído'}"></td>
+                <td data-label="Nível" th:text="${turma.nivelProficiencia}"></td>
+                <td data-label="Turno" th:text="${turma.turno != null ? turma.turno.descricao : '-'}"></td>
+                <td data-label="Formato" th:text="${turma.formato != null ? turma.formato.descricao : '-'}"></td>
+                <td data-label="Modalidade" th:text="${turma.modalidade != null ? turma.modalidade.descricao : '-'}"></td>
+                <td data-label="Situação">
+                    <span class="situacao-badge" 
+                          th:classappend="${turma.situacaoTurma == 'ABERTA'} ? 'situacao-ativo' : 
+                                         (${turma.situacaoTurma == 'FECHADA'} ? 'situacao-inativo' : 'situacao-indefinida')"
+                          th:text="${turma.situacaoTurma != null && !turma.situacaoTurma.isEmpty() ? turma.situacaoTurma : 'Não definida'}">
+                    </span>
+                </td>
+                <td data-label="Ações" class="acoes">
+                    <a th:href="@{/turmas/editar/{id}(id=${turma.id})}" class="btn editar">Editar</a>
+                    <a th:href="@{/turmas/{id}/alunos(id=${turma.id})}" class="btn visualizar">👥 Alunos</a>
+                    <a th:href="@{/turmas/historico/{id}(id=${turma.id})}" class="btn visualizar" style="background-color: #17a2b8;">📋 Histórico</a>
+                    <a th:if="${turma.calendarioPdf != null and !turma.calendarioPdf.isEmpty()}" 
+                       th:href="@{/turmas/calendario/{id}(id=${turma.id})}" 
+                       target="_blank" 
+                       class="btn visualizar" 
+                       style="background-color: #28a745; color: white;">📄 Calendário</a>
+                    <a th:href="@{/turmas/boletim/padrao/{id}(id=${turma.id})}" 
+                       class="btn visualizar" 
+                       style="background-color: #17a2b8; color: white;">📋 Padrão Boletim</a>
+                    <a th:href="@{/turmas/deletar/{id}(id=${turma.id})}" class="btn deletar">Deletar</a>
+                    <form th:action="@{'/turmas/fechar/' + ${turma.id}}" method="post" style="display: inline;" th:onsubmit="return confirmarFecharTurma(event, this)">
+                        <!-- CSRF Token -->
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn turma" 
+                                th:disabled="${turma.situacaoTurma == 'FECHADA'}"
+                                th:text="${turma.situacaoTurma == 'FECHADA' ? 'Fechada' : 'Fechar Turma'}">
+                        </button>
+                    </form>
+                    <button th:if="${turma.situacaoTurma == 'FECHADA'}" 
+                            class="btn reabrir" 
+                            th:onclick="'confirmarReabrirTurma(' + ${turma.id} + ')'"
+                            th:text="'Reabrir Turma'">
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+
+<script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+
+<!-- Modal de Erro -->
+<div id="errorModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Erro ao Fechar Turma</h3>
+        <p id="errorMessage"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<!-- Modal de Sucesso -->
+<div id="successModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Sucesso</h3>
+        <p id="successMessage"></p>
+        <button onclick="fecharModalSucesso()" class="btn">OK</button>
+    </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div id="confirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3 id="confirmTitle"></h3>
+        <p id="confirmMessage"></p>
+        <div class="modal-actions">
+            <button id="confirmYes" class="btn">Sim</button>
+            <button id="confirmNo" class="btn cancel">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn.reabrir {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn.reabrir:hover {
+    background-color: #45a049;
+}
+
+.btn.cancel {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn.cancel:hover {
+    background-color: #da190b;
+}
+
+.btn.success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn.success:hover {
+    background-color: #45a049;
+}
+
+.btn.visualizar {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn.visualizar:hover {
+    background-color: #5a6268;
+}
+</style>
+
+<script th:inline="javascript">
+// Verificar se há erro ou sucesso na URL e mostrar pop-up
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar flash attributes primeiro (Thymeleaf renderiza diretamente)
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    
+    if (errorFlash) {
+        mostrarErro(errorFlash);
+    } else if (successFlash) {
+        mostrarSucesso(successFlash);
+    } else {
+        // Fallback para parâmetros de URL (caso ainda existam)
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const success = urlParams.get('success');
+        
+        if (error) {
+            mostrarErro(decodeURIComponent(error));
+            // Limpar a URL removendo o parâmetro de erro
+            const url = new URL(window.location);
+            url.searchParams.delete('error');
+            window.history.replaceState({}, document.title, url);
+        } else if (success) {
+            mostrarSucesso(decodeURIComponent(success));
+            // Limpar a URL removendo o parâmetro de sucesso
+            const url = new URL(window.location);
+            url.searchParams.delete('success');
+            window.history.replaceState({}, document.title, url);
+        }
+    }
+});
+
+function mostrarErro(mensagem) {
+    document.getElementById('errorMessage').textContent = mensagem;
+    document.getElementById('errorModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('errorModal').style.display = 'none';
+}
+
+function mostrarSucesso(mensagem) {
+    document.getElementById('successMessage').textContent = mensagem;
+    document.getElementById('successModal').style.display = 'flex';
+}
+
+function fecharModalSucesso() {
+    document.getElementById('successModal').style.display = 'none';
+}
+
+function confirmarFecharTurma(event, form) {
+    event.preventDefault();
+    
+    document.getElementById('confirmTitle').textContent = 'Confirmar Fechamento';
+    document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja fechar esta turma?';
+    
+    document.getElementById('confirmModal').style.display = 'flex';
+    
+    document.getElementById('confirmYes').onclick = function() {
+        document.getElementById('confirmModal').style.display = 'none';
+        form.submit();
+    };
+    
+    document.getElementById('confirmNo').onclick = function() {
+        document.getElementById('confirmModal').style.display = 'none';
+    };
+    
+    return false;
+}
+
+function confirmarReabrirTurma(turmaId) {
+    document.getElementById('confirmTitle').textContent = 'Confirmar Reabertura';
+    document.getElementById('confirmMessage').textContent = 'Tem certeza que deseja reabrir esta turma?';
+    
+    document.getElementById('confirmModal').style.display = 'flex';
+    
+    document.getElementById('confirmYes').onclick = function() {
+        document.getElementById('confirmModal').style.display = 'none';
+        
+        // Criar form temporário para enviar requisição
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/turmas/reabrir/' + turmaId;
+        form.style.display = 'none';
+        document.body.appendChild(form);
+        form.submit();
+    };
+    
+    document.getElementById('confirmNo').onclick = function() {
+        document.getElementById('confirmModal').style.display = 'none';
+    };
+}
+
+// Fechar modal ao clicar no X
+document.querySelectorAll('.close').forEach(closeBtn => {
+    closeBtn.onclick = function() {
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+});
+
+// Fechar modal ao clicar fora dele
+window.onclick = function(event) {
+    const errorModal = document.getElementById('errorModal');
+    const successModal = document.getElementById('successModal');
+    const confirmModal = document.getElementById('confirmModal');
+    
+    if (event.target === errorModal) {
+        fecharModal();
+    }
+    if (event.target === successModal) {
+        fecharModalSucesso();
+    }
+    if (event.target === confirmModal) {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+}
+
+</script>
+
+</body>
+</html>

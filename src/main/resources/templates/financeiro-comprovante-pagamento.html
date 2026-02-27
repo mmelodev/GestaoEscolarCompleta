@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>COMPROVANTE DE PAGAMENTO</title>
+    <style>
+        @page {
+            margin: 1.5cm;
+            size: A4;
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #000;
+            background-color: #fff;
+        }
+        .page {
+            max-width: 18cm;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .logo-container img {
+            max-width: 120px;
+            height: auto;
+        }
+        .instituto-name {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .document-title {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+        .info-section {
+            margin: 20px 0;
+            border: 1px solid #000;
+            padding: 15px;
+        }
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .info-label {
+            font-weight: bold;
+            min-width: 180px;
+            width: 180px;
+            flex-shrink: 0;
+        }
+        .info-value {
+            flex: 1;
+            text-align: left;
+        }
+        .value-bold {
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        .financial-details {
+            margin: 20px 0;
+            border: 2px solid #000;
+            padding: 15px;
+        }
+        .financial-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .financial-row:last-child {
+            border-bottom: 2px solid #000;
+            margin-bottom: 0;
+            padding-bottom: 10px;
+            font-weight: bold;
+            font-size: 13pt;
+        }
+        .financial-label {
+            font-weight: bold;
+        }
+        .financial-value {
+            text-align: right;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 10pt;
+            text-align: center;
+            color: #333;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .footer-address {
+            margin-bottom: 8px;
+        }
+        .footer-contact {
+            margin-bottom: 5px;
+        }
+        .footer-korean {
+            margin-top: 10px;
+            font-size: 11pt;
+        }
+        .turma-info {
+            margin: 15px 0;
+            padding: 12px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #007bff;
+        }
+        .turma-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+        .turma-label {
+            font-weight: bold;
+            min-width: 120px;
+        }
+        .warning-message {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            font-size: 10pt;
+            text-align: justify;
+        }
+        .thank-you {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            padding: 15px;
+            background-color: #e7f3ff;
+            border: 1px solid #007bff;
+        }
+        .action-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .btn-print {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-print:hover {
+            background-color: #0056b3;
+        }
+        .btn-close {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-close:hover {
+            background-color: #545b62;
+        }
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-close" onclick="window.close()">❌ Fechar</button>
+    </div>
+    
+    <div class="page">
+        <div class="header">
+            <div class="logo-container">
+                <img th:src="@{/img/arirang.jpg}" alt="AriranG Logo" />
+            </div>
+            <div class="instituto-name">INSTITUTO ARIRANG</div>
+            <div class="document-title">COMPROVANTE DE PAGAMENTO</div>
+        </div>
+
+        <!-- Informações do Aluno e Responsável -->
+        <div class="info-section">
+            <div class="info-row">
+                <div class="info-label">CPF:</div>
+                <div class="info-value">
+                    <span th:if="${aluno != null and aluno.cpf != null}" th:text="${aluno.cpf}">054.789.092-38</span>
+                    <span th:if="${aluno == null or aluno.cpf == null}">
+                        <span th:if="${responsavelFinanceiroCpf != null and responsavelFinanceiroCpf != ''}" th:text="${responsavelFinanceiroCpf}">054.789.092-38</span>
+                        <span th:if="${responsavelFinanceiroCpf == null or responsavelFinanceiroCpf == ''}">____________________</span>
+                    </span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">NOME:</div>
+                <div class="info-value value-bold">
+                    <span th:if="${aluno != null and aluno.nomeCompleto != null}" th:text="${aluno.nomeCompleto}">Bianca Amorim Lêdo</span>
+                    <span th:if="${aluno == null or aluno.nomeCompleto == null}">____________________</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">RESPONSÁVEL FINANCEIRO:</div>
+                <div class="info-value">
+                    <span th:if="${responsavelFinanceiroNome != null and responsavelFinanceiroNome != ''}" th:text="${responsavelFinanceiroNome}">ERYSTENYS REIS COSTA FILHO</span>
+                    <span th:if="${responsavelFinanceiroNome == null or responsavelFinanceiroNome == ''}">
+                        <span th:if="${aluno != null and aluno.nomeCompleto != null}" th:text="${aluno.nomeCompleto}">Bianca Amorim Lêdo</span>
+                        <span th:if="${aluno == null or aluno.nomeCompleto == null}">____________________</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações da Turma -->
+        <div class="turma-info" th:if="${turma != null}">
+            <div class="turma-row">
+                <div class="turma-label">TURMA:</div>
+                <div class="info-value">
+                    <span th:if="${turma.nomeTurma != null}" th:text="${turma.nomeTurma}">BALEIA 25.1.1</span>
+                    <span th:if="${turma.nomeTurma == null}">____________________</span>
+                </div>
+            </div>
+            <div class="turma-row">
+                <div class="turma-label">TURNO:</div>
+                <div class="info-value">
+                    <span th:if="${turma.turno != null and turma.turno.descricao != null}" th:text="${turma.turno.descricao}">Noturno</span>
+                    <span th:if="${turma.turno == null or turma.turno.descricao == null}">____________________</span>
+                </div>
+            </div>
+            <div class="turma-row">
+                <div class="turma-label">DIA E HORA:</div>
+                <div class="info-value">
+                    <span th:if="${turma.diaTurma != null}" th:text="${turma.diaTurma}">Seg,Qua</span>
+                    <span th:if="${turma.horaInicio != null and turma.horaTermino != null}">
+                        <span th:text="${turma.horaInicio}">19:30</span> - <span th:text="${turma.horaTermino}">21:30</span>
+                    </span>
+                    <span th:if="${turma.diaTurma == null or turma.horaInicio == null or turma.horaTermino == null}">____________________</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalhes da Fatura/Receita -->
+        <div class="info-section">
+            <div class="info-row">
+                <div class="info-label">DETALHES DA FATURA / DESCRIÇÃO:</div>
+                <div class="info-value value-bold">
+                    <span th:if="${pagamento != null and pagamento.observacoes != null and pagamento.observacoes != ''}" th:text="${pagamento.observacoes}">(RE)MATRICULA 2025.1</span>
+                    <span th:if="${pagamento == null or pagamento.observacoes == null or pagamento.observacoes == ''}">
+                        <span th:if="${receita != null and receita.tipoReceita != null}" th:text="${receita.tipoReceita}">MENSALIDADE</span>
+                        <span th:if="${receita == null or receita.tipoReceita == null}">____________________</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Valores Financeiros -->
+        <div class="financial-details">
+            <div class="financial-row">
+                <div class="financial-label">VALOR:</div>
+                <div class="financial-value">
+                    <span th:if="${valorBase != null}" th:text="${#numbers.formatCurrency(valorBase)}">100,00R$</span>
+                    <span th:if="${valorBase == null}">
+                        <span th:if="${valorPago != null}" th:text="${#numbers.formatCurrency(valorPago)}">100,00R$</span>
+                        <span th:if="${valorPago == null}">R$ 0,00</span>
+                    </span>
+                </div>
+            </div>
+            <div class="financial-row" th:if="${multa != null and multa > 0}">
+                <div class="financial-label">MULTA:</div>
+                <div class="financial-value">
+                    <span th:if="${multa != null}" th:text="${#numbers.formatCurrency(multa)}">2,00R$</span>
+                    <span th:if="${multa == null}">R$ 0,00</span>
+                </div>
+            </div>
+            <div class="financial-row" th:if="${valorJuros != null and valorJuros > 0}">
+                <div class="financial-label">JUROS MORA:</div>
+                <div class="financial-value">
+                    <span th:if="${valorJuros != null}" th:text="${#numbers.formatCurrency(valorJuros)}">0,20R$</span>
+                    <span th:if="${valorJuros == null}">R$ 0,00</span>
+                </div>
+            </div>
+            <div class="financial-row">
+                <div class="financial-label">DESCONTO:</div>
+                <div class="financial-value">
+                    <span th:if="${descontoPercentual != null and descontoPercentual > 0}" th:text="${#numbers.formatDecimal(descontoPercentual, 0, 0) + '%'}">0%</span>
+                    <span th:if="${descontoPercentual == null or descontoPercentual == 0}">0%</span>
+                </div>
+            </div>
+            <div class="financial-row">
+                <div class="financial-label">TOTAL:</div>
+                <div class="financial-value">
+                    <span th:if="${valorTotal != null}" th:text="${#numbers.formatCurrency(valorTotal)}">102,20R$</span>
+                    <span th:if="${valorTotal == null}">
+                        <span th:if="${valorPago != null}" th:text="${#numbers.formatCurrency(valorPago)}">100,00R$</span>
+                        <span th:if="${valorPago == null}">R$ 0,00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informações do Pagamento -->
+        <div class="info-section" style="margin-top: 20px;">
+            <div class="info-row">
+                <div class="info-label">DATA DE EMISSÃO DO DOC:</div>
+                <div class="info-value">
+                    <span th:if="${pagamento != null and pagamento.dataCriacao != null}" th:text="${#temporals.format(pagamento.dataCriacao, 'dd-MMM-yy')}">15-Jan-26</span>
+                    <span th:if="${pagamento == null or pagamento.dataCriacao == null}" th:text="${#temporals.format(#temporals.createNow(), 'dd-MMM-yy')}">15-Jan-26</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">DATA DE VENCIMENTO:</div>
+                <div class="info-value">
+                    <span th:if="${receita != null and receita.dataVencimento != null}" th:text="${#temporals.format(receita.dataVencimento, 'dd-MMM-yy')}">10-May-25</span>
+                    <span th:if="${receita == null or receita.dataVencimento == null}">
+                        <span th:if="${parcela != null and parcela.dataVencimento != null}" th:text="${#temporals.format(parcela.dataVencimento, 'dd-MMM-yy')}">10-May-25</span>
+                        <span th:if="${parcela == null or parcela.dataVencimento == null}">____________________</span>
+                    </span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">DATA DE PAGAMENTO:</div>
+                <div class="info-value">
+                    <span th:if="${pagamento != null and pagamento.dataPagamento != null}" th:text="${#temporals.format(pagamento.dataPagamento, 'dd-MMM-yy')}">16-May-25</span>
+                    <span th:if="${pagamento == null or pagamento.dataPagamento == null}">____________________</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">FORMA DE PAGAMENTO:</div>
+                <div class="info-value value-bold">
+                    <span th:if="${pagamento != null and pagamento.formaPagamento != null}" th:text="${pagamento.formaPagamento}">PIX</span>
+                    <span th:if="${pagamento == null or pagamento.formaPagamento == null}">____________________</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Nº DO COMPROVANTE:</div>
+                <div class="info-value value-bold">
+                    <span th:if="${pagamento != null and pagamento.id != null}" th:text="${pagamento.id}">1334</span>
+                    <span th:if="${pagamento == null or pagamento.id == null}">____________________</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagem de Aviso -->
+        <div class="warning-message">
+            PARA UM BOM FUNCIONAMENTO DO SERVIÇO É IMPORTANTE SEMPRE MANTER SUAS PENDÊNCIAS EM DIA.
+        </div>
+
+        <!-- Agradecimento -->
+        <div class="thank-you">
+            AGRADECEMOS A PREFERÊNCIA
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <div class="footer-address">Av. Floriano Peixoto, Nº 394 – CENTRO, CEP 69.055-070, Manaus – AM</div>
+            <div class="footer-contact">CNPJ: 34.099.780/0001-90 | Contato: (92) 99240-7587 | (92) 98638-8940</div>
+            <div class="footer-korean">"뭐든지 할 수 있어요"</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pagamentos - AriranG Financeiro</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/financeiro}"><li class="nav-element active">Financeiro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Gerenciamento de Pagamentos</h1>
+        <div class="top-actions" style="max-width: 100%; overflow: hidden;">
+            <form method="get" th:action="@{/financeiro/pagamentos}" class="filter-form" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; margin-bottom: 25px; max-width: 100%; box-sizing: border-box;">
+                <!-- Campo de Pesquisa - Separado visualmente -->
+                <div style="flex: 0 1 auto; min-width: 250px; max-width: 350px; margin-right: 20px; position: relative; box-sizing: border-box;">
+                    <label for="search" style="display: block; font-size: 12px; color: #00bfff; font-weight: bold; margin-bottom: 8px;">🔍 Pesquisar</label>
+                    <div style="position: relative;">
+                        <input type="text" id="search" name="search" placeholder="Digite o nome do aluno..." class="search-bar" th:value="${searchTerm}" 
+                               style="width: 100%; max-width: 100%; padding: 12px 45px 12px 15px; border-radius: 8px; margin-bottom: 0; background-color: rgba(255, 255, 255, 0.95); color: #333; border: 2px solid rgba(0, 191, 255, 0.3); transition: all 0.3s ease; box-sizing: border-box;" />
+                        <span style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #00bfff; font-size: 18px; pointer-events: none;">🔍</span>
+                    </div>
+                </div>
+                
+                <!-- Filtros agrupados -->
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; flex: 1 1 auto; min-width: 0; box-sizing: border-box;">
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 180px; max-width: 220px; flex: 1 1 auto; box-sizing: border-box;">
+                        <label for="alunoId" style="font-size: 12px; color: #00bfff; font-weight: bold;">👤 Aluno</label>
+                        <select id="alunoId" name="alunoId" class="select-filter" style="padding: 12px 15px; border-radius: 8px; width: 100%; max-width: 100%; background-color: rgba(26, 26, 26, 0.95); border: 2px solid rgba(0, 191, 255, 0.3); color: aliceblue; transition: all 0.3s ease; box-sizing: border-box;">
+                            <option value="">Todos os alunos</option>
+                            <option th:each="a : ${alunos != null ? alunos : {}}"
+                                    th:value="${a.id}"
+                                    th:selected="${alunoSelecionado != null and alunoSelecionado == a.id}"
+                                    th:text="${a.nomeCompleto}"></option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 180px; max-width: 220px; flex: 1 1 auto; box-sizing: border-box;">
+                        <label for="formaPagamento" style="font-size: 12px; color: #00bfff; font-weight: bold;">💳 Forma de Pagamento</label>
+                        <select id="formaPagamento" name="formaPagamento" class="select-filter" style="padding: 12px 15px; border-radius: 8px; width: 100%; max-width: 100%; background-color: rgba(26, 26, 26, 0.95); border: 2px solid rgba(0, 191, 255, 0.3); color: aliceblue; transition: all 0.3s ease; box-sizing: border-box;">
+                            <option value="">Todas as formas</option>
+                            <option value="DINHEIRO" th:selected="${formaPagamentoSelecionada != null and formaPagamentoSelecionada == 'DINHEIRO'}">💵 Dinheiro</option>
+                            <option value="CARTAO_CREDITO" th:selected="${formaPagamentoSelecionada != null and formaPagamentoSelecionada == 'CARTAO_CREDITO'}">💳 Cartão de Crédito</option>
+                            <option value="CARTAO_DEBITO" th:selected="${formaPagamentoSelecionada != null and formaPagamentoSelecionada == 'CARTAO_DEBITO'}">💳 Cartão de Débito</option>
+                            <option value="PIX" th:selected="${formaPagamentoSelecionada != null and formaPagamentoSelecionada == 'PIX'}">📱 PIX</option>
+                            <option value="BOLETO" th:selected="${formaPagamentoSelecionada != null and formaPagamentoSelecionada == 'BOLETO'}">📄 Boleto</option>
+                            <option value="TRANSFERENCIA" th:selected="${formaPagamentoSelecionada != null and formaPagamentoSelecionada == 'TRANSFERENCIA'}">🏦 Transferência</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 150px; max-width: 180px; flex: 1 1 auto; box-sizing: border-box;">
+                        <label for="dataInicio" style="font-size: 12px; color: #00bfff; font-weight: bold;">📅 Data Início</label>
+                        <input type="date" id="dataInicio" name="dataInicio" class="select-filter" th:value="${dataInicio}" 
+                               style="padding: 12px 15px; border-radius: 8px; width: 100%; max-width: 100%; background-color: rgba(26, 26, 26, 0.95); border: 2px solid rgba(0, 191, 255, 0.3); color: aliceblue; transition: all 0.3s ease; box-sizing: border-box;" />
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 150px; max-width: 180px; flex: 1 1 auto; box-sizing: border-box;">
+                        <label for="dataFim" style="font-size: 12px; color: #00bfff; font-weight: bold;">📅 Data Fim</label>
+                        <input type="date" id="dataFim" name="dataFim" class="select-filter" th:value="${dataFim}" 
+                               style="padding: 12px 15px; border-radius: 8px; width: 100%; max-width: 100%; background-color: rgba(26, 26, 26, 0.95); border: 2px solid rgba(0, 191, 255, 0.3); color: aliceblue; transition: all 0.3s ease; box-sizing: border-box;" />
+                    </div>
+                    
+                    <!-- Botões de ação -->
+                    <div style="display: flex; gap: 12px; align-items: flex-end; flex-shrink: 0;">
+                        <button type="submit" class="btn cadastrar" style="padding: 12px 20px; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); transition: all 0.3s ease; white-space: nowrap;" 
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0, 123, 255, 0.4)'"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 123, 255, 0.3)'">
+                            🔍 Filtrar
+                        </button>
+                        <a th:href="@{/financeiro/pagamentos}" class="btn" style="padding: 12px 20px; border-radius: 8px; text-decoration: none; display: inline-block; background-color: #6c757d; color: white; font-weight: bold; box-shadow: 0 4px 6px rgba(108, 117, 125, 0.3); transition: all 0.3s ease; white-space: nowrap;"
+                           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(108, 117, 125, 0.4)'"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(108, 117, 125, 0.3)'">
+                            🗑️ Limpar
+                        </a>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Contador de resultados e botões de ação -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 15px; background-color: rgba(26, 26, 26, 0.6); border-radius: 8px; flex-wrap: wrap; gap: 15px; box-sizing: border-box;">
+                <div style="color: #00bfff; font-size: 14px; font-weight: bold; flex: 1 1 auto; min-width: 200px;">
+                    <span th:if="${pagamentos != null and !pagamentos.empty}">
+                        💰 <span th:text="${pagamentos.size()}">0</span> pagamento(s) encontrado(s)
+                    </span>
+                    <span th:if="${pagamentos == null or pagamentos.empty}">
+                        💰 Nenhum pagamento encontrado
+                    </span>
+                </div>
+                <div style="display: flex; gap: 12px; flex-shrink: 0;">
+                    <a th:href="@{/financeiro}" class="btn cadastrar" 
+                       style="padding: 12px 20px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); transition: all 0.3s ease; white-space: nowrap;"
+                       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 12px rgba(0, 123, 255, 0.4)'"
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px rgba(0, 123, 255, 0.3)'">
+                        📊 Dashboard
+                    </a>
+                    <a th:href="@{/financeiro/pagamentos/novo}" class="btn cadastrar" 
+                       style="padding: 12px 24px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); transition: all 0.3s ease; white-space: nowrap;"
+                       onmouseover="this.style.transform='translateY(-2px) scale(1.02)'; this.style.boxShadow='0 6px 12px rgba(0, 123, 255, 0.5)'"
+                       onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 6px rgba(0, 123, 255, 0.3)'">
+                        ➕ Novo Pagamento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tabela-container" style="margin-top: 30px;">
+        <table style="border-spacing: 0; width: 100%;">
+            <thead>
+                <tr style="background-color: rgba(0, 123, 255, 0.1);">
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Aluno</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Data Pagamento</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Valor Pago</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Forma de Pagamento</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Receita</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Observações</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #007bff;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pagamento : ${pagamentos}" th:if="${pagamentos != null and !pagamentos.empty}" 
+                    style="border-bottom: 1px solid rgba(255, 255, 255, 0.1); transition: background-color 0.2s;" 
+                    onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.05)'" 
+                    onmouseout="this.style.backgroundColor='transparent'">
+                    <td style="padding: 15px;" th:text="${pagamento.alunoNome != null ? pagamento.alunoNome : '-'}">João Silva</td>
+                    <td style="padding: 15px;" th:text="${pagamento.dataPagamento != null ? #temporals.format(pagamento.dataPagamento, 'dd/MM/yyyy') : '-'}">01/12/2024</td>
+                    <td style="padding: 15px; font-weight: bold; color: #28a745;" th:text="${pagamento.valorPago != null ? #numbers.formatCurrency(pagamento.valorPago) : 'R$ 0,00'}">R$ 300,00</td>
+                    <td style="padding: 15px;">
+                        <span class="forma-badge" th:text="${pagamento.formaPagamento != null ? pagamento.formaPagamento : '-'}">PIX</span>
+                    </td>
+                    <td style="padding: 15px;" th:text="${pagamento.receitaDescricao != null ? pagamento.receitaDescricao : '-'}">Mensalidade 1/6</td>
+                    <td style="padding: 15px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" 
+                        th:text="${pagamento.observacoes != null and !pagamento.observacoes.isEmpty() ? pagamento.observacoes : '-'}" 
+                        th:title="${pagamento.observacoes != null and !pagamento.observacoes.isEmpty() ? pagamento.observacoes : ''}">-</td>
+                    <td class="actions" style="padding: 15px;">
+                        <a th:href="@{'/financeiro/pagamentos/' + ${pagamento.id}}" class="btn btn-sm btn-info" title="Visualizar">👁️</a>
+                        <a th:href="@{'/financeiro/pagamentos/' + ${pagamento.id} + '/comprovante'}" class="btn btn-sm btn-success" title="Gerar Comprovante" target="_blank">🧾 Comprovante</a>
+                        <a th:href="@{'/financeiro/pagamentos/editar/' + ${pagamento.id}}" class="btn btn-sm btn-warning" title="Editar">✏️</a>
+                        <a th:href="@{'/financeiro/pagamentos/deletar/' + ${pagamento.id}}" class="btn btn-sm btn-danger" title="Deletar">🗑️</a>
+                    </td>
+                </tr>
+                <tr th:if="${pagamentos == null or pagamentos.empty}">
+                    <td colspan="7" class="no-data" style="padding: 30px;">Nenhum pagamento encontrado</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer></footer>
+
+<style>
+/* Melhorias de UI */
+.filter-form input:focus,
+.filter-form select:focus {
+    outline: none;
+    border-color: #00bfff !important;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.2) !important;
+}
+
+.filter-form select:hover {
+    border-color: #00bfff !important;
+    background-color: rgba(26, 26, 26, 1) !important;
+}
+
+.forma-badge {
+    padding: 6px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.actions {
+    white-space: nowrap;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    margin: 2px;
+    font-size: 13px;
+    text-decoration: none;
+    border-radius: 6px;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.btn-sm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-info { 
+    background-color: #17a2b8; 
+    color: white; 
+}
+
+.btn-info:hover {
+    background-color: #138496;
+}
+
+.btn-warning { 
+    background-color: #ffc107; 
+    color: black; 
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+.btn-danger { 
+    background-color: #dc3545; 
+    color: white; 
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d;
+    padding: 40px 20px;
+    font-size: 16px;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+    .filter-form {
+        flex-direction: column;
+        gap: 15px !important;
+    }
+    
+    .filter-form > div:first-child {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-right: 0 !important;
+    }
+    
+    .filter-form > div:last-child {
+        width: 100% !important;
+    }
+    
+    .filter-form select,
+    .filter-form input[type="date"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        gap: 15px !important;
+    }
+    
+    .filter-form > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-right: 0 !important;
+    }
+    
+    .filter-form select,
+    .filter-form input[type="date"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 100% !important;
+    }
+    
+    .top-actions {
+        padding: 0 10px;
+    }
+}
+</style>
+
+</body>
+</html>
+

@@ -1,0 +1,120 @@
+/* ============================================
+   TURMAS - Mobile adjustments (keep desktop intact)
+   Applies only on small screens.
+   ============================================ */
+
+@media (max-width: 767px) {
+  /* Header spacing */
+  .main-nav {
+    margin: 10px 12px;
+    padding: 10px 14px;
+  }
+
+  /* Top actions stack */
+  .top-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .filter-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .filter-form > * {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .search-bar {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Buttons full width in header actions */
+  .top-actions > a.btn,
+  .top-actions button.btn {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* Table container tighter padding */
+  .tabela-container {
+    padding: 14px;
+    max-width: 96%;
+  }
+
+  /* ============================================
+     Turmas list: table -> stacked cards (like alunos)
+     ============================================ */
+  .tabela-container table,
+  .tabela-container thead,
+  .tabela-container tbody,
+  .tabela-container th,
+  .tabela-container td,
+  .tabela-container tr {
+    display: block;
+  }
+
+  .tabela-container thead {
+    display: none;
+  }
+
+  .tabela-container tbody tr {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .tabela-container td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .tabela-container td:last-child {
+    border-bottom: 0;
+  }
+
+  .tabela-container td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #00bfff;
+    min-width: 42%;
+    text-align: left;
+  }
+
+  /* Ações: empilhar botões */
+  .tabela-container td.acoes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tabela-container td.acoes::before {
+    margin-bottom: 6px;
+  }
+
+  .tabela-container td.acoes a.btn,
+  .tabela-container td.acoes button.btn,
+  .tabela-container td.acoes form {
+    width: 100%;
+  }
+
+  .tabela-container td.acoes form {
+    display: block !important;
+  }
+
+  .tabela-container td.acoes a.btn,
+  .tabela-container td.acoes button.btn {
+    justify-content: center;
+  }
+}

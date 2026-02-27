@@ -1,0 +1,64 @@
+# Arquivos e diretórios do Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Arquivos do Git
+.git/
+.gitignore
+.gitattributes
+
+# Arquivos de ambiente (não devem estar na imagem)
+.env
+.env.local
+.env.*.local
+*.env
+env.example
+
+# Arquivos de configuração local
+*.log
+logs/
+*.gz
+
+# Arquivos de IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+*.swp
+*.swo
+*~
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Uploads (não devem estar na imagem Docker)
+uploads/
+
+# Arquivos de documentação de desenvolvimento
+SETUP_ENV.md
+GENERATE_JWT_SECRET.md
+run.ps1
+run-maven.ps1
+
+# Arquivos de teste
+*.test
+test-results/
+
+# Arquivos temporários
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
+

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Receitas - AriranG Financeiro</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element active">Financeiro</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Gerenciamento de Receitas</h1>
+        <div class="top-actions">
+            <form method="get" th:action="@{/financeiro/receitas}" class="filter-form">
+                <input type="text" name="search" placeholder="Pesquisar por aluno..." class="search-bar" th:value="${searchTerm}" />
+                
+                <label for="alunoId">Aluno</label>
+                <select id="alunoId" name="alunoId" class="select-filter">
+                    <option th:value="${null}" th:selected="${alunoSelecionado == null}">Todos</option>
+                    <option th:each="a : ${alunos}"
+                            th:value="${a.id}"
+                            th:selected="${alunoSelecionado} == ${a.id}"
+                            th:text="${a.nomeCompleto}"></option>
+                </select>
+                
+                <label for="contratoId">Contrato</label>
+                <select id="contratoId" name="contratoId" class="select-filter">
+                    <option th:value="${null}" th:selected="${contratoSelecionado == null}">Todos</option>
+                    <option th:each="c : ${contratos}"
+                            th:value="${c.id}"
+                            th:selected="${contratoSelecionado} == ${c.id}"
+                            th:text="${c.numeroContrato} + ' - ' + ${c.alunoNome}"></option>
+                </select>
+                
+                <label for="situacao">Situação</label>
+                <select id="situacao" name="situacao" class="select-filter">
+                    <option th:value="${null}" th:selected="${situacaoSelecionada == null}">Todas</option>
+                    <option value="PENDENTE" th:selected="${situacaoSelecionada == 'PENDENTE'}">Pendente</option>
+                    <option value="PAGO" th:selected="${situacaoSelecionada == 'PAGO'}">Pago</option>
+                    <option value="VENCIDO" th:selected="${situacaoSelecionada == 'VENCIDO'}">Vencido</option>
+                    <option value="PARCIAL" th:selected="${situacaoSelecionada == 'PARCIAL'}">Parcial</option>
+                </select>
+                
+                <label for="tipoReceita">Tipo</label>
+                <select id="tipoReceita" name="tipoReceita" class="select-filter">
+                    <option th:value="${null}" th:selected="${tipoReceitaSelecionado == null}">Todos</option>
+                    <option value="MATRICULA" th:selected="${tipoReceitaSelecionado == 'MATRICULA'}">Matrícula</option>
+                    <option value="MENSALIDADE" th:selected="${tipoReceitaSelecionado == 'MENSALIDADE'}">Mensalidade</option>
+                    <option value="MATERIAL" th:selected="${tipoReceitaSelecionado == 'MATERIAL'}">Material</option>
+                    <option value="OUTROS" th:selected="${tipoReceitaSelecionado == 'OUTROS'}">Outros</option>
+                </select>
+                
+                <label for="dataInicio">Data Início</label>
+                <input type="date" id="dataInicio" name="dataInicio" class="select-filter" th:value="${dataInicio}" />
+                
+                <label for="dataFim">Data Fim</label>
+                <input type="date" id="dataFim" name="dataFim" class="select-filter" th:value="${dataFim}" />
+                
+                <button type="submit" class="btn cadastrar">Filtrar</button>
+                <a th:href="@{/financeiro/receitas}" class="btn cadastrar">Limpar</a>
+            </form>
+            <a th:href="@{/financeiro}" class="btn cadastrar">📊 Dashboard</a>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Contrato</th>
+                    <th>Tipo</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Pagamento</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="receita : ${receitas}" th:if="${receitas != null and !receitas.empty}">
+                    <td th:text="${receita.alunoNome}">João Silva</td>
+                    <td th:text="${receita.contratoNumero}">CTR2024120001</td>
+                    <td>
+                        <span class="tipo-badge" th:classappend="${(receita.tipoReceita == 'MATRICULA') ? 'tipo-matricula' : ((receita.tipoReceita == 'MENSALIDADE') ? 'tipo-mensalidade' : 'tipo-outros')}"
+                              th:text="${receita.tipoReceita}">MENSALIDADE</span>
+                    </td>
+                    <td th:text="${receita.descricao}">Mensalidade 1/6</td>
+                    <td th:text="${#numbers.formatCurrency(receita.valorFinal)}">R$ 300,00</td>
+                    <td th:text="${#temporals.format(receita.dataVencimento, 'dd/MM/yyyy')}">01/12/2024</td>
+                    <td th:text="${receita.dataPagamento != null ? #temporals.format(receita.dataPagamento, 'dd/MM/yyyy') : '-'}">-</td>
+                    <td>
+                        <span class="status-badge" 
+                              th:classappend="${(receita.situacao == 'PAGO') ? 'status-pago' : ((receita.situacao == 'VENCIDO') ? 'status-vencido' : ((receita.situacao == 'PARCIAL') ? 'status-parcial' : 'status-pendente'))}"
+                              th:text="${receita.situacao}">PENDENTE</span>
+                        <span th:if="${receita.diasAtraso > 0}" class="dias-atraso" th:text="${receita.diasAtraso} + ' dias'">5 dias</span>
+                    </td>
+                    <td class="actions">
+                        <a th:href="@{'/financeiro/receitas/' + ${receita.id}}" class="btn btn-sm btn-info" title="Visualizar">👁️</a>
+                        <a th:if="${receita.situacao != 'PAGO'}" th:href="@{'/financeiro/pagamentos/novo?receitaId=' + ${receita.id}}" class="btn btn-sm btn-success" title="Pagar">💳</a>
+                        <a th:href="@{'/financeiro/carne/' + ${receita.alunoId}}" class="btn btn-sm btn-warning" title="Carnê">📄</a>
+                    </td>
+                </tr>
+                <tr th:if="${receitas == null or receitas.empty}">
+                    <td colspan="9" class="no-data">Nenhuma receita encontrada</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer></footer>
+
+<style>
+.tipo-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tipo-matricula {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.tipo-mensalidade {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.tipo-outros {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-pago {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-vencido {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-parcial {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-pendente {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.dias-atraso {
+    background-color: #e74c3c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    margin: 2px;
+    font-size: 12px;
+    text-decoration: none;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.btn-info { background-color: #17a2b8; color: white; }
+.btn-success { background-color: #28a745; color: white; }
+.btn-warning { background-color: #ffc107; color: black; }
+
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d;
+    padding: 20px;
+}
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+}
+
+.filter-form label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+}
+
+.search-bar, .select-filter {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+</style>
+
+</body>
+</html>

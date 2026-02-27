@@ -1,0 +1,622 @@
+/* ============================================
+   HEADER GLOBAL - Responsivo Mobile First
+   ============================================ */
+
+html {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden; /* Previne scroll horizontal */
+    box-sizing: border-box;
+}
+
+body { 
+    margin: 0; 
+    padding: 0; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden; /* Previne scroll horizontal */
+    box-sizing: border-box;
+}
+
+/* Header container global */
+header {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden; /* Previne scroll horizontal */
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* Main Navigation - Responsivo e Alinhado */
+.main-nav { 
+    justify-items: flex-start; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background-color: #1a1a1a; 
+    padding: clamp(0.5rem, 2vw, 10px) clamp(1rem, 3vw, 20px); 
+    margin: clamp(0.5rem, 2vw, 10px) clamp(0.75rem, 2.5vw, 20px); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    border-radius: clamp(1rem, 4vw, 2rem);
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: calc(100vw - clamp(1.5rem, 5vw, 40px));
+    max-width: calc(100% - clamp(1.5rem, 5vw, 40px));
+    box-sizing: border-box;
+    position: relative;
+    overflow: visible; /* Permite menu dropdown, mas controla overflow do conteúdo */
+    min-height: 60px; /* Altura mínima para garantir alinhamento vertical */
+}
+
+/* Logo - Responsivo e Alinhado */
+.logo { 
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+    text-decoration: none;
+}
+
+.logo img { 
+    width: clamp(90px, 25vw, 110px); 
+    height: auto;
+    max-height: 50px;
+    object-fit: contain;
+    display: block;
+    vertical-align: middle;
+}
+
+/* Navigation Container - Alinhado */
+.main-nav nav { 
+    flex: 1; 
+    display: flex; 
+    justify-content: flex-end; 
+    align-items: center; 
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    flex-wrap: nowrap; /* Evita quebra que pode causar overflow */
+    position: relative; /* Para posicionar menu dropdown em mobile */
+    min-width: 0; /* Permite shrink quando necessário */
+    max-width: 100%; /* Nunca ultrapassa o container */
+    overflow: visible; /* Permite menu dropdown, mas controla conteúdo */
+    height: 100%; /* Garante altura completa para alinhamento vertical */
+}
+
+/* Navigation List - Responsivo e Alinhado */
+.nav-list { 
+    padding: 0; 
+    display: flex; 
+    align-items: center; 
+    gap: clamp(0.5rem, 1.5vw, 1.5rem); 
+    margin: 0;
+    flex-wrap: wrap;
+    list-style: none;
+    height: 100%; /* Garante altura completa para alinhamento vertical */
+}
+
+/* Links e itens do menu - Responsivo */
+.main-nav a { 
+    color: aliceblue; 
+    text-decoration: none; 
+    transition: color 0.3s ease;
+    display: inline-block;
+    min-height: 44px; /* Touch target mínimo */
+    display: flex;
+    align-items: center;
+}
+
+@media (hover: hover) {
+    .main-nav a:hover { 
+        color: #007bff; 
+        text-decoration: none; 
+    }
+}
+
+.nav-list li { 
+    list-style: none; 
+    font-size: clamp(0.95rem, 2.5vw, 1.2em); 
+    color: aliceblue; 
+    transition: color 0.3s ease;
+    margin: 0;
+}
+
+@media (hover: hover) {
+    .nav-list li:hover { 
+        color: #007bff; 
+    }
+}
+
+.nav-element.active, 
+.nav-list li.active { 
+    color: #007bff; 
+}
+
+/* Logout Form - Responsivo */
+.nav-logout-form { 
+    margin: 0; 
+}
+
+.nav-logout-form .logout-button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+    font-size: clamp(0.95rem, 2.5vw, 1.2em);
+    min-height: 44px; /* Touch target mínimo */
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+}
+
+@media (hover: hover) {
+    .nav-logout-form .logout-button:hover {
+        color: #007bff;
+    }
+}
+
+@media (hover: none) {
+    .nav-logout-form .logout-button:active {
+        opacity: 0.7;
+    }
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS - Header
+   ============================================ */
+
+/* Mobile: Logo acima da navegação */
+@media (max-width: 1023px) {
+    .main-nav {
+        flex-direction: column; /* Coluna: logo acima, nav abaixo */
+        align-items: stretch; /* Estica para ocupar largura completa */
+        position: relative;
+        gap: 0.75rem; /* Espaçamento entre logo e nav */
+    }
+
+    /* Logo ocupa toda a largura em mobile - Alinhado */
+    .main-nav .logo {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separador visual */
+        height: auto;
+        min-height: 50px; /* Garante altura mínima para alinhamento */
+    }
+
+    .main-nav nav {
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%; /* Nav ocupa largura completa */
+        flex-wrap: nowrap;
+        padding-top: 0.25rem;
+    }
+}
+
+/* Tablet e Desktop */
+@media (min-width: 768px) {
+    .main-nav {
+        flex-wrap: nowrap;
+    }
+
+    .main-nav nav {
+        justify-content: flex-end;
+        width: auto;
+    }
+
+    .nav-list {
+        flex-wrap: nowrap;
+    }
+}
+
+/* Desktop grande - Espaçamento otimizado */
+@media (min-width: 1024px) {
+    .main-nav {
+        flex-direction: row; /* Volta para horizontal em desktop */
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        margin: 10px 20px;
+    }
+
+    /* Logo volta ao comportamento padrão em desktop - Alinhado */
+    .main-nav .logo {
+        width: auto;
+        padding-bottom: 0;
+        border-bottom: none;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+    }
+
+    .logo img {
+        width: 110px;
+        height: auto;
+        max-height: 50px;
+        object-fit: contain;
+        display: block;
+        vertical-align: middle;
+    }
+
+    .nav-list {
+        gap: 1.5rem;
+    }
+}
+
+/* ============================================
+   MENU HAMBÚRGUER - Mobile
+   ============================================ */
+
+    /* Botão Hambúrguer - Alinhado */
+.menu-toggle {
+    display: none; /* Oculto por padrão (desktop) */
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    width: 44px; /* Touch target mínimo */
+    height: 44px;
+    min-width: 44px; /* Garante tamanho mínimo */
+    max-width: 44px; /* Previne expansão */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
+    transition: transform 0.3s ease;
+    position: relative;
+    order: 3; /* Aparece depois do user badge em mobile */
+    margin-left: auto; /* Empurra para a direita */
+    margin-right: 0; /* Garante que não tem margem direita extra */
+    flex-shrink: 0; /* Não encolhe */
+    box-sizing: border-box;
+    overflow: hidden; /* Contém transformações */
+}
+
+.menu-toggle:focus {
+    outline: 2px solid rgba(0, 191, 255, 0.5);
+    outline-offset: 2px;
+}
+
+.menu-toggle span {
+    width: 100%;
+    height: 3px;
+    background-color: aliceblue;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+    display: block;
+    position: relative;
+}
+
+/* Garantir que transformações fiquem contidas - aplicado via regra acima */
+
+/* Estado ativo do hambúrguer - ajustado para ficar contido */
+.menu-toggle.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg); /* Reduzido para manter dentro do container */
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg); /* Reduzido para manter dentro do container */
+}
+
+    /* Menu Mobile - Oculto por padrão */
+@media (max-width: 1023px) {
+    .menu-toggle {
+        display: flex;
+        margin-right: 0 !important; /* Força margem direita zero */
+        position: relative;
+        right: 0; /* Alinha à direita do container */
+    }
+
+    /* Main nav como container relativo para menu dropdown - Mobile */
+    /* Nota: flex-direction: column já aplicado acima no media query */
+    .main-nav {
+        position: relative;
+        z-index: 1000;
+        width: calc(100vw - clamp(1.5rem, 5vw, 40px));
+        max-width: calc(100% - clamp(1.5rem, 5vw, 40px));
+        overflow: visible;
+        box-sizing: border-box;
+    }
+
+    /* Navigation container para mobile */
+    .main-nav nav {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        min-width: 0;
+        max-width: 100%;
+        width: 100%; /* Força largura completa */
+        padding-right: 0; /* Remove padding extra que pode causar overflow */
+        gap: clamp(0.25rem, 1.5vw, 0.75rem); /* Reduz gap em mobile */
+        box-sizing: border-box;
+    }
+
+    /* User badge e hambúrguer devem respeitar limites */
+    .main-nav nav .user-badge,
+    .main-nav nav .menu-toggle {
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+    /* Garantir que user badge não ultrapasse antes do hambúrguer */
+    .main-nav nav .user-badge {
+        margin-right: clamp(0.25rem, 1vw, 0.5rem);
+    }
+
+    /* Menu lista - Oculto por padrão em mobile - Slide-out lateral full-width */
+    .nav-list {
+        position: fixed; /* Fixed para ocupar toda a largura */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw; /* Largura total do viewport - 100% do body */
+        max-width: 100vw; /* Garante 100% da largura - sem margens */
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height para mobile */
+        margin: 0;
+        padding: 0;
+        background-color: #1a1a1a;
+        flex-direction: column;
+        gap: 0;
+        border-radius: 0; /* Sem bordas arredondadas - ocupa 100% da largura */
+        box-shadow: none;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(-100%); /* Esconde completamente à esquerda */
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 999; /* Acima do overlay (998) e do conteúdo */
+        overflow-y: auto;
+        overflow-x: hidden; /* Previne scroll horizontal */
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain; /* Evita "scroll travado" no mobile */
+        touch-action: pan-y; /* Permite rolagem dentro do menu */
+        box-sizing: border-box;
+    }
+
+    /* Menu aberto - Slide in da esquerda */
+    .nav-list.menu-open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0); /* Desliza para dentro - ocupa 100% da largura */
+    }
+
+    /* Itens do menu em mobile */
+    .nav-list li,
+    .nav-list > a {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        margin: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 1rem;
+        min-height: 48px; /* Touch target */
+        display: flex;
+        align-items: center;
+        transition: background-color 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .nav-list li:last-child,
+    .nav-list > a:last-child {
+        border-bottom: none;
+    }
+
+    /* Hover/Active em mobile */
+    @media (hover: hover) {
+        .nav-list li:hover,
+        .nav-list > a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    .nav-list li:active,
+    .nav-list > a:active {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* User Badge - Responsivo e Centralizado */
+    .user-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+        padding: 0.35rem 0.9rem;
+        margin-left: 1.5rem;
+        color: #fff;
+        font-size: clamp(0.8rem, 2vw, 0.9rem);
+        letter-spacing: 0.02em;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        min-height: 44px; /* Touch target mínimo */
+        flex-shrink: 0; /* Não encolhe */
+        white-space: nowrap; /* Evita quebra de linha */
+    }
+
+    .user-badge__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .user-badge__icon svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        display: block;
+    }
+
+    .user-badge__label {
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .user-badge__name {
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+        flex-shrink: 1;
+    }
+
+    /* Overlay quando menu está aberto - Mobile apenas */
+    .menu-overlay {
+        display: none; /* Oculto por padrão */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height para mobile */
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 998; /* Abaixo do menu (999) mas acima do conteúdo */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        pointer-events: none; /* Permite clicar através quando inativo */
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Mostrar overlay apenas em mobile quando necessário */
+    @media (max-width: 1023px) {
+        .menu-overlay {
+            display: block;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto; /* Bloqueia cliques quando ativo */
+        }
+
+        /* Quando menu está aberto, menu fica acima do overlay */
+        .nav-list.menu-open {
+            z-index: 999; /* Acima do overlay (998) */
+        }
+        
+        /* Botão hambúrguer fica acima do menu quando menu está aberto */
+        .menu-toggle {
+            z-index: 1001; /* Acima do menu (999) */
+            position: relative;
+        }
+        
+        /* Header fica acima do menu quando menu está aberto */
+        header,
+        .main-nav {
+            position: relative;
+            z-index: 1000; /* Acima do menu, mas permite que menu seja clicável */
+        }
+    }
+
+    /* Menu dropdown acima do overlay */
+    .nav-list.menu-open {
+        z-index: 999;
+        position: relative; /* Garantir que fique acima do overlay */
+    }
+}
+
+/* Desktop - Menu sempre visível */
+@media (min-width: 1024px) {
+    .menu-toggle {
+        display: none !important;
+    }
+
+    .nav-list {
+        position: static !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .nav-list.menu-open {
+        /* Remove estilos de mobile no desktop */
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .menu-overlay {
+        display: none !important;
+    }
+
+    .user-badge {
+        margin-left: 1.5rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        flex-shrink: 0 !important;
+    }
+
+    .user-badge__icon {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .user-badge__icon svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+}
+
+/* Prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .main-nav a,
+    .nav-list li,
+    .nav-logout-form .logout-button,
+    .menu-toggle,
+    .menu-toggle span,
+    .nav-list,
+    .menu-overlay {
+        transition: none;
+    }
+
+    .menu-toggle.active span {
+        transition: none;
+    }
+}
+
+

@@ -1,0 +1,49 @@
+/* Common form styles */
+.form-root { max-width: 760px; display: flex; flex-direction: column; gap: 1rem; }
+.form-root label { display: flex; flex-direction: column; gap: .25rem; }
+.form-professor { gap: 1rem; }
+.form-professor label { margin-bottom: 6px; }
+.page-container { display: flex; justify-content: center; }
+.form-card { width: 100%; max-width: 820px; background: #ffffff; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.row { display: flex; gap: 1rem; }
+.field { flex: 1; display: flex; flex-direction: column; margin-bottom: 1rem; }
+label { font-weight: bold; margin-bottom: .25rem; }
+input, select { padding: .5rem; border: 1px solid #ccc; border-radius: 4px; }
+.actions { margin-top: 1rem; display: flex; gap: .75rem; }
+.btn-primary { padding: .5rem 1rem; border: none; border-radius: 4px; background: #1976d2; color: #fff; cursor: pointer; }
+.btn-secondary { background: #777; color: #fff; padding: .5rem 1rem; border-radius: 4px; text-decoration: none; display: inline-block; }
+.field-error { color: #b00020; font-size: .9rem; margin-top: .25rem; }
+
+/* ============================================
+   Mobile adjustments (keep desktop intact)
+   ============================================ */
+@media (max-width: 767px) {
+  .page-container {
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+
+  .form-card {
+    padding: 1rem;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions > * {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+}

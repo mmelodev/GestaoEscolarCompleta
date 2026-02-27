@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu de Carnês - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #27ae60;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .menu-card.contrato {
+            border-left-color: #3498db;
+        }
+        
+        .menu-card.aluno {
+            border-left-color: #e74c3c;
+        }
+        
+        .menu-card.turma {
+            border-left-color: #f39c12;
+        }
+        
+        .menu-card.periodo {
+            border-left-color: #9b59b6;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            font-size: 28px;
+            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .card-icon.contrato {
+            background: #3498db;
+        }
+        
+        .card-icon.aluno {
+            background: #e74c3c;
+        }
+        
+        .card-icon.turma {
+            background: #f39c12;
+        }
+        
+        .card-icon.periodo {
+            background: #9b59b6;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .card-description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            background: #229954;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .action-btn.contrato {
+            background: #3498db;
+        }
+        
+        .action-btn.contrato:hover {
+            background: #2980b9;
+        }
+        
+        .action-btn.aluno {
+            background: #e74c3c;
+        }
+        
+        .action-btn.aluno:hover {
+            background: #c0392b;
+        }
+        
+        .action-btn.turma {
+            background: #f39c12;
+        }
+        
+        .action-btn.turma:hover {
+            background: #e67e22;
+        }
+        
+        .action-btn.periodo {
+            background: #9b59b6;
+        }
+        
+        .action-btn.periodo:hover {
+            background: #8e44ad;
+        }
+        
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .info-box {
+            background: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #0e6655;
+            margin-bottom: 10px;
+        }
+        
+        .info-text {
+            color: #0e6655;
+            line-height: 1.5;
+        }
+        
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .quick-actions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .quick-btn {
+            background: #27ae60;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .quick-btn:hover {
+            background: #229954;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+            </div>
+            <nav>
+                <ul class="nav-list">
+                    <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                    <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                    <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                    <a th:href="@{/contratos-v2}"><li class="nav-element">Contratos</li></a>
+                    <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/" class="back-btn">← Voltar ao Início</a>
+            
+            <h1 class="page-title">🎫 Menu de Carnês</h1>
+            
+            <div class="info-box">
+                <div class="info-title">ℹ️ Informações</div>
+                <div class="info-text">
+                    Gere carnês de pagamento para alunos e turmas. Os carnês podem ser impressos ou salvos em PDF 
+                    para controle de pagamentos e cobrança.
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>⚡ Ações Rápidas</h3>
+                <a href="/carne/vencidos" class="quick-btn">⚠️ Carnês Vencidos</a>
+                <a href="/carne/periodo" class="quick-btn">📅 Por Período</a>
+                <a href="/carne/especifico" class="quick-btn">🎯 Carnê Específico</a>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-card contrato">
+                    <div class="card-header">
+                        <div class="card-icon contrato">📄</div>
+                        <h3 class="card-title">Por Contrato</h3>
+                    </div>
+                    <p class="card-description">
+                        Gere carnês baseados em contratos específicos. 
+                        Ideal para carnês individuais de alunos.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/carne/contrato" class="action-btn contrato">
+                            📋 Selecionar Contrato
+                        </a>
+                    </div>
+                </div>
+
+                <div class="menu-card aluno">
+                    <div class="card-header">
+                        <div class="card-icon aluno">👨‍🎓</div>
+                        <h3 class="card-title">Por Aluno</h3>
+                    </div>
+                    <p class="card-description">
+                        Gere carnês para um aluno específico. 
+                        Mostra todas as parcelas pendentes do aluno.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/carne/aluno" class="action-btn aluno">
+                            👤 Selecionar Aluno
+                        </a>
+                    </div>
+                </div>
+
+                <div class="menu-card turma">
+                    <div class="card-header">
+                        <div class="card-icon turma">🏫</div>
+                        <h3 class="card-title">Por Turma</h3>
+                    </div>
+                    <p class="card-description">
+                        Gere carnês para todos os alunos de uma turma. 
+                        Ideal para impressão em lote.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/carne/turma" class="action-btn turma">
+                            📚 Selecionar Turma
+                        </a>
+                    </div>
+                </div>
+
+                <div class="menu-card periodo">
+                    <div class="card-header">
+                        <div class="card-icon periodo">📅</div>
+                        <h3 class="card-title">Por Período</h3>
+                    </div>
+                    <p class="card-description">
+                        Gere carnês baseados em um período específico. 
+                        Útil para carnês mensais ou trimestrais.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/carne/periodo" class="action-btn periodo">
+                            📆 Definir Período
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

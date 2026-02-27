@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Associar Turma</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .field { display: flex; flex-direction: column; margin-bottom: 1rem; max-width: 420px; }
+        label { font-weight: bold; margin-bottom: .25rem; }
+        select { padding: .5rem; border: 1px solid #ccc; border-radius: 4px; }
+        .actions { margin-top: 1rem; display: flex; gap: .75rem; }
+        button { padding: .5rem 1rem; border: none; border-radius: 4px; background: #1976d2; color: #fff; cursor: pointer; }
+        a.button { background: #777; color: #fff; padding: .5rem 1rem; border-radius: 4px; text-decoration: none; }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            body { margin: 1rem; }
+            .field { max-width: 100%; }
+            .actions { flex-direction: column; align-items: stretch; }
+            button, a.button { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<h2 th:text="'Associar turma para ' + ${aluno.nomeCompleto}">Associar turma</h2>
+
+<form th:action="@{'/alunos/' + ${aluno.id} + '/turmas'}" method="post">
+    <!-- CSRF Token -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <div class="field">
+        <label>Turma</label>
+        <select name="turmaId" required>
+            <option value="" disabled selected>Selecione</option>
+            <option th:each="turma : ${turmas}" th:value="${turma.id}" th:text="${turma.nomeTurma}"></option>
+        </select>
+    </div>
+    <div class="actions">
+        <button type="submit">Salvar</button>
+        <a href="/alunos/lista" class="button">Cancelar</a>
+    </div>
+</form>
+</body>
+</html>
+
+

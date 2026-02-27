@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - AriranG Plataforma</title>
+    <link rel="stylesheet" th:href="@{/css/cadastro.css}" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 2rem;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-container img {
+            max-width: 200px;
+            border-radius: 50%;
+            height: auto;
+        }
+        
+        .login-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .alert-error {
+            background-color: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+        
+        .alert-success {
+            background-color: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
+            cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+
+        .password-toggle svg {
+            width: 22px;
+            height: 22px;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:focus {
+            outline: none;
+        }
+
+        .password-toggle:hover svg {
+            color: #667eea;
+        }
+        
+        .btn-login {
+            width: 100%;
+            padding: 0.875rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            body {
+                padding: 1.25rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+                max-width: 360px;
+            }
+
+            .logo-container img {
+                max-width: 140px;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+            }
+
+            .form-group input {
+                font-size: 0.95rem;
+                padding: 0.7rem;
+            }
+
+            .btn-login {
+                font-size: 0.95rem;
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .login-container {
+                padding: 1.5rem;
+                max-width: 320px;
+            }
+
+            .login-title {
+                font-size: 1.35rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <img th:src="@{/img/arirang.jpg}" alt="AriranG Logo" />
+        </div>
+        
+        <h1 class="login-title">Bem-vindo</h1>
+        <p style="text-align: center; color: #666; margin-top: -1rem; margin-bottom: 1.5rem; font-size: 1.1rem;">환영합니다</p>
+        
+        <!-- Mensagens de erro/sucesso -->
+        <div th:if="${error != null}" class="alert alert-error">
+            <strong>Erro:</strong> <span th:text="${error}"></span>
+        </div>
+        
+        <div th:if="${message != null}" class="alert alert-success">
+            <span th:text="${message}"></span>
+        </div>
+        
+        <!-- Formulário de login -->
+        <form th:action="@{/login}" method="post">
+            <!-- CSRF Token -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Digite seu usuário"
+                    required 
+                    autofocus 
+                    autocomplete="username" />
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <div class="password-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="Digite sua senha"
+                        required 
+                        autocomplete="current-password" />
+                    <button type="button" class="password-toggle" aria-label="Mostrar ou ocultar senha" data-password-toggle>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+        
+        <div class="footer-links">
+            <p>© 2024 AriranG Plataforma</p>
+        </div>
+    </div>
+</body>
+<script>
+    (function() {
+        const toggleButton = document.querySelector('[data-password-toggle]');
+        const passwordInput = document.getElementById('password');
+
+        if (!toggleButton || !passwordInput) {
+            return;
+        }
+
+        const icons = {
+            show: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>',
+            hide: '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.77 21.77 0 0 1 5.06-6.94M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88"></path><path d="M1 1l22 22"></path>'
+        };
+
+        const updateIcon = (visible) => {
+            toggleButton.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${visible ? icons.hide : icons.show}</svg>`;
+        };
+
+        updateIcon(false);
+
+        toggleButton.addEventListener('click', () => {
+            const isHidden = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isHidden ? 'text' : 'password');
+            updateIcon(isHidden);
+        });
+    })();
+</script>
+</html>

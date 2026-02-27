@@ -1,0 +1,94 @@
+/* ============================================
+   CADASTRO (/cadastro) - Mobile adjustments
+   Keeps desktop untouched; only affects <= 767px
+   ============================================ */
+
+@media (max-width: 767px) {
+  .top-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .filter-form {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .filter-form > * {
+    width: 100%;
+  }
+
+  .search-bar {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .cadastrar-options {
+    flex-direction: column !important;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .cadastrar-options > a.btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Table -> stacked cards */
+  .tabela-container table,
+  .tabela-container thead,
+  .tabela-container tbody,
+  .tabela-container th,
+  .tabela-container td,
+  .tabela-container tr {
+    display: block;
+  }
+
+  .tabela-container thead {
+    display: none;
+  }
+
+  .tabela-container tbody tr {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .tabela-container td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .tabela-container td:last-child {
+    border-bottom: 0;
+  }
+
+  .tabela-container td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #00bfff;
+    min-width: 42%;
+    text-align: left;
+  }
+
+  .tabela-container td.acoes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tabela-container td.acoes::before {
+    margin-bottom: 6px;
+  }
+
+  .tabela-container td.acoes a.btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

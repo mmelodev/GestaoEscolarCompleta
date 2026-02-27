@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu de Boletins - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .menu-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .menu-card.avaliacao {
+            border-left-color: #f39c12;
+        }
+        
+        .menu-card.relatorio {
+            border-left-color: #9b59b6;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-icon {
+            font-size: 28px;
+            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .card-icon.boletim {
+            background: #e74c3c;
+        }
+        
+        .card-icon.avaliacao {
+            background: #f39c12;
+        }
+        
+        .card-icon.relatorio {
+            background: #9b59b6;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .card-description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .action-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            background: #c0392b;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .action-btn.avaliacao {
+            background: #f39c12;
+        }
+        
+        .action-btn.avaliacao:hover {
+            background: #e67e22;
+        }
+        
+        .action-btn.relatorio {
+            background: #9b59b6;
+        }
+        
+        .action-btn.relatorio:hover {
+            background: #8e44ad;
+        }
+        
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .info-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #721c24;
+            margin-bottom: 10px;
+        }
+        
+        .info-text {
+            color: #721c24;
+            line-height: 1.5;
+        }
+        
+        .quick-actions {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .quick-actions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .quick-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .quick-btn:hover {
+            background: #c0392b;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .search-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .form-control {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c0392b;
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .auto-selected {
+            background-color: #e8f5e8 !important;
+            border-color: #28a745 !important;
+        }
+        
+        .highlight-option {
+            background-color: #e8f5e8 !important;
+            font-weight: bold !important;
+        }
+        
+        .highlight-select {
+            border-color: #ffc107 !important;
+            background-color: #fff3cd !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+            </div>
+            <nav>
+                <!-- Botão Hambúrguer - Mobile -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-list" id="navList">
+                    <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                    <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                    <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                    <a th:href="@{/contratos-v2}"><li class="nav-element">Contratos</li></a>
+                    <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+                </ul>
+            </nav>
+        </div>
+        <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/" class="back-btn">← Voltar ao Início</a>
+            
+            <h1 class="page-title">📊 Menu de Boletins</h1>
+            
+            <div class="info-box">
+                <div class="info-title">ℹ️ Informações</div>
+                <div class="info-text">
+                    Gerencie boletins e avaliações dos alunos. Registre notas, calcule médias e gere relatórios 
+                    de desempenho acadêmico.
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>⚡ Ações Rápidas</h3>
+                <a href="/boletim/novo" class="quick-btn">➕ Novo Boletim</a>
+                <a href="/boletim/relatorio" class="quick-btn">📊 Relatórios</a>
+                <a href="/alunos/lista" class="quick-btn">👨‍🎓 Gerenciar Alunos</a>
+                <a href="/turmas" class="quick-btn">📚 Gerenciar Turmas</a>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="quick-actions">
+                <h3>📊 Estatísticas</h3>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #3498db;" th:text="${totalBoletins}">0</div>
+                        <div style="color: #7f8c8d; font-size: 14px;">Total de Boletins</div>
+                    </div>
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #f39c12;" th:text="${boletinsPendentes}">0</div>
+                        <div style="color: #7f8c8d; font-size: 14px;">Pendentes</div>
+                    </div>
+                    <div style="background: #d4edda; padding: 15px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #27ae60;" th:text="${boletinsFinalizados}">0</div>
+                        <div style="color: #7f8c8d; font-size: 14px;">Finalizados</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-section">
+                <h3 class="search-title">🔍 Buscar Boletim</h3>
+                <form id="buscarForm" method="get" action="/boletim/buscar">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label class="form-label">Aluno</label>
+                            <select name="alunoId" id="alunoSelect" class="form-control">
+                                <option value="">Selecione um aluno</option>
+                                <option th:each="aluno : ${alunos}" 
+                                        th:value="${aluno.id}" 
+                                        th:text="${aluno.nomeCompleto}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Turma</label>
+                            <select name="turmaId" id="turmaSelect" class="form-control">
+                                <option value="">Selecione uma turma</option>
+                                <option th:each="turma : ${turmas}" 
+                                        th:value="${turma.id}" 
+                                        th:text="${turma.nomeTurma + ' - ' + turma.nivelProficiencia}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <div class="card-header">
+                        <div class="card-icon boletim">📊</div>
+                        <h3 class="card-title">Boletins</h3>
+                    </div>
+                    <p class="card-description">
+                        Gerencie boletins de alunos específicos. Registre notas, calcule médias 
+                        e acompanhe o desempenho acadêmico.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/alunos/lista" class="action-btn">
+                            👨‍🎓 Selecionar Aluno
+                        </a>
+                        <a href="/turmas" class="action-btn">
+                            📚 Selecionar Turma
+                        </a>
+                    </div>
+                </div>
+
+                <div class="menu-card avaliacao">
+                    <div class="card-header">
+                        <div class="card-icon avaliacao">📝</div>
+                        <h3 class="card-title">Avaliações</h3>
+                    </div>
+                    <p class="card-description">
+                        Registre avaliações e notas dos alunos. Controle provas, trabalhos 
+                        e outras atividades avaliativas.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/boletim/avaliacoes" class="action-btn avaliacao">
+                            📝 Nova Avaliação
+                        </a>
+                        <a href="/boletim/avaliacoes/lista" class="action-btn avaliacao">
+                            📋 Listar Avaliações
+                        </a>
+                    </div>
+                </div>
+
+                <div class="menu-card relatorio">
+                    <div class="card-header">
+                        <div class="card-icon relatorio">📈</div>
+                        <h3 class="card-title">Relatórios</h3>
+                    </div>
+                    <p class="card-description">
+                        Gere relatórios de desempenho, médias por turma e análises 
+                        estatísticas do rendimento acadêmico.
+                    </p>
+                    <div class="card-actions">
+                        <a href="/boletim/relatorio/turma" class="action-btn relatorio">
+                            📚 Por Turma
+                        </a>
+                        <a href="/boletim/relatorio/aluno" class="action-btn relatorio">
+                            👨‍🎓 Por Aluno
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const alunoSelect = document.getElementById('alunoSelect');
+            const turmaSelect = document.getElementById('turmaSelect');
+            
+            // Dados dos alunos com suas turmas - usando Thymeleaf inline
+            const alunosComTurmas = /*[[${alunos}]]*/ {};
+            
+            // Converter para o formato esperado pelo JavaScript
+            const alunosComTurmasFormatado = {};
+            if (alunosComTurmas && alunosComTurmas.length > 0) {
+                alunosComTurmas.forEach(function(aluno) {
+                    if (aluno.turmas && aluno.turmas.length > 0) {
+                        alunosComTurmasFormatado[aluno.id] = aluno.turmas.map(function(turma) {
+                            return turma.id;
+                        });
+                    }
+                });
+            }
+            
+            console.log('Alunos carregados:', alunosComTurmas);
+            console.log('Alunos formatados:', alunosComTurmasFormatado);
+            
+            // Fallback para caso não haja dados
+            if (Object.keys(alunosComTurmasFormatado).length === 0) {
+                console.warn('Nenhum aluno com turmas encontrado');
+            }
+            
+            console.log('Elementos encontrados:', {
+                alunoSelect: !!alunoSelect,
+                turmaSelect: !!turmaSelect,
+                form: !!document.getElementById('buscarForm')
+            });
+            
+            if (alunoSelect) {
+                alunoSelect.addEventListener('change', function() {
+                    const alunoId = this.value;
+                    console.log('Aluno selecionado:', alunoId);
+                    console.log('Dados disponíveis:', alunosComTurmasFormatado);
+                    
+                    // Limpar seleção anterior
+                    turmaSelect.value = '';
+                    
+                    // Remover classes de destaque anteriores
+                    turmaSelect.classList.remove('auto-selected', 'highlight-select');
+                    const options = turmaSelect.querySelectorAll('option');
+                    options.forEach(option => {
+                        option.classList.remove('highlight-option');
+                    });
+                    
+                    if (alunoId && alunosComTurmasFormatado[alunoId]) {
+                        const turmasDoAluno = alunosComTurmasFormatado[alunoId];
+                        console.log('Turmas do aluno:', turmasDoAluno);
+                        
+                        if (turmasDoAluno.length === 1) {
+                            // Se o aluno tem apenas uma turma, selecionar automaticamente
+                            turmaSelect.value = turmasDoAluno[0];
+                            console.log('Turma selecionada automaticamente:', turmasDoAluno[0]);
+                            
+                            // Destacar visualmente a seleção automática
+                            turmaSelect.classList.add('auto-selected');
+                            
+                            // Remover destaque após 2 segundos
+                            setTimeout(() => {
+                                turmaSelect.classList.remove('auto-selected');
+                            }, 2000);
+                        } else if (turmasDoAluno.length > 1) {
+                            // Se o aluno tem múltiplas turmas, destacar as opções disponíveis
+                            options.forEach(option => {
+                                if (turmasDoAluno.includes(parseInt(option.value))) {
+                                    option.classList.add('highlight-option');
+                                }
+                            });
+                            
+                            // Destacar o select
+                            turmaSelect.classList.add('highlight-select');
+                            
+                            // Remover destaque após 3 segundos
+                            setTimeout(() => {
+                                turmaSelect.classList.remove('highlight-select');
+                                options.forEach(option => {
+                                    option.classList.remove('highlight-option');
+                                });
+                            }, 3000);
+                        }
+                    } else {
+                        console.log('Aluno não encontrado ou sem turmas:', alunoId);
+                    }
+                });
+            } else {
+                console.error('Select de aluno não encontrado!');
+            }
+        });
+    </script>
+    <script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novo Contrato - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos-v2}"><li class="nav-element active">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Novo Contrato</h1>
+        <div class="top-actions">
+            <a th:href="@{/contratos-v2}" class="btn turma">↩️ Voltar</a>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <h2 style="color: aliceblue !important; text-decoration: none !important; margin-bottom: 20px;">📝 Dados do Contrato</h2>
+
+        <form th:action="@{/contratos-v2}" method="post" onsubmit="return validarFormulario()">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px;">
+                <div>
+                    <label for="alunoId" style="display:block; margin-bottom:6px;">Aluno *</label>
+                    <select id="alunoId" name="alunoId" required
+                            style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                        <option value="">Selecione um aluno</option>
+                        <option th:each="aluno : ${alunos}"
+                                th:value="${aluno.id}"
+                                th:selected="${alunoId != null and alunoId == aluno.id}"
+                                th:attr="data-first-turma-id=${aluno.turmas != null and !aluno.turmas.isEmpty() ? aluno.turmas[0].id : ''}"
+                                th:text="${aluno.nomeCompleto}">
+                            Nome do Aluno
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="turmaId" style="display:block; margin-bottom:6px;">Turma *</label>
+                    <select id="turmaId" name="turmaId" required
+                            style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                        <option value="">Selecione uma turma</option>
+                        <option th:each="turma : ${turmas}"
+                                th:value="${turma.id}"
+                                th:selected="${turmaId != null and turmaId == turma.id}"
+                                th:text="${turma.nomeTurma}">
+                            Nome da Turma
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="valorMatricula" style="display:block; margin-bottom:6px;">Valor da Matrícula *</label>
+                    <input type="number" id="valorMatricula" name="valorMatricula" step="0.01" min="0.01" required
+                           placeholder="0,00" th:value="${valorMatricula}"
+                           style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                </div>
+
+                <div>
+                    <label for="valorMensalidade" style="display:block; margin-bottom:6px;">Valor da Mensalidade *</label>
+                    <input type="number" id="valorMensalidade" name="valorMensalidade" step="0.01" min="0.01" required
+                           placeholder="0,00" th:value="${valorMensalidade}"
+                           style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                </div>
+
+                <div>
+                    <label for="numeroParcelas" style="display:block; margin-bottom:6px;">Número de Parcelas *</label>
+                    <input type="number" id="numeroParcelas" name="numeroParcelas" min="1" max="24" required
+                           placeholder="6" th:value="${numeroParcelas}"
+                           style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                </div>
+
+                <div>
+                    <label for="descontoPercentual" style="display:block; margin-bottom:6px;">Desconto (%)</label>
+                    <input type="number" id="descontoPercentual" name="descontoPercentual" min="0" max="100" step="0.01"
+                           placeholder="0" th:value="${descontoPercentual}"
+                           style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                    <small style="display:block; margin-top:4px; opacity:0.8;">Opcional. Ex.: 10 para 10%.</small>
+                </div>
+
+                <div>
+                    <label for="dataContrato" style="display:block; margin-bottom:6px;">Data do Contrato</label>
+                    <input type="date" id="dataContrato" name="dataContrato"
+                           th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}"
+                           style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label for="templatePdf" style="display:block; margin-bottom:6px;">Tipo de Contrato *</label>
+                    <select id="templatePdf" name="templatePdf" required
+                            style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;">
+                        <option value="">Selecione um tipo de contrato</option>
+                        <option value="contrato-curso" th:selected="${templatePdf != null and templatePdf == 'contrato-curso'}">Contrato de Curso</option>
+                        <option value="contrato-servicos-menor" th:selected="${templatePdf != null and templatePdf == 'contrato-servicos-menor'}">Contrato de Serviços (Menor)</option>
+                        <option value="uso-imagem-adulto" th:selected="${templatePdf != null and templatePdf == 'uso-imagem-adulto'}">Uso de Imagem (Adulto)</option>
+                        <option value="uso-imagem-menor" th:selected="${templatePdf != null and templatePdf == 'uso-imagem-menor'}">Uso de Imagem (Menor)</option>
+                    </select>
+                    <small style="display:block; margin-top:6px; opacity:0.85;">
+                        Obrigatório: o PDF será gerado pelo template selecionado em <code>contratos/pdf/</code>.
+                    </small>
+                </div>
+
+                <div style="grid-column: 1 / -1;">
+                    <label for="observacoes" style="display:block; margin-bottom:6px;">Observações</label>
+                    <textarea id="observacoes" name="observacoes" rows="3"
+                              placeholder="Observações adicionais sobre o contrato"
+                              th:text="${observacoes}"
+                              style="width:100%; padding:10px 14px; border-radius: 1rem; border:1px solid #333; background-color:#1a1a1a; color:aliceblue;"></textarea>
+                </div>
+            </div>
+
+            <div class="top-actions" style="margin-top: 20px;">
+                <button type="submit" class="btn cadastrar">💾 Criar Contrato</button>
+                <a th:href="@{/contratos-v2}" class="btn deletar">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<footer></footer>
+
+<!-- Modal de Erro/Sucesso/Aviso -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+    text-decoration: none !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.close:hover {
+    color: black;
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+document.addEventListener('DOMContentLoaded', function() {
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    const warningFlash = /*[[${warning}]]*/ null;
+
+    if (errorFlash) { mostrarMensagem('Erro', errorFlash); return; }
+    if (warningFlash) { mostrarMensagem('Aviso', warningFlash); return; }
+    if (successFlash) { mostrarMensagem('Sucesso', successFlash); return; }
+});
+
+function mostrarMensagem(titulo, mensagem) {
+    document.getElementById('messageTitle').textContent = titulo;
+    document.getElementById('messageText').textContent = mensagem;
+    document.getElementById('messageModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) closeBtn.onclick = fecharModal;
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('messageModal');
+    if (event.target === modal) fecharModal();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var alunoSelect = document.getElementById('alunoId');
+    var turmaSelect = document.getElementById('turmaId');
+    if (alunoSelect && turmaSelect) {
+        alunoSelect.addEventListener('change', function() {
+            var opt = alunoSelect.options[alunoSelect.selectedIndex];
+            var firstTurmaId = opt && opt.getAttribute ? opt.getAttribute('data-first-turma-id') : null;
+            if (firstTurmaId) {
+                turmaSelect.value = firstTurmaId;
+            } else {
+                turmaSelect.value = '';
+            }
+        });
+    }
+});
+
+function validarFormulario() {
+    const alunoId = document.getElementById('alunoId').value;
+    const turmaId = document.getElementById('turmaId').value;
+    const valorMatricula = document.getElementById('valorMatricula').value;
+    const valorMensalidade = document.getElementById('valorMensalidade').value;
+    const numeroParcelas = document.getElementById('numeroParcelas').value;
+    const templatePdf = document.getElementById('templatePdf').value;
+
+    if (!alunoId) { alert('Por favor, selecione um aluno.'); return false; }
+    if (!turmaId) { alert('Por favor, selecione uma turma.'); return false; }
+
+    const valorMatriculaNum = parseFloat(valorMatricula);
+    if (isNaN(valorMatriculaNum) || valorMatriculaNum <= 0) { alert('Informe um valor de matrícula válido (maior que zero).'); return false; }
+
+    const valorMensalidadeNum = parseFloat(valorMensalidade);
+    if (isNaN(valorMensalidadeNum) || valorMensalidadeNum <= 0) { alert('Informe um valor de mensalidade válido (maior que zero).'); return false; }
+
+    const numeroParcelasNum = parseInt(numeroParcelas);
+    if (isNaN(numeroParcelasNum) || numeroParcelasNum <= 0) { alert('Informe um número de parcelas válido (maior que zero).'); return false; }
+
+    if (!templatePdf) { alert('Selecione o tipo de contrato.'); return false; }
+
+    return true;
+}
+/*]]>*/
+</script>
+</body>
+</html>

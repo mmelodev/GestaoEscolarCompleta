@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Excluir Turma - AriranG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <link rel="stylesheet" th:href="@{/css/turmas-mobile.css?v=1.0}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element active">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Excluir Turma</h1>
+    </section>
+
+    <section class="tabela-container" style="max-width: 800px;">
+        <div style="padding: 20px;">
+            <h2 style="color: aliceblue; margin-bottom: 20px;">Tem certeza que deseja excluir esta turma?</h2>
+            
+            <!-- Aviso sobre contratos vinculados -->
+            <div th:if="${temContratos}" style="background-color: rgba(220, 53, 69, 0.2); border: 2px solid #dc3545; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span style="font-size: 24px;">⚠️</span>
+                    <h3 style="color: #dc3545 !important; margin: 0; font-size: 18px;">Atenção: Contratos Vinculados</h3>
+                </div>
+                <p style="color: aliceblue; font-size: 1.1em; margin: 0; line-height: 1.6;">
+                    Esta turma possui <strong th:text="${contratosVinculados}">0</strong> contrato(s) vinculado(s). 
+                    <strong>Não é possível deletar a turma enquanto houver contratos ativos.</strong>
+                </p>
+                <p style="color: aliceblue; font-size: 1em; margin-top: 10px; margin-bottom: 0;">
+                    Por favor, cancele ou delete os contratos antes de deletar a turma.
+                </p>
+            </div>
+            
+            <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="color: aliceblue; font-size: 1.1em; margin-bottom: 10px;">
+                    <strong style="color: aliceblue;">Nome da Turma:</strong> 
+                    <span style="color: aliceblue;" th:text="${turma.nomeTurma}"></span>
+                </p>
+                <p style="color: aliceblue; font-size: 1.1em;">
+                    <strong style="color: aliceblue;">Nível:</strong> 
+                    <span style="color: aliceblue;" th:text="${turma.nivelProficiencia}"></span>
+                </p>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <form th:action="@{/turmas/deletar/{id}(id=${turma.id})}" method="post" style="display: inline;" th:if="${!temContratos}">
+                    <!-- CSRF Token -->
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn deletar">Confirmar Exclusão</button>
+                </form>
+                <a th:href="@{/turmas}" class="btn cadastrar">Voltar</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+
+<script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório por Aluno - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .page-subtitle {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .filters-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .filters-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .form-control {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #9b59b6;
+            box-shadow: 0 0 0 2px rgba(155, 89, 182, 0.2);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #9b59b6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #8e44ad;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .aluno-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .aluno-table th,
+        .aluno-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .aluno-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .aluno-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-aprovado {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-reprovado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-andamento {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .media-value {
+            font-weight: 600;
+        }
+        
+        .media-alta {
+            color: #27ae60;
+        }
+        
+        .media-media {
+            color: #f39c12;
+        }
+        
+        .media-baixa {
+            color: #e74c3c;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #9b59b6;
+        }
+        
+        .summary-card-title {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .summary-card-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .search-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #9b59b6;
+            box-shadow: 0 0 0 2px rgba(155, 89, 182, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .aluno-table {
+                font-size: 14px;
+            }
+            
+            .aluno-table th,
+            .aluno-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+            </div>
+            <nav>
+                <!-- Botão Hambúrguer - Mobile -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-list" id="navList">
+                    <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                    <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                    <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                    <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                    <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+                </ul>
+            </nav>
+        </div>
+        <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/boletim/relatorio" class="back-btn">← Voltar aos Relatórios</a>
+            
+            <div class="page-header">
+                <h1 class="page-title">👨‍🎓 Relatório por Aluno</h1>
+                <p class="page-subtitle">Análise de desempenho individual</p>
+            </div>
+
+            <!-- Busca Rápida -->
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="🔍 Buscar aluno por nome..." id="searchInput">
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <h3 class="filters-title">🔍 Filtros</h3>
+                <form method="get" action="/boletim/relatorio/aluno">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label class="form-label">Turma</label>
+                            <select name="turmaId" class="form-control">
+                                <option value="">Todas as turmas</option>
+                                <option th:each="turma : ${turmas}" 
+                                        th:value="${turma.id()}" 
+                                        th:text="${turma.nomeTurma()}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-control">
+                                <option value="">Todos</option>
+                                <option value="APROVADO">Aprovado</option>
+                                <option value="REPROVADO">Reprovado</option>
+                                <option value="EM_ANDAMENTO">Em Andamento</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Média</label>
+                            <select name="media" class="form-control">
+                                <option value="">Todas</option>
+                                <option value="alta">Acima de 8.0</option>
+                                <option value="media">Entre 6.0 e 8.0</option>
+                                <option value="baixa">Abaixo de 6.0</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Resumo -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-card-title">👥 Total de Alunos</div>
+                    <div class="summary-card-value" th:text="${totalAlunos}">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-title">✅ Aprovados</div>
+                    <div class="summary-card-value" th:text="${aprovados}">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-title">❌ Reprovados</div>
+                    <div class="summary-card-value" th:text="${reprovados}">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-title">📊 Média Geral</div>
+                    <div class="summary-card-value" th:text="${#numbers.formatDecimal(mediaGeral, 1, 1)}">0.0</div>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            <div class="results-section">
+                <div class="section-header">
+                    <h3 class="section-title">📋 Resultados por Aluno</h3>
+                </div>
+                
+                <div th:if="${alunos != null and !alunos.empty}">
+                    <table class="aluno-table">
+                        <thead>
+                            <tr>
+                                <th>Aluno</th>
+                                <th>Turma</th>
+                                <th>Média</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="aluno : ${alunos}">
+                                <td th:text="${aluno.nomeCompleto}"></td>
+                                <td th:text="${aluno.turmaNome}"></td>
+                                <td>
+                                    <span class="media-value" 
+                                          th:classappend="${aluno.mediaGeral >= 7} ? 'media-alta' : (${aluno.mediaGeral >= 5} ? 'media-media' : 'media-baixa')"
+                                          th:text="${#numbers.formatDecimal(aluno.mediaGeral, 1, 1)}">0.0</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" 
+                                          th:classappend="${aluno.statusBoletim == 'APROVADO'} ? 'status-aprovado' : (${aluno.statusBoletim == 'REPROVADO'} ? 'status-reprovado' : 'status-andamento')"
+                                          th:text="${aluno.statusBoletim}"></span>
+                                </td>
+                                <td th:text="${aluno.ultimaAtualizacao != null ? #temporals.format(aluno.ultimaAtualizacao, 'dd/MM/yyyy') : 'N/A'}"></td>
+                                <td>
+                                    <a th:if="${aluno.turmaId != null}"
+                                       th:href="@{/boletim/aluno/{id}/turma/{turmaId}(id=${aluno.id}, turmaId=${aluno.turmaId})}"
+                                       class="btn btn-primary">📊 Ver Boletim</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div th:if="${alunos == null or alunos.empty}" class="empty-state">
+                    <div class="empty-state-icon">👨‍🎓</div>
+                    <div class="empty-state-title">Nenhum aluno encontrado</div>
+                    <div class="empty-state-text">
+                        Não há alunos disponíveis para o relatório.
+                    </div>
+                    <a href="/alunos/lista" class="btn btn-primary">👥 Gerenciar Alunos</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Busca rápida por nome
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.aluno-table tbody tr');
+            
+            rows.forEach(row => {
+                const nome = row.cells[0].textContent.toLowerCase();
+                if (nome.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+    <script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+</body>
+</html>

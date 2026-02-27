@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Fragmento para aplicar configurações de tema via JavaScript -->
+    <script th:fragment="theme-script" th:inline="javascript">
+        /*<![CDATA[*/
+        (function() {
+            // Aplicar configurações de tema se disponíveis
+            const themeConfig = /*[[${themeConfig}]]*/ null;
+            
+            if (themeConfig) {
+                const root = document.documentElement;
+                
+                // Aplicar cores
+                if (themeConfig.corPrimaria) {
+                    root.style.setProperty('--theme-color-primary', themeConfig.corPrimaria);
+                    root.style.setProperty('--theme-gradient-start', themeConfig.corPrimaria);
+                }
+                if (themeConfig.corSecundaria) {
+                    root.style.setProperty('--theme-color-secondary', themeConfig.corSecundaria);
+                    root.style.setProperty('--theme-gradient-end', themeConfig.corSecundaria);
+                }
+                if (themeConfig.corHeader) {
+                    root.style.setProperty('--theme-color-header', themeConfig.corHeader);
+                }
+                if (themeConfig.corTexto) {
+                    root.style.setProperty('--theme-color-text', themeConfig.corTexto);
+                }
+                if (themeConfig.corDestaque) {
+                    root.style.setProperty('--theme-color-accent', themeConfig.corDestaque);
+                }
+                
+                // Aplicar logo
+                if (themeConfig.logoUrl) {
+                    const logoImg = document.querySelector('.logo img');
+                    if (logoImg) {
+                        logoImg.src = themeConfig.logoUrl;
+                        if (themeConfig.logoAlt) {
+                            logoImg.alt = themeConfig.logoAlt;
+                        }
+                    }
+                }
+                
+                // Aplicar estilo
+                if (themeConfig.fonteTamanhoBase) {
+                    root.style.setProperty('--theme-font-size-base', themeConfig.fonteTamanhoBase + 'px');
+                }
+            }
+        })();
+        /*]]>*/
+    </script>
+</head>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Funcionários - AriranG</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a th:href="@{/funcionarios}"><li class="nav-element active">Funcionários</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Gerenciamento de Funcionários</h1>
+        <div class="top-actions">
+            <p style="color: aliceblue; text-align: center; margin-top: 20px;">
+                Funcionalidade em desenvolvimento
+            </p>
+        </div>
+    </section>
+
+    <section class="tabela-container" style="max-width: 1200px; margin: 20px auto;">
+        <div style="padding: 40px; text-align: center;">
+            <div style="background-color: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+                <h2 style="color: aliceblue; margin-bottom: 20px;">📋 Módulo de Funcionários</h2>
+                <p style="color: aliceblue; font-size: 1.1em; margin-bottom: 15px;">
+                    Esta funcionalidade está em desenvolvimento e estará disponível em breve.
+                </p>
+                <p style="color: aliceblue; font-size: 1em;">
+                    Em breve você poderá gerenciar funcionários, recepção e limpeza através desta página.
+                </p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px;">
+                <a th:href="@{/professores}" style="text-decoration: none;">
+                    <div style="background-color: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 8px; text-align: center; cursor: pointer; transition: transform 0.2s ease, background-color 0.2s ease;" 
+                         onmouseover="this.style.transform='scale(1.05)'; this.style.backgroundColor='rgba(255, 255, 255, 0.15)'" 
+                         onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='rgba(255, 255, 255, 0.1)'">
+                        <h3 style="color: aliceblue; margin-bottom: 10px; font-size: 1.5em;">👨‍🏫 Professores</h3>
+                        <p style="color: aliceblue; font-size: 1em;">Gerenciar professores e instrutores</p>
+                    </div>
+                </a>
+                
+                <div style="background-color: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 8px; text-align: center; min-width: 250px;">
+                    <h3 style="color: aliceblue; margin-bottom: 10px; font-size: 1.5em;">🏢 Recepção</h3>
+                    <p style="color: aliceblue; font-size: 0.9em;" th:text="${recepcaoMsg}">Funcionalidade em desenvolvimento</p>
+                </div>
+                
+                <div style="background-color: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 8px; text-align: center; min-width: 250px;">
+                    <h3 style="color: aliceblue; margin-bottom: 10px; font-size: 1.5em;">🧹 Limpeza</h3>
+                    <p style="color: aliceblue; font-size: 0.9em;" th:text="${limpezaMsg}">Funcionalidade em desenvolvimento</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <a th:href="@{/home}" class="btn cadastrar">← Voltar para Home</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+</body>
+</html>
+

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico de Alterações - Turma</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <link rel="stylesheet" th:href="@{/css/turmas-mobile.css?v=1.0}" />
+    <style>
+        .historico-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        .protocolo {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .alteracoes {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            white-space: pre-line;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .info-item {
+            margin: 8px 0;
+            color: aliceblue;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #00bfff;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element active">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Histórico de Alterações - Turma</h1>
+        <div style="margin-top: 15px;">
+            <a th:href="@{/turmas}" class="btn cadastrar">← Voltar para Turmas</a>
+            <a th:href="@{'/turmas/editar/' + ${turma.id}}" class="btn editar">Editar Turma</a>
+        </div>
+    </section>
+
+    <section class="tabela-container" style="max-width: 1000px;">
+        <div style="padding: 20px;">
+            <div style="background-color: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <h2 style="color: aliceblue; margin-top: 0;">📋 Turma: <span th:text="${turma.nomeTurma}"></span></h2>
+                <p style="color: aliceblue;"><strong>ID:</strong> <span th:text="${turma.id}"></span></p>
+            </div>
+
+            <div th:if="${historico == null or historico.empty}">
+                <div style="text-align: center; padding: 40px; color: aliceblue;">
+                    <p style="font-size: 1.2em;">📋 Nenhuma alteração registrada para esta turma.</p>
+                </div>
+            </div>
+
+            <div th:each="item : ${historico}">
+                <div class="historico-item">
+                    <div class="protocolo">📄 Protocolo: <span th:text="${item.protocolo}"></span></div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Data/Hora:</span> 
+                        <span th:text="${#temporals.format(item.dataAlteracao, 'dd/MM/yyyy HH:mm')}"></span>
+                    </div>
+                    
+                    <div class="info-item" th:if="${item.usuario != null}">
+                        <span class="info-label">Responsável:</span> 
+                        <span th:text="${item.usuario}"></span>
+                    </div>
+                    
+                    <div class="info-item" th:if="${item.justificativa != null}">
+                        <span class="info-label">Justificativa:</span> 
+                        <span th:text="${item.justificativa}"></span>
+                    </div>
+                    
+                    <div th:if="${item.alteracoesDetalhadas != null and !item.alteracoesDetalhadas.isEmpty()}" style="margin-top: 15px;">
+                        <div class="info-label" style="margin-bottom: 10px;">Alterações Realizadas:</div>
+                        <div class="alteracoes" th:text="${item.alteracoesDetalhadas}"></div>
+                    </div>
+                    
+                    <div th:if="${item.ipAddress != null}" style="margin-top: 10px; font-size: 11px; color: rgba(255, 255, 255, 0.6);">
+                        IP: <span th:text="${item.ipAddress}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+
+<script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+</body>
+</html>
+

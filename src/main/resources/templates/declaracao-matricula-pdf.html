@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Declaração de Matrícula - AriranG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/cadastro.css?v=1.0}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { margin: 0; }
+            .documento-container { box-shadow: none; margin: 0; }
+        }
+        
+        .documento-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+        }
+        
+        .documento-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .documento-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        
+        .documento-subtitle {
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .documento-content {
+            text-align: justify;
+            margin-bottom: 30px;
+        }
+        
+        .documento-content p {
+            margin-bottom: 15px;
+            text-indent: 20px;
+        }
+        
+        .dados-section {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .dados-section h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .dados-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .dados-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+        
+        .dados-label {
+            font-weight: bold;
+        }
+        
+        .documento-footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .assinatura-section {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .assinatura-box {
+            text-align: center;
+            border-top: 1px solid #333;
+            padding-top: 10px;
+        }
+        
+        .assinatura-label {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .btn-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+<header class="no-print">
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-element"><a th:href="@{/}">Home</a></li>
+                <li class="nav-element"><a th:href="@{/alunos/lista}">Alunos</a></li>
+                <li class="nav-element"><a th:href="@{/turmas}">Turmas</a></li>
+                <li class="nav-element"><a th:href="@{/contratos}">Contratos</a></li>
+                <li class="nav-element"><a th:href="@{/documentos}">Documentos</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="documento-container">
+    <div class="documento-header">
+        <div class="documento-title">Declaração de Matrícula</div>
+        <div class="documento-subtitle">
+            <strong>AriranG - Escola de Idiomas</strong><br>
+            CNPJ: XX.XXX.XXX/0001-XX<br>
+            Endereço: Rua Exemplo, 123 - Centro - Cidade/UF - CEP: 12345-678<br>
+            Telefone: (11) 1234-5678 | Email: contato@arirang.com.br
+        </div>
+    </div>
+
+    <div class="documento-content">
+        <p>
+            Declaramos para os devidos fins que <strong th:text="${declaracao.alunoNome}"></strong>, 
+            portador(a) do CPF nº <strong th:text="${declaracao.alunoCpf}"></strong>, 
+            <span th:if="${declaracao.alunoRg != null}">RG nº <strong th:text="${declaracao.alunoRg}"></strong>,</span>
+            nascido(a) em <strong th:text="${#temporals.format(declaracao.alunoDataNascimento, 'dd/MM/yyyy')}"></strong>, 
+            está devidamente matriculado(a) nesta instituição de ensino.
+        </p>
+
+        <div class="dados-section">
+            <h3>Dados da Matrícula</h3>
+            <div class="dados-grid">
+                <div class="dados-item">
+                    <span class="dados-label">Turma:</span>
+                    <span th:text="${declaracao.turmaNome}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Nível de Proficiência:</span>
+                    <span th:text="${declaracao.nivelProficiencia}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Professor Responsável:</span>
+                    <span th:text="${declaracao.professorNome}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Dia da Semana:</span>
+                    <span th:text="${declaracao.diaTurma}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Turno:</span>
+                    <span th:text="${declaracao.turno}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Horário:</span>
+                    <span th:text="${declaracao.horaInicio} + ' às ' + ${declaracao.horaTermino}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Início do Curso:</span>
+                    <span th:text="${#temporals.format(declaracao.inicioTurma, 'dd/MM/yyyy')}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Término do Curso:</span>
+                    <span th:text="${#temporals.format(declaracao.terminoTurma, 'dd/MM/yyyy')}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Data da Matrícula:</span>
+                    <span th:text="${#temporals.format(declaracao.dataContrato, 'dd/MM/yyyy')}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Valor da Matrícula:</span>
+                    <span th:text="${#numbers.formatDecimal(declaracao.valorMatricula, 1, 2)}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Valor da Mensalidade:</span>
+                    <span th:text="${#numbers.formatDecimal(declaracao.valorMensalidade, 1, 2)}"></span>
+                </div>
+                <div class="dados-item">
+                    <span class="dados-label">Número de Parcelas:</span>
+                    <span th:text="${declaracao.numeroParcelas}"></span>
+                </div>
+            </div>
+        </div>
+
+        <p>
+            Esta declaração é válida para fins de comprovação de matrícula e pode ser utilizada 
+            para os seguintes propósitos: solicitação de desconto em estabelecimentos comerciais, 
+            comprovação de vínculo estudantil, entre outros fins legais.
+        </p>
+
+        <p>
+            Por ser expressão da verdade, firmamos a presente declaração.
+        </p>
+    </div>
+
+    <div class="documento-footer">
+        <p>
+            <strong th:text="${#temporals.format(declaracao.dataGeracao, 'dd/MM/yyyy')}"></strong>
+        </p>
+        
+        <div class="assinatura-section">
+            <div class="assinatura-box">
+                <div class="assinatura-label">Assinatura do Diretor</div>
+            </div>
+            <div class="assinatura-box">
+                <div class="assinatura-label">Carimbo e Assinatura</div>
+            </div>
+        </div>
+        
+        <p style="margin-top: 30px; font-size: 12px;">
+            <strong>Número da Declaração:</strong> <span th:text="${declaracao.numeroDeclaracao}"></span><br>
+            <strong>Data de Emissão:</strong> <span th:text="${#temporals.format(declaracao.dataGeracao, 'dd/MM/yyyy HH:mm')}"></span>
+        </p>
+    </div>
+</div>
+
+<div class="btn-group no-print">
+    <button onclick="window.print()" class="btn btn-success">🖨️ Imprimir Declaração</button>
+    <a th:href="@{/documentos/visualizar/declaracao?alunoId={alunoId}&turmaId={turmaId}(alunoId=${declaracao.alunoId}, turmaId=${declaracao.turmaId})}" class="btn">📄 Visualizar</a>
+    <a th:href="@{/turmas/{id}/alunos(id=${declaracao.turmaId})}" class="btn btn-warning">📋 Ver Turma</a>
+    <a th:href="@{/documentos/menu}" class="btn">🏠 Menu Documentos</a>
+</div>
+
+<script>
+    // Auto-print se solicitado
+    if (window.location.search.includes('print=true')) {
+        window.print();
+    }
+</script>
+</body>
+</html>

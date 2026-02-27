@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório por Turma - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .page-subtitle {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .filters-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .filters-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .form-control {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #e67e22;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .turma-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .turma-table th,
+        .turma-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .turma-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .turma-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-aberta {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-fechada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .media-value {
+            font-weight: 600;
+        }
+        
+        .media-alta {
+            color: #27ae60;
+        }
+        
+        .media-media {
+            color: #f39c12;
+        }
+        
+        .media-baixa {
+            color: #e74c3c;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #f39c12;
+        }
+        
+        .summary-card-title {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .summary-card-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .turma-table {
+                font-size: 14px;
+            }
+            
+            .turma-table th,
+            .turma-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+            </div>
+            <nav>
+                <!-- Botão Hambúrguer - Mobile -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-list" id="navList">
+                    <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                    <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                    <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                    <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                    <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+                </ul>
+            </nav>
+        </div>
+        <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/boletim/relatorio" class="back-btn">← Voltar aos Relatórios</a>
+            
+            <div class="page-header">
+                <h1 class="page-title">📚 Relatório por Turma</h1>
+                <p class="page-subtitle">Análise de desempenho por turma</p>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-section">
+                <h3 class="filters-title">🔍 Filtros</h3>
+                <form method="get" action="/boletim/relatorio/turma">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label class="form-label">Turma</label>
+                            <select name="turmaId" class="form-control">
+                                <option value="">Todas as turmas</option>
+                                <option th:each="turma : ${turmasParaFiltro}" 
+                                        th:value="${turma.id()}" 
+                                        th:selected="${turmaIdSelecionado != null and turmaIdSelecionado == turma.id()}"
+                                        th:text="${turma.nomeTurma()}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Período</label>
+                            <select name="periodo" class="form-control">
+                                <option value="">Todos os períodos</option>
+                                <option value="2024-1" th:selected="${periodoSelecionado == '2024-1'}">2024 - 1º Semestre</option>
+                                <option value="2024-2" th:selected="${periodoSelecionado == '2024-2'}">2024 - 2º Semestre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-control">
+                                <option value="">Todos</option>
+                                <option value="ABERTA" th:selected="${statusSelecionado == 'ABERTA'}">Aberta</option>
+                                <option value="FECHADA" th:selected="${statusSelecionado == 'FECHADA'}">Fechada</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Resumo -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-card-title">📚 Total de Turmas</div>
+                    <div class="summary-card-value" th:text="${totalTurmas}">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-title">👥 Total de Alunos</div>
+                    <div class="summary-card-value" th:text="${totalAlunos}">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-title">📊 Média Geral</div>
+                    <div class="summary-card-value" th:text="${#numbers.formatDecimal(mediaGeral, 1, 1)}">0.0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-card-title">✅ Taxa de Aprovação</div>
+                    <div class="summary-card-value" th:text="${#numbers.formatDecimal(taxaAprovacaoGeral, 1, 1) + '%'}">0%</div>
+                </div>
+            </div>
+
+            <!-- Resultados -->
+            <div class="results-section">
+                <div class="section-header">
+                    <h3 class="section-title">📋 Resultados por Turma</h3>
+                </div>
+                
+                <div th:if="${turmas != null and !turmas.empty}">
+                    <table class="turma-table">
+                        <thead>
+                            <tr>
+                                <th>Turma</th>
+                                <th>Nível</th>
+                                <th>Alunos</th>
+                                <th>Média</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="turma : ${turmas}">
+                                <td th:text="${turma.nomeTurma}"></td>
+                                <td th:text="${turma.nivelProficiencia}"></td>
+                                <td th:text="${turma.totalAlunos}"></td>
+                                <td>
+                                    <span class="media-value" 
+                                          th:classappend="${turma.mediaGeral >= 7} ? 'media-alta' : (${turma.mediaGeral >= 5} ? 'media-media' : 'media-baixa')"
+                                          th:text="${#numbers.formatDecimal(turma.mediaGeral, 1, 1)}">0.0</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" 
+                                          th:classappend="${turma.statusTurma == 'ABERTA'} ? 'status-aberta' : 'status-fechada'"
+                                          th:text="${turma.statusTurma}"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/boletim/relatorio/turma/{id}/detalhes(id=${turma.id})}" class="btn btn-primary">📊 Ver Detalhes</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div th:if="${turmas == null or turmas.empty}" class="empty-state">
+                    <div class="empty-state-icon">📚</div>
+                    <div class="empty-state-title">Nenhuma turma encontrada</div>
+                    <div class="empty-state-text">
+                        Não há turmas disponíveis para o relatório.
+                    </div>
+                    <a href="/turmas" class="btn btn-primary">📚 Gerenciar Turmas</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+</body>
+</html>

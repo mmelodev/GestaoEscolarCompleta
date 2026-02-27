@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Boletim - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .page-subtitle {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .form-label.required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        .form-control {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        
+        .form-control.error {
+            border-color: #e74c3c;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c0392b;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .info-box {
+            background: #e8f4fd;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+        
+        .info-text {
+            color: #0c5460;
+            line-height: 1.5;
+        }
+        
+        .quick-actions {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .quick-actions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .quick-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .quick-btn:hover {
+            background: #c0392b;
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+            </div>
+            <nav>
+                <!-- Botão Hambúrguer - Mobile -->
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+                <ul class="nav-list" id="navList">
+                    <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                    <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                    <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                    <a th:href="@{/contratos-v2}"><li class="nav-element">Contratos</li></a>
+                    <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+                </ul>
+            </nav>
+        </div>
+        <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/boletim" class="back-btn">← Voltar aos Boletins</a>
+            
+            <div class="page-header">
+                <h1 class="page-title">➕ Novo Boletim</h1>
+                <p class="page-subtitle">Crie um novo boletim para um aluno específico</p>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">ℹ️ Informações</div>
+                <div class="info-text">
+                    Selecione um aluno e uma turma para criar um novo boletim. 
+                    O sistema irá redirecionar você para o formulário de lançamento de notas.
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>⚡ Ações Rápidas</h3>
+                <a href="/alunos/lista" class="quick-btn">👨‍🎓 Ver Alunos</a>
+                <a href="/turmas" class="quick-btn">📚 Ver Turmas</a>
+                <a href="/boletim" class="quick-btn">📊 Voltar aos Boletins</a>
+            </div>
+
+            <div class="form-section">
+                <form id="boletimForm" method="get">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label required">Aluno</label>
+                            <select name="alunoId" id="alunoSelect" class="form-control" required>
+                                <option value="">Selecione um aluno</option>
+                                <option th:each="aluno : ${alunos}" 
+                                        th:value="${aluno.id}" 
+                                        th:text="${aluno.nomeCompleto}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Turma</label>
+                            <select name="turmaId" id="turmaSelect" class="form-control" required>
+                                <option value="">Selecione uma turma</option>
+                                <option th:each="turma : ${turmas}" 
+                                        th:value="${turma.id}" 
+                                        th:text="${turma.nomeTurma + ' - ' + turma.nivelProficiencia}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="/boletim" class="btn btn-secondary">❌ Cancelar</a>
+                        <button type="submit" class="btn btn-primary">📊 Criar Boletim</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const alunoSelect = document.getElementById('alunoSelect');
+            const turmaSelect = document.getElementById('turmaSelect');
+            
+            // Dados dos alunos com suas turmas - usando Thymeleaf inline
+            const alunosComTurmas = /*[[${alunos}]]*/ {};
+            
+            // Converter para o formato esperado pelo JavaScript
+            const alunosComTurmasFormatado = {};
+            if (alunosComTurmas && alunosComTurmas.length > 0) {
+                alunosComTurmas.forEach(function(aluno) {
+                    if (aluno.turmas && aluno.turmas.length > 0) {
+                        alunosComTurmasFormatado[aluno.id] = aluno.turmas.map(function(turma) {
+                            return turma.id;
+                        });
+                    }
+                });
+            }
+            
+            console.log('Alunos carregados:', alunosComTurmas);
+            console.log('Alunos formatados:', alunosComTurmasFormatado);
+            
+            // Fallback para caso não haja dados
+            if (Object.keys(alunosComTurmasFormatado).length === 0) {
+                console.warn('Nenhum aluno com turmas encontrado');
+            }
+            
+            console.log('Elementos encontrados:', {
+                alunoSelect: !!alunoSelect,
+                turmaSelect: !!turmaSelect,
+                form: !!document.getElementById('boletimForm')
+            });
+            
+            // Interceptar o submit do formulário para construir a URL correta
+            const form = document.getElementById('boletimForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const alunoId = alunoSelect.value;
+                    const turmaId = turmaSelect.value;
+                    
+                    console.log('Submit interceptado:', { alunoId, turmaId });
+                    
+                    if (alunoId && turmaId) {
+                        const url = `/boletim/aluno/${alunoId}/turma/${turmaId}`;
+                        console.log('Redirecionando para:', url);
+                        window.location.href = url;
+                    } else {
+                        alert('Por favor, selecione um aluno e uma turma.');
+                    }
+                });
+            } else {
+                console.error('Formulário não encontrado!');
+            }
+            
+            if (alunoSelect) {
+                alunoSelect.addEventListener('change', function() {
+                    const alunoId = this.value;
+                    console.log('Aluno selecionado:', alunoId);
+                    console.log('Dados disponíveis:', alunosComTurmasFormatado);
+                    
+                    // Limpar seleção anterior
+                    turmaSelect.value = '';
+                    
+                    if (alunoId && alunosComTurmasFormatado[alunoId]) {
+                        const turmasDoAluno = alunosComTurmasFormatado[alunoId];
+                        console.log('Turmas do aluno:', turmasDoAluno);
+                        
+                        if (turmasDoAluno.length === 1) {
+                            // Se o aluno tem apenas uma turma, selecionar automaticamente
+                            turmaSelect.value = turmasDoAluno[0];
+                            console.log('Turma selecionada automaticamente:', turmasDoAluno[0]);
+                            
+                            // Destacar visualmente a seleção automática
+                            turmaSelect.style.backgroundColor = '#e8f5e8';
+                            turmaSelect.style.borderColor = '#28a745';
+                            
+                            // Remover destaque após 2 segundos
+                            setTimeout(() => {
+                                turmaSelect.style.backgroundColor = '';
+                                turmaSelect.style.borderColor = '';
+                            }, 2000);
+                        } else if (turmasDoAluno.length > 1) {
+                            // Se o aluno tem múltiplas turmas, destacar as opções disponíveis
+                            const options = turmaSelect.querySelectorAll('option');
+                            options.forEach(option => {
+                                if (turmasDoAluno.includes(parseInt(option.value))) {
+                                    option.style.backgroundColor = '#e8f5e8';
+                                    option.style.fontWeight = 'bold';
+                                } else {
+                                    option.style.backgroundColor = '';
+                                    option.style.fontWeight = '';
+                                }
+                            });
+                            
+                            // Destacar o select
+                            turmaSelect.style.borderColor = '#ffc107';
+                            turmaSelect.style.backgroundColor = '#fff3cd';
+                            
+                            // Remover destaque após 3 segundos
+                            setTimeout(() => {
+                                turmaSelect.style.borderColor = '';
+                                turmaSelect.style.backgroundColor = '';
+                                options.forEach(option => {
+                                    option.style.backgroundColor = '';
+                                    option.style.fontWeight = '';
+                                });
+                            }, 3000);
+                        }
+                    } else {
+                        console.log('Aluno não encontrado ou sem turmas:', alunoId);
+                    }
+                });
+            } else {
+                console.error('Select de aluno não encontrado!');
+            }
+        });
+    </script>
+    <script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+</body>
+</html>

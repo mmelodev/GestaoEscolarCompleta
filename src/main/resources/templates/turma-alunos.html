@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alunos da Turma - AriranG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <link rel="stylesheet" th:href="@{/css/turmas-mobile.css?v=1.0}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element active">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Alunos da Turma: <span th:text="${turma.nomeTurma}"></span></h1>
+        <div class="top-actions">
+            <a th:href="@{/turmas}" class="btn cadastrar">← Voltar para Turmas</a>
+            <a th:href="@{/turmas/editar/{id}(id=${turma.id})}" class="btn editar">✏️ Editar Turma</a>
+        </div>
+    </section>
+
+    <!-- Informações da Turma -->
+    <section class="turma-info" style="background-color: #f8f9fa; padding: 20px; margin: 20px; border-radius: 8px;">
+        <h3 style="color: #1a1a1a !important; text-decoration: none !important;">Informações da Turma</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">ID:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.id}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Nome:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.nomeTurma}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Nível:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.nivelProficiencia}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Turno:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.turno != null ? turma.turno.descricao : 'Não definido'}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Formato:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.formato != null ? turma.formato.descricao : 'Não definido'}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Modalidade:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.modalidade != null ? turma.modalidade.descricao : 'Não definido'}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Situação:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${turma.situacaoTurma}"></span>
+            </div>
+            <div style="color: #1a1a1a !important; text-decoration: none !important;">
+                <strong style="color: #1a1a1a !important; text-decoration: none !important;">Total de Alunos:</strong> 
+                <span style="color: #1a1a1a !important; text-decoration: none !important;" th:text="${alunos.size()}"></span>
+            </div>
+            <div th:if="${turma.calendarioPdf != null and !turma.calendarioPdf.isEmpty()}" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                <a th:href="@{'/turmas/calendario/' + ${turma.id}}" 
+                   target="_blank" 
+                   class="btn cadastrar" 
+                   style="display: inline-block; background-color: #28a745; color: white;">
+                    📄 Visualizar Calendário PDF
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <h3>Lista de Alunos</h3>
+        <div th:if="${alunos != null && !alunos.empty}" class="table-responsive">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome Completo</th>
+                    <th>Email</th>
+                    <th>Telefone</th>
+                    <th>Data de Nascimento</th>
+                    <th>Apelido</th>
+                    <th>Situação</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="aluno : ${alunos}">
+                    <td th:text="${aluno.id}"></td>
+                    <td th:text="${aluno.nomeCompleto}"></td>
+                    <td th:text="${aluno.email}"></td>
+                    <td th:text="${aluno.telefone}"></td>
+                    <td th:text="${#temporals.format(aluno.dataNascimento, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${aluno.apelido != null ? aluno.apelido : '-'}"></td>
+                    <td th:text="${aluno.situacao}"></td>
+                    <td class="acoes">
+                        <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" class="btn editar">Editar</a>
+                        <a th:href="@{/alunos/{id}/contratos(id=${aluno.id})}" class="btn turma">Contratos</a>
+                        <form th:action="@{/alunos/{id}/turmas/{turmaId}/remover(id=${aluno.id}, turmaId=${turma.id})}" 
+                              method="post" 
+                              style="display: inline-block;"
+                              onsubmit="return confirm('Tem certeza que deseja remover este aluno da turma? O aluno ficará inativo por não ter mais turmas.');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <input type="hidden" name="redirect" th:value="@{/turmas/{id}/alunos(id=${turma.id})}" />
+                            <button type="submit" class="btn deletar" style="margin: 0;">Remover da Turma</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div th:if="${alunos == null || alunos.empty}" class="empty-state">
+            <div style="text-align: center; padding: 40px; color: #6c757d;">
+                <h4>Nenhum aluno cadastrado nesta turma</h4>
+                <p>Esta turma ainda não possui alunos vinculados.</p>
+                <a th:href="@{/alunos/lista}" class="btn cadastrar">Ver Todos os Alunos</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+
+<script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+
+<style>
+    .turma-info {
+        border-left: 4px solid #007bff;
+    }
+    
+    .empty-state {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .acoes {
+        white-space: nowrap;
+    }
+    
+    @media (max-width: 768px) {
+        .turma-info div {
+            margin-bottom: 10px;
+        }
+    }
+</style>
+
+</body>
+</html>

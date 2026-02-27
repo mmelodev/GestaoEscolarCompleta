@@ -1,0 +1,474 @@
+/* ============================================
+   HOME PAGE SPECIFIC STYLES - Responsivo
+   ============================================ */
+
+/* User Badge - Responsivo */
+.user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    margin-left: 1.5rem;
+    color: #fff;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    letter-spacing: 0.02em;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-height: 44px; /* Touch target mínimo */
+}
+
+.user-badge svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.user-badge__label {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+}
+
+.user-badge__name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}
+
+/* Dashboard Wrapper - Responsivo */
+.dashboard-wrapper {
+    padding: clamp(1rem, 4vw, 2rem) clamp(1rem, 5vw, 3rem) clamp(1.5rem, 5vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Previne scroll horizontal */
+}
+
+/* Dashboard Header - Responsivo */
+.dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1.5vw, 0.75rem);
+    color: #f5f5f5;
+    width: 100%;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.dashboard-header p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 100%;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
+    line-height: 1.5;
+}
+
+/* Dashboard Sections - Grid Responsivo */
+.dashboard-sections {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 2rem);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Previne scroll horizontal */
+}
+
+/* Dashboard Section - Responsivo */
+.dashboard-section {
+    background: rgba(26, 26, 26, 0.85);
+    border-radius: clamp(1rem, 3vw, 1.5rem);
+    padding: clamp(1.25rem, 3.5vw, 1.75rem) clamp(1rem, 3vw, 1.5rem);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3vw, 1.5rem);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Dashboard Section Title - Responsivo */
+.dashboard-section__title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0 0 clamp(1rem, 3vw, 1.5rem);
+    color: #f5f5f5;
+}
+
+.dashboard-section__title h2 {
+    margin: 0;
+    font-size: clamp(1.1rem, 3vw, 1.25rem);
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.dashboard-section__title span {
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 0.05em;
+}
+
+/* Card Grid - Mobile First, Responsivo */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1rem, 3vw, 1.75rem);
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Previne scroll horizontal */
+}
+
+.card-grid a {
+    display: flex;
+    height: 100%;
+    text-decoration: none;
+    min-height: 44px; /* Touch target mínimo */
+}
+
+/* Cards - Altura Flexível e Responsivo */
+.card-grid .card {
+    border-radius: clamp(1rem, 2.5vw, 1.25rem);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: clamp(240px, 50vw, 260px);
+    height: auto;
+    max-height: 400px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative; /* Para texto sobreposto */
+    background-color: #1a1a1a; /* Fundo caso imagem não carregue */
+}
+
+.card-grid .card img {
+    width: 100%;
+    height: 100%; /* Preenche todo o card */
+    min-height: clamp(240px, 50vw, 260px);
+    object-fit: cover;
+    flex-shrink: 0;
+    display: block;
+    position: absolute; /* Permite texto sobreposto */
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Hover apenas em dispositivos com hover (não touch) */
+@media (hover: hover) and (pointer: fine) {
+    .card-grid .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 22px 40px rgba(0, 0, 0, 0.28);
+    }
+}
+
+/* Touch devices: feedback visual ao toque */
+@media (hover: none) {
+    .card-grid .card:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+}
+
+/* Card Content - Responsivo */
+/* Compatibilidade com estrutura legacy (texto sobreposto) */
+.card-grid .card {
+    position: relative; /* Para texto sobreposto funcionar */
+}
+
+.card-grid .card > div:last-child,
+.card-grid .card .card-alunos-text,
+.card-grid .card .card-turmas-text,
+.card-grid .card .card-professores-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Texto no fundo quando sobreposto */
+    padding: clamp(1rem, 2.5vw, 1.25rem) clamp(1rem, 3vw, 1.5rem);
+    box-sizing: border-box;
+    gap: clamp(0.5rem, 1.5vw, 0.6rem);
+    min-height: auto;
+    position: absolute; /* Mantém compatibilidade com estilo legacy */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    color: aliceblue;
+}
+
+.card-grid .card > div:last-child h2,
+.card-grid .card .card-alunos-text h2,
+.card-grid .card .card-turmas-text h2,
+.card-grid .card .card-professores-text h2 {
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+    margin: 0;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.card-grid .card > div:last-child p,
+.card-grid .card .card-alunos-text p,
+.card-grid .card .card-turmas-text p,
+.card-grid .card .card-professores-text p {
+    font-size: clamp(0.875rem, 2.2vw, 0.95rem);
+    margin: 0;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Imagem dos cards - escurecida para contraste com texto */
+.card-grid .card img {
+    opacity: 0.3; /* Mais escura para texto legível */
+}
+
+/* Card Featured - Responsivo */
+.card--featured {
+    border: 2px solid rgba(102, 126, 234, 0.55);
+    box-shadow: 0 24px 50px rgba(102, 126, 234, 0.25);
+}
+
+/* ============================================
+   BREAKPOINTS - Mobile First Approach
+   ============================================ */
+
+/* Small Mobile (480px+) */
+@media (min-width: 480px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .user-badge__name {
+        max-width: 180px;
+    }
+}
+
+/* Tablet Portrait (768px+) */
+@media (min-width: 768px) {
+    .dashboard-wrapper {
+        padding: 1.75rem 2rem 2.5rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-header p {
+        max-width: 540px;
+    }
+
+    .dashboard-sections {
+        grid-template-columns: 1fr; /* Uma coluna para evitar overflow */
+        gap: clamp(1.5rem, 4vw, 2rem);
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablet */
+        gap: 1.5rem;
+        overflow-x: visible; /* Sem scroll horizontal */
+    }
+
+    .card-grid .card {
+        min-height: 300px;
+        max-height: 380px;
+        height: 380px; /* Altura fixa em tablet para uniformidade */
+    }
+
+    .card-grid .card img {
+        height: 100%; /* Preenche todo o card */
+        min-height: 300px;
+    }
+
+    .user-badge {
+        margin-left: 1.5rem;
+    }
+}
+
+/* Tablet Landscape / Small Desktop (1024px+) */
+@media (min-width: 1024px) {
+    .dashboard-wrapper {
+        padding: 2rem 2.5rem 3rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 colunas em desktop */
+        gap: 1.75rem;
+        overflow-x: visible; /* Sem scroll horizontal */
+    }
+
+    .card-grid .card {
+        min-height: 280px;
+        height: 400px; /* Altura fixa em desktop */
+        max-height: 400px;
+    }
+
+    .card-grid .card img {
+        height: 100%; /* Preenche todo o card */
+        min-height: 280px;
+    }
+}
+
+/* Large Desktop (1280px+) */
+@media (min-width: 1280px) {
+    .dashboard-wrapper {
+        padding: 2rem 3rem 3rem;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+    }
+}
+
+/* Extra Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+    .dashboard-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}
+
+/* Mobile específico: User badge simplificado */
+@media (max-width: 1023px) {
+    .user-badge {
+        margin-left: 0.5rem;
+        padding: 0.3rem 0.6rem;
+        display: inline-flex; /* Garantir que aparece */
+        order: 2; /* Aparece antes do botão hambúrguer */
+        flex-shrink: 1; /* Pode encolher se necessário */
+        min-width: 0; /* Permite shrink */
+        max-width: calc(100% - 100px); /* Respeita espaço do hambúrguer */
+        overflow: hidden; /* Previne overflow do conteúdo */
+    }
+
+    .user-badge__label {
+        display: none; /* Oculta "Perfil" em mobile */
+    }
+
+    .user-badge__name {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+/* Mobile pequeno (< 767px) */
+@media (max-width: 767px) {
+    .user-badge {
+        margin-left: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        max-width: calc(100% - 80px); /* Mais espaço para hambúrguer */
+    }
+
+    .user-badge__name {
+        max-width: 80px;
+        font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+    }
+}
+
+/* Mobile muito pequeno (< 360px) */
+@media (max-width: 359px) {
+    .user-badge__name {
+        display: none; /* Mostra apenas ícone em telas muito pequenas */
+    }
+
+    .dashboard-section {
+        padding: 1rem;
+    }
+
+    .card-grid .card {
+        min-height: 220px;
+    }
+}
+
+/* Prefer reduced motion - Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    .card-grid .card {
+        transition: none;
+    }
+
+    .card-grid .card:hover,
+    .card-grid .card:active {
+        transform: none;
+    }
+}
+
+/* ============================================
+   FOOTER - Rodapé da Página
+   ============================================ */
+
+.page-footer {
+    width: 100%;
+    background-color: rgba(26, 26, 26, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: clamp(1.5rem, 4vw, 2rem) clamp(1rem, 5vw, 3rem);
+    margin-top: clamp(2rem, 5vw, 3rem);
+    box-sizing: border-box;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.footer-text {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(0.875rem, 2vw, 0.95rem);
+    line-height: 1.5;
+}
+
+.footer-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: clamp(0.75rem, 1.8vw, 0.85rem);
+}
+
+/* Responsividade do Footer */
+@media (min-width: 768px) {
+    .page-footer {
+        padding: 2rem 3rem;
+        margin-top: 3rem;
+    }
+
+    .footer-content {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .page-footer {
+        padding: 2.5rem 3rem;
+    }
+}

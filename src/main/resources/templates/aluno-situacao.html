@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Alterar Situação do Aluno</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .field { display: flex; flex-direction: column; margin-bottom: 1rem; max-width: 420px; }
+        label { font-weight: bold; margin-bottom: .25rem; }
+        select { padding: .5rem; border: 1px solid #ccc; border-radius: 4px; }
+        .actions { margin-top: 1rem; display: flex; gap: .75rem; }
+        button { padding: .5rem 1rem; border: none; border-radius: 4px; background: #1976d2; color: #fff; cursor: pointer; }
+        a.button { background: #777; color: #fff; padding: .5rem 1rem; border-radius: 4px; text-decoration: none; }
+        .info { background-color: #e3f2fd; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; max-width: 420px; }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+            body { margin: 1rem; }
+            .field, .info { max-width: 100%; }
+            .actions { flex-direction: column; align-items: stretch; }
+            button, a.button { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<h2 th:text="'Alterar situação de ' + ${aluno.nomeCompleto}">Alterar situação</h2>
+
+<div class="info">
+    <p><strong>Situação atual:</strong> <span th:text="${aluno.situacao != null && !aluno.situacao.isEmpty() ? aluno.situacao : 'Não definida'}"></span></p>
+</div>
+
+<form th:action="@{'/alunos/' + ${aluno.id} + '/situacao'}" method="post">
+    <!-- CSRF Token -->
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <div class="field">
+        <label>Nova Situação</label>
+        <select name="situacao" required>
+            <option value="" disabled>Selecione uma situação</option>
+            <option value="ATIVO" th:selected="${aluno.situacao == 'ATIVO'}">Ativo</option>
+            <option value="INATIVO" th:selected="${aluno.situacao == 'INATIVO'}">Inativo</option>
+            <option value="TRANCADO" th:selected="${aluno.situacao == 'TRANCADO'}">Trancado</option>
+            <option value="FORMADO" th:selected="${aluno.situacao == 'FORMADO'}">Formado</option>
+            <option value="DESISTENTE" th:selected="${aluno.situacao == 'DESISTENTE'}">Desistente</option>
+        </select>
+    </div>
+    <div class="actions">
+        <button type="submit">Salvar</button>
+        <a href="/alunos/lista" class="button">Cancelar</a>
+    </div>
+</form>
+</body>
+</html>
+

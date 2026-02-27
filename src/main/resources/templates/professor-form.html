@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Formulário de Professor - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/cadastro.css?v=1.0}" />
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <link rel="stylesheet" th:href="@{/css/home.css?v=1.0}" />
+    <style>
+        .form-card, .form-card h1, .form-card label { color: #1a1a1a; }
+        .form-card input { color: #1a1a1a; }
+        .form-card select { width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; }
+        
+        .turmas-container {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            margin-top: 0.5rem;
+        }
+        
+        .turma-search {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .turma-checkbox-item {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .turma-checkbox-item input[type="checkbox"] {
+            margin-right: 0.5rem;
+            width: auto;
+        }
+        
+        .turma-checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .no-turmas {
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="main-nav" style="margin-bottom: 1rem;">
+    <div class="logo">
+        <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+    </div>
+    <nav>
+        <ul class="nav-list">
+            <a th:href="@{/}"><li class="nav-element">Home</li></a>
+            <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+            <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+            <a th:href="@{/cadastro}"><li class="nav-element active">Cadastro</li></a>
+        </ul>
+    </nav>
+</div>
+
+<div class="page-container">
+    <div class="form-card">
+        <h1 style="margin-top:0">Formulário de Professor</h1>
+        <form class="form-root form-professor" th:action="@{${professor.id != null ? '/professores/atualizar/' + professor.id : '/professores'}}" th:object="${professor}" method="post">
+            <!-- CSRF Token -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            
+            <label>Nome Completo: <input type="text" th:field="*{nomeCompleto}" required /></label>
+            <div th:if="${#fields.hasErrors('nomeCompleto')}" class="field-error" th:errors="*{nomeCompleto}"></div><br/>
+            <label>Data Nascimento: <input type="date" th:field="*{dataNascimento}" /></label><br/>
+            <label>RG: <input type="text" th:field="*{rg}" /></label>
+            <div th:if="${#fields.hasErrors('rg')}" class="field-error" th:errors="*{rg}"></div><br/>
+            <label>CPF: <input type="text" th:field="*{cpf}" /></label>
+            <div th:if="${#fields.hasErrors('cpf')}" class="field-error" th:errors="*{cpf}"></div><br/>
+            <label>Email: <input type="email" th:field="*{email}" /></label>
+            <div th:if="${#fields.hasErrors('email')}" class="field-error" th:errors="*{email}"></div><br/>
+            <label>Telefone: <input type="text" th:field="*{telefone}" /></label>
+            <div th:if="${#fields.hasErrors('telefone')}" class="field-error" th:errors="*{telefone}"></div><br/>
+            <label>Cargo: <input type="text" th:field="*{cargo}" /></label>
+            <div th:if="${#fields.hasErrors('cargo')}" class="field-error" th:errors="*{cargo}"></div><br/>
+            <label>Formação: <input type="text" th:field="*{formacao}" /></label>
+            <div th:if="${#fields.hasErrors('formacao')}" class="field-error" th:errors="*{formacao}"></div><br/>
+            
+            <label>Turmas:</label>
+            <input type="text" id="turmaSearch" class="turma-search" placeholder="🔍 Pesquisar turmas..." />
+            <div class="turmas-container" id="turmasContainer">
+                <div th:each="turma : ${turmas}" class="turma-checkbox-item" th:data-turma-name="${turma.nomeTurma}">
+                    <input type="checkbox" 
+                           th:id="'turma_' + ${turma.id}"
+                           name="turmaIds"
+                           th:value="${turma.id}"
+                           th:checked="${professor.turmaIds != null && professor.turmaIds.contains(turma.id)}" />
+                    <label th:for="'turma_' + ${turma.id}" th:text="${turma.nomeTurma}"></label>
+                </div>
+                <div th:if="${turmas == null || turmas.isEmpty()}" class="no-turmas">
+                    Nenhuma turma disponível
+                </div>
+            </div>
+            <div th:if="${#fields.hasErrors('turmaIds')}" class="field-error" th:errors="*{turmaIds}"></div><br/>
+            <div class="actions">
+                <button type="submit" class="btn-primary">Salvar</button>
+                <a th:href="@{/professores}" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('turmaSearch');
+        const container = document.getElementById('turmasContainer');
+        const checkboxItems = container.querySelectorAll('.turma-checkbox-item');
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                
+                checkboxItems.forEach(function(item) {
+                    const turmaName = item.getAttribute('data-turma-name') || '';
+                    if (turmaName.toLowerCase().includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>

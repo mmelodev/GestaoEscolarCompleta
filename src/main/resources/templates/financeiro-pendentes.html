@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movimentações Pendentes - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0 0 10px 0;
+        }
+        
+        .page-subtitle {
+            color: #7f8c8d;
+            margin: 0;
+        }
+        
+        .alert-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .alert-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .alert-text {
+            color: #856404;
+            line-height: 1.5;
+        }
+        
+        .movements-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .movements-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .movements-table th,
+        .movements-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .movements-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .movements-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .tipo-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .tipo-receita {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .tipo-despesa {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pendente {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .amount {
+            font-weight: 600;
+        }
+        
+        .amount-positive {
+            color: #27ae60;
+        }
+        
+        .amount-negative {
+            color: #e74c3c;
+        }
+        
+        .actions-cell {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .back-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #7f8c8d;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .bulk-actions {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .bulk-actions-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .bulk-actions-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .movements-table {
+                font-size: 14px;
+            }
+            
+            .movements-table th,
+            .movements-table td {
+                padding: 10px 8px;
+            }
+            
+            .actions-cell {
+                flex-direction: column;
+            }
+            
+            .bulk-actions-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="main-nav">
+            <div class="logo">
+                <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+            </div>
+            <nav>
+                <ul class="nav-list" id="navList">
+                    <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                    <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                    <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                    <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                    <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <a href="/financeiro" class="back-btn">← Voltar ao Financeiro</a>
+            
+            <div class="page-header">
+                <h1 class="page-title">⏳ Movimentações Pendentes</h1>
+                <p class="page-subtitle">Movimentações financeiras aguardando confirmação</p>
+            </div>
+
+            <div class="alert-section">
+                <div class="alert-title">⚠️ Atenção</div>
+                <div class="alert-text">
+                    As movimentações pendentes precisam ser confirmadas para serem consideradas no fluxo de caixa. 
+                    Revise os dados e confirme ou cancele conforme necessário.
+                </div>
+            </div>
+
+            <!-- Ações em Lote -->
+            <div class="bulk-actions" th:if="${movimentos != null and !movimentos.empty}">
+                <div class="bulk-actions-title">⚡ Ações em Lote</div>
+                <div class="bulk-actions-buttons">
+                    <button class="btn btn-success" onclick="confirmarTodos()">✅ Confirmar Todos</button>
+                    <button class="btn btn-danger" onclick="cancelarTodos()">❌ Cancelar Todos</button>
+                    <a href="/financeiro/relatorio" class="btn btn-primary">📊 Gerar Relatório</a>
+                </div>
+            </div>
+
+            <!-- Lista de Movimentações Pendentes -->
+            <div class="movements-section">
+                <div class="section-header">
+                    <h3 class="section-title">📋 Movimentações Pendentes</h3>
+                </div>
+                
+                <div th:if="${movimentos != null and !movimentos.empty}">
+                    <table class="movements-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Categoria</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="movimento : ${movimentos}">
+                                <td th:text="${#temporals.format(movimento.dataMovimento, 'dd/MM/yyyy')}"></td>
+                                <td>
+                                    <span class="tipo-badge" 
+                                          th:classappend="${movimento.tipoMovimento.name() == 'RECEITA'} ? 'tipo-receita' : 'tipo-despesa'"
+                                          th:text="${movimento.tipoMovimento.name()}"></span>
+                                </td>
+                                <td th:text="${movimento.categoria.name()}"></td>
+                                <td th:text="${movimento.descricao}"></td>
+                                <td>
+                                    <span class="amount" 
+                                          th:classappend="${movimento.tipoMovimento.name() == 'RECEITA'} ? 'amount-positive' : 'amount-negative'"
+                                          th:text="${'R$ ' + #numbers.formatDecimal(movimento.valor, 1, 2)}"></span>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-pendente">Pendente</span>
+                                </td>
+                                <td class="actions-cell">
+                                    <a th:href="@{/financeiro/{id}(id=${movimento.id})}" class="btn btn-primary">👁️</a>
+                                    <a th:href="@{/financeiro/{id}/editar(id=${movimento.id})}" class="btn btn-primary">✏️</a>
+                                    
+                                    <!-- Botão Confirmar -->
+                                    <form th:action="@{/financeiro/confirmar/{id}(id=${movimento.id})}" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-success" 
+                                                onclick="return confirm('Tem certeza que deseja confirmar este movimento?')">✅ Confirmar</button>
+                                    </form>
+                                    
+                                    <!-- Botão Cancelar -->
+                                    <form th:action="@{/financeiro/cancelar/{id}(id=${movimento.id})}" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger" 
+                                                onclick="return confirm('Tem certeza que deseja cancelar este movimento? Esta ação não pode ser desfeita.')">❌ Cancelar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div th:if="${movimentos == null or movimentos.empty}" class="empty-state">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">Nenhuma movimentação pendente</div>
+                    <div class="empty-state-text">
+                        Todas as movimentações financeiras estão confirmadas!
+                    </div>
+                    <a href="/financeiro" class="btn btn-secondary">📋 Voltar ao Financeiro</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function confirmarTodos() {
+            if (confirm('Tem certeza que deseja confirmar todas as movimentações pendentes?')) {
+                // Implementar lógica de confirmação em lote
+                alert('Funcionalidade será implementada em versão futura');
+            }
+        }
+        
+        function cancelarTodos() {
+            if (confirm('Tem certeza que deseja cancelar todas as movimentações pendentes?')) {
+                // Implementar lógica de cancelamento em lote
+                alert('Funcionalidade será implementada em versão futura');
+            }
+        }
+    </script>
+</body>
+</html>

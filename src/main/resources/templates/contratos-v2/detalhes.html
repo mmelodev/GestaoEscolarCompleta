@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalhes do Contrato - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos-v2}"><li class="nav-element active">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Detalhes do Contrato</h1>
+        <div class="top-actions">
+            <a th:href="@{/contratos-v2}" class="btn turma">↩️ Voltar</a>
+            <a th:href="@{/contratos/pdf/{id}(id=${contrato.id})}" class="btn cadastrar" target="_blank">📄 Ver PDF</a>
+            <a th:href="@{/contratos/download/{id}(id=${contrato.id})}" class="btn editar" target="_blank">⬇️ Download</a>
+            <a th:href="@{/contratos-v2/deletar/{id}(id=${contrato.id})}" class="btn deletar">🗑️ Excluir</a>
+        </div>
+    </section>
+
+    <section style="margin: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px;">
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; border-left: 4px solid #17a2b8;">
+            <h3 style="margin: 0 0 10px 0; font-size: 14px;">Resumo</h3>
+            <p style="margin: 0; opacity: 0.9;">
+                <strong>ID:</strong> <span th:text="${contrato.id}">0</span>
+            </p>
+            <p style="margin: 8px 0 0 0;">
+                <span class="situacao-badge"
+                      th:classappend="${contrato.situacaoContrato != null and contrato.situacaoContrato.equalsIgnoreCase('ATIVO')} ? ' situacao-ativo' : ' situacao-inativo'"
+                      th:text="${contrato.situacaoContrato != null ? contrato.situacaoContrato : 'INDEFINIDO'}">ATIVO</span>
+            </p>
+        </div>
+
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; border-left: 4px solid #28a745;">
+            <h3 style="margin: 0 0 10px 0; font-size: 14px;">Financeiro</h3>
+            <p style="margin: 0; font-size: 28px; font-weight: bold;"
+               th:text="${contrato.valorTotalContrato != null ? #numbers.formatCurrency(contrato.valorTotalContrato) : 'R$ 0,00'}">R$ 0,00</p>
+            <p style="margin: 6px 0 0 0; opacity: 0.85;"
+               th:text="${contrato.numeroParcelas != null ? (contrato.numeroParcelas + ' parcelas') : '0 parcelas'}">0 parcelas</p>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <h2 style="color: aliceblue !important; text-decoration: none !important; margin-bottom: 20px;">ℹ️ Informações do Contrato</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Campo</th>
+                <th>Valor</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Aluno</td>
+                <td th:text="${contrato.alunoNome}">-</td>
+            </tr>
+            <tr>
+                <td>Endereço completo do aluno</td>
+                <td>
+                    <th:block th:if="${aluno != null and aluno.endereco != null}">
+                        <span th:if="${aluno.endereco.logradouro != null and !aluno.endereco.logradouro.isEmpty()}" th:text="${aluno.endereco.logradouro}">Rua Exemplo</span><span th:if="${aluno.endereco.numero != null and !aluno.endereco.numero.isEmpty()}" th:text="${', nº ' + aluno.endereco.numero}">, 123</span><span th:if="${aluno.endereco.complemento != null and !aluno.endereco.complemento.isEmpty()}" th:text="${' - ' + aluno.endereco.complemento}"> - Sala 1</span><span th:if="${aluno.endereco.bairro != null and !aluno.endereco.bairro.isEmpty()}" th:text="${'. ' + aluno.endereco.bairro}">. Centro</span><span th:if="${aluno.endereco.cidade != null and !aluno.endereco.cidade.isEmpty()}"><span th:if="${aluno.endereco.estado != null and !aluno.endereco.estado.isEmpty()}" th:text="${'. ' + aluno.endereco.cidade + ' - ' + aluno.endereco.estado}">. Manaus - AM</span><span th:unless="${aluno.endereco.estado != null and !aluno.endereco.estado.isEmpty()}" th:text="${'. ' + aluno.endereco.cidade}">. Manaus</span></span><span th:if="${aluno.endereco.cep != null and !aluno.endereco.cep.isEmpty()}" th:text="${'. CEP: ' + aluno.endereco.cep}">. CEP: 69000-000</span>
+                    </th:block>
+                    <span th:unless="${aluno != null and aluno.endereco != null}">—</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Turma</td>
+                <td th:text="${contrato.turmaNome}">-</td>
+            </tr>
+            <tr th:if="${turma != null}">
+                <td>Idioma da Turma</td>
+                <td>
+                    <span th:if="${turma.idioma != null and !turma.idioma.trim().isEmpty()}" th:text="${turma.idioma}">-</span>
+                    <span th:unless="${turma.idioma != null and !turma.idioma.trim().isEmpty()}">Não informado</span>
+                </td>
+            </tr>
+            <tr th:if="${turma != null}">
+                <td>Modalidade</td>
+                <td>
+                    <span th:if="${turma.modalidade != null}" th:text="${turma.modalidade.toString()}">-</span>
+                    <span th:unless="${turma.modalidade != null}">Não informado</span>
+                </td>
+            </tr>
+            <tr th:if="${turma != null}">
+                <td>Turno e Horário</td>
+                <td>
+                    <span th:if="${turma.diaTurma != null}" th:text="${turma.diaTurma}">-</span>
+                    <span th:if="${turma.horaInicio != null and !turma.horaInicio.isEmpty()}">
+                        <span th:text="${turma.horaInicio}">-</span>
+                    </span>
+                    <span th:if="${turma.horaInicio != null and !turma.horaInicio.isEmpty() and turma.horaTermino != null and !turma.horaTermino.isEmpty()}"> ATÉ </span>
+                    <span th:if="${turma.horaTermino != null and !turma.horaTermino.isEmpty()}">
+                        <span th:text="${turma.horaTermino}">-</span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>Data do Contrato</td>
+                <td th:text="${contrato.dataContrato != null ? #temporals.format(contrato.dataContrato, 'dd/MM/yyyy') : '-'}">-</td>
+            </tr>
+            <tr>
+                <td>Matrícula</td>
+                <td th:text="${contrato.valorMatricula != null ? #numbers.formatCurrency(contrato.valorMatricula) : 'R$ 0,00'}">R$ 0,00</td>
+            </tr>
+            <tr>
+                <td>Mensalidade</td>
+                <td th:text="${contrato.valorMensalidade != null ? #numbers.formatCurrency(contrato.valorMensalidade) : 'R$ 0,00'}">R$ 0,00</td>
+            </tr>
+            <tr>
+                <td>Tipo de Contrato (Template)</td>
+                <td th:text="${contrato.templatePdf != null ? contrato.templatePdf : '-'}">-</td>
+            </tr>
+            <tr>
+                <td>Observações</td>
+                <td th:text="${contrato.observacoes != null and contrato.observacoes != '' ? contrato.observacoes : '-'}">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer></footer>
+
+<!-- Modal de Erro/Sucesso/Aviso -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+    text-decoration: none !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.close:hover {
+    color: black;
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+document.addEventListener('DOMContentLoaded', function() {
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    const warningFlash = /*[[${warning}]]*/ null;
+
+    if (errorFlash) { mostrarMensagem('Erro', errorFlash); return; }
+    if (warningFlash) { mostrarMensagem('Aviso', warningFlash); return; }
+    if (successFlash) { mostrarMensagem('Sucesso', successFlash); return; }
+});
+
+function mostrarMensagem(titulo, mensagem) {
+    document.getElementById('messageTitle').textContent = titulo;
+    document.getElementById('messageText').textContent = mensagem;
+    document.getElementById('messageModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) closeBtn.onclick = fecharModal;
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('messageModal');
+    if (event.target === modal) fecharModal();
+}
+/*]]>*/
+</script>
+</body>
+</html>

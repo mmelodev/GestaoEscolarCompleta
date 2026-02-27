@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Carnê de Pagamento - AriranG</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/css/cadastro.css?v=1.0}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { margin: 0; }
+            .carne-container { box-shadow: none; margin: 0; }
+        }
+        
+        .carne-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .carne-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .carne-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .carne-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .carne-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .info-section h3 {
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .parcelas-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .parcelas-table th,
+        .parcelas-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .parcelas-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .parcelas-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .status-paga {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .status-pendente {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .status-vencida {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .carne-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+        }
+        
+        .totais-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .totais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .total-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .total-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .total-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .btn-group {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+<header class="no-print">
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-element"><a th:href="@{/}">Home</a></li>
+                <li class="nav-element"><a th:href="@{/alunos/lista}">Alunos</a></li>
+                <li class="nav-element"><a th:href="@{/turmas}">Turmas</a></li>
+                <li class="nav-element"><a th:href="@{/contratos-v2}">Contratos</a></li>
+                <li class="nav-element"><a th:href="@{/financeiro}">Financeiro</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="carne-container">
+    <div class="carne-header">
+        <div class="carne-title">CARNÊ DE PAGAMENTO</div>
+        <div class="carne-subtitle">AriranG - Escola de Idiomas</div>
+        <div class="carne-subtitle" th:text="'Número: ' + ${carne.numeroCarne}"></div>
+    </div>
+
+    <div class="carne-info">
+        <div class="info-section">
+            <h3>Dados do Aluno</h3>
+            <div class="info-item">
+                <span class="info-label">Nome:</span>
+                <span class="info-value" th:text="${carne.alunoNome}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">CPF:</span>
+                <span class="info-value" th:text="${carne.alunoCpf}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Telefone:</span>
+                <span class="info-value" th:text="${carne.alunoTelefone}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email:</span>
+                <span class="info-value" th:text="${carne.alunoEmail}"></span>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Dados da Turma</h3>
+            <div class="info-item">
+                <span class="info-label">Turma:</span>
+                <span class="info-value" th:text="${carne.turmaNome}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Professor:</span>
+                <span class="info-value" th:text="${carne.professorNome}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Data do Contrato:</span>
+                <span class="info-value" th:text="${#temporals.format(carne.dataContrato, 'dd/MM/yyyy')}"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Data de Geração:</span>
+                <span class="info-value" th:text="${#temporals.format(carne.dataGeracao, 'dd/MM/yyyy')}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="totais-section">
+        <h3 style="text-align: center; margin-bottom: 20px;">Resumo Financeiro</h3>
+        <div class="totais-grid">
+            <div class="total-item">
+                <div class="total-label">Valor da Matrícula</div>
+                <div class="total-value" th:text="${#numbers.formatDecimal(carne.valorMatricula, 1, 2)}"></div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Valor da Mensalidade</div>
+                <div class="total-value" th:text="${#numbers.formatDecimal(carne.valorMensalidade, 1, 2)}"></div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Total do Contrato</div>
+                <div class="total-value" th:text="${#numbers.formatDecimal(carne.valorTotalContrato, 1, 2)}"></div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Parcelas Pagas</div>
+                <div class="total-value" th:text="${carne.parcelasPagas}"></div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Parcelas Pendentes</div>
+                <div class="total-value" th:text="${carne.parcelasPendentes}"></div>
+            </div>
+            <div class="total-item">
+                <div class="total-label">Parcelas Vencidas</div>
+                <div class="total-value" th:text="${carne.parcelasVencidas}"></div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Parcelas</h3>
+    <table class="parcelas-table">
+        <thead>
+        <tr>
+            <th>Parcela</th>
+            <th>Vencimento</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Data Pagamento</th>
+            <th>Valor Pago</th>
+            <th>Observações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="parcela : ${carne.parcelas}">
+            <td th:text="${parcela.numeroParcela}"></td>
+            <td th:text="${#temporals.format(parcela.dataVencimento, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#numbers.formatDecimal(parcela.valorParcela, 1, 2)}"></td>
+            <td>
+                <span th:if="${parcela.statusParcela.toString() == 'PAGA'}" class="status-paga">PAGA</span>
+                <span th:if="${parcela.statusParcela.toString() == 'PENDENTE'}" class="status-pendente">PENDENTE</span>
+                <span th:if="${parcela.statusParcela.toString() == 'EM_ATRASO'}" class="status-vencida">EM ATRASO</span>
+                <span th:if="${parcela.statusParcela.toString() == 'CANCELADA'}" class="status-vencida">CANCELADA</span>
+            </td>
+            <td th:text="${parcela.dataPagamento != null ? #temporals.format(parcela.dataPagamento, 'dd/MM/yyyy') : '-'}"></td>
+            <td th:text="${parcela.valorPago != null ? #numbers.formatDecimal(parcela.valorPago, 1, 2) : '-'}"></td>
+            <td th:text="${parcela.observacoes != null ? parcela.observacoes : '-'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="carne-footer">
+        <p>Este carnê foi gerado automaticamente pelo sistema AriranG em <span th:text="${#temporals.format(carne.dataGeracao, 'dd/MM/yyyy HH:mm')}"></span></p>
+        <p>Para dúvidas ou informações adicionais, entre em contato conosco.</p>
+    </div>
+</div>
+
+<div class="btn-group no-print">
+    <button onclick="window.print()" class="btn btn-success">🖨️ Imprimir Carnê</button>
+    <a th:href="@{/carne/contrato/{id}(id=${carne.contratoId})}" class="btn">📄 Visualizar</a>
+    <a th:href="@{/contratos-v2/{id}(id=${carne.contratoId})}" class="btn btn-warning">📋 Ver Contrato</a>
+    <a th:href="@{/carne/menu}" class="btn">🏠 Menu Carnês</a>
+</div>
+
+<script>
+    // Auto-print se solicitado
+    if (window.location.search.includes('print=true')) {
+        window.print();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+/* ============================================
+   THEME VARIABLES - Customizáveis pelo usuário
+   ============================================
+   
+   Este arquivo define variáveis CSS que podem ser
+   alteradas dinamicamente pelo usuário através do
+   sistema de personalização.
+   
+   As variáveis são aplicadas via JavaScript quando
+   o usuário salva suas preferências.
+*/
+
+:root {
+    /* Cores do tema - Valores padrão */
+    --theme-color-primary: #01004e;
+    --theme-color-secondary: #860213;
+    --theme-color-header: #1a1a1a;
+    --theme-color-text: #f5f5f5;
+    --theme-color-accent: #007bff;
+    
+    /* Logo */
+    --theme-logo-url: url('/img/horizontal_negativa.png');
+    --theme-logo-alt: 'Logo AriranG';
+    
+    /* Tipografia */
+    --theme-font-size-base: 16px;
+    
+    /* Estilo */
+    --theme-border-radius: 2rem;
+    --theme-border-radius-small: 1rem;
+    
+    /* Gradiente de fundo */
+    --theme-gradient-start: var(--theme-color-primary);
+    --theme-gradient-end: var(--theme-color-secondary);
+}
+
+/* Aplicação das variáveis nos elementos */
+
+body {
+    background: linear-gradient(90deg, var(--theme-gradient-start), var(--theme-gradient-end)) !important;
+    color: var(--theme-color-text) !important;
+    font-size: var(--theme-font-size-base) !important;
+}
+
+.main-nav {
+    background-color: var(--theme-color-header) !important;
+    border-radius: var(--theme-border-radius) !important;
+}
+
+.nav-list li,
+.nav-list a {
+    color: var(--theme-color-text) !important;
+}
+
+.nav-list li:hover,
+.nav-list .active,
+.nav-list a:hover {
+    color: var(--theme-color-accent) !important;
+}
+
+.logo img {
+    /* Logo será aplicado via JavaScript se personalizado */
+}
+
+/* Botões */
+.btn.cadastrar {
+    background-color: var(--theme-color-accent) !important;
+}
+
+.btn:hover {
+    background-color: var(--theme-color-accent) !important;
+    opacity: 0.9;
+}
+
+/* Cards e containers */
+.central,
+.card,
+.tabela-container {
+    background-color: var(--theme-color-header) !important;
+    border-radius: var(--theme-border-radius-small) !important;
+}
+
+/* Links */
+a {
+    color: var(--theme-color-accent) !important;
+}
+
+a:hover {
+    color: var(--theme-color-accent) !important;
+    opacity: 0.8;
+}

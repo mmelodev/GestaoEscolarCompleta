@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CONTRATO DE PRESTAÇÃO DE SERVIÇOS EDUCACIONAIS - MENOR DE IDADE</title>
+    <style>
+        @page {
+            margin: 2cm;
+            size: A4;
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #000;
+            background-color: #fff;
+        }
+        .page {
+            max-width: 18cm;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            padding-top: 60px;
+        }
+        .logo-container {
+            text-align: left;
+            margin-bottom: 8px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .logo-container img {
+            max-width: 140px;
+            height: auto;
+        }
+        .instituto-name {
+            font-size: 16pt;
+            margin-bottom: 5px;
+        }
+        .contract-title {
+            font-size: 13pt;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .section {
+            margin: 15px 0;
+            text-align: justify;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 12pt;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+        .clause {
+            margin: 10px 0;
+            text-align: justify;
+        }
+        .clause-number {
+            font-weight: bold;
+        }
+        .paragraph {
+            margin: 5px 0 5px 20px;
+            text-align: justify;
+        }
+        .table-info {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .table-info td {
+            padding: 3px;
+            border: 1px solid #000;
+            font-size: 10pt;
+        }
+        .table-info .label {
+            font-weight: bold;
+            width: 30%;
+        }
+        .table-object {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .table-object th,
+        .table-object td {
+            padding: 5px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 10pt;
+        }
+        .table-object th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .field-value {
+            font-weight: bold;
+        }
+        .signature-section {
+            margin-top: 60px;
+            page-break-inside: avoid;
+            padding: 30px 0;
+            border-top: 2px solid #000;
+            clear: both;
+            display: block;
+            width: 100%;
+        }
+        .signature-box {
+            display: inline-block;
+            width: 45%;
+            margin: 20px 2%;
+            vertical-align: top;
+            text-align: center;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 80px;
+            padding-top: 10px;
+            min-height: 100px;
+            font-size: 10pt;
+            line-height: 1.8;
+        }
+        .signature-line strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 9pt;
+            text-align: center;
+            color: #333;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+        .date-time {
+            text-align: right;
+            margin-bottom: 10px;
+            font-size: 10pt;
+        }
+        .action-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .action-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .btn-print {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-print:hover {
+            background-color: #0056b3;
+        }
+        .btn-close {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-close:hover {
+            background-color: #545b62;
+        }
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-close" onclick="window.close()">❌ Sair</button>
+    </div>
+    <div class="page">
+    <div class="header">
+        <div class="logo-container">
+                <img th:src="@{/img/horizontal.png}" alt="AriranG Logo" />
+        </div>
+        <div class="instituto-name">INSTITUTO ARIRANG - IA</div>
+        <div class="contract-title">CONTRATO DE PRESTAÇÃO DE SERVIÇOS EDUCACIONAIS</div>
+    </div>
+
+    <div class="section">
+        <p>Pelo presente instrumento particular de <strong>CONTRATO DE PRESTAÇÃO DE SERVIÇOS EDUCACIONAIS</strong>, 
+        a <strong>ESCOLA DE COREANO NO AMAZONAS LTDA</strong>, inscrita no CNPJ/MF sob n° <strong>34.099.780/0001-90</strong>, 
+        com sede na cidade de Manaus - AM, na <strong>RUA MONSENHOR COUTINHO, 821</strong>, doravante denominada 
+        <strong>INSTITUTO ARIRANG</strong>, neste ato representada pelo seu Diretor Prof. <strong>ERYSTENYS REIS COSTA FILHO</strong>, 
+        e de outro lado o(a) estudante<span th:if="${turma != null and turma.idioma != null and !turma.idioma.trim().isEmpty()}">
+            , interessado(a) em estudar <strong th:text="${turma.idioma}">idioma</strong>
+        </span>:</p>
+    </div>
+
+    <table class="table-info">
+        <tr>
+            <td class="label">ID:</td>
+            <td><span class="field-value" th:text="${aluno.id}">291</span></td>
+            <td class="label">Nome:</td>
+            <td><span class="field-value" th:text="${aluno.nomeCompleto}">Nome do Aluno</span></td>
+        </tr>
+        <tr>
+            <td class="label">nascido(a) em</td>
+            <td>
+                <span class="field-value" th:if="${aluno.dataNascimento != null}" th:text="${#temporals.format(aluno.dataNascimento, 'dd/MM/yyyy')}">16/03/2011</span>
+                <span class="field-value" th:unless="${aluno.dataNascimento != null}">______</span>
+            </td>
+            <td class="label">CPF:</td>
+            <td>
+                <span class="field-value" th:if="${aluno.cpf != null}" th:text="${aluno.cpf}">073.840.772-06</span>
+                <span class="field-value" th:unless="${aluno.cpf != null}">______</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">RG:</td>
+            <td>
+                <span class="field-value" th:if="${aluno.rg != null}" th:text="${aluno.rg}">4.092.179-4</span>
+                <span class="field-value" th:unless="${aluno.rg != null}">______</span>
+            </td>
+            <td class="label">residente na</td>
+            <td>
+                <span class="field-value" th:if="${aluno.endereco != null}">
+                    <span th:if="${aluno.endereco.logradouro != null}" th:text="${aluno.endereco.logradouro}">Rua</span>
+                    <span th:if="${aluno.endereco.numero != null}" th:text="${', ' + aluno.endereco.numero}">, 11</span>
+                    <span th:if="${aluno.endereco.complemento != null}" th:text="${' - ' + aluno.endereco.complemento}"> - Cidade Nova</span>
+                    <span th:if="${aluno.endereco.bairro != null}" th:text="${', ' + aluno.endereco.bairro}"></span>
+                </span>
+                <span class="field-value" th:unless="${aluno.endereco != null}">______</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">cidade</td>
+            <td>
+                <span class="field-value" th:if="${aluno.endereco != null and aluno.endereco.cidade != null}" th:text="${aluno.endereco.cidade}">Manaus</span>
+                <span class="field-value" th:unless="${aluno.endereco != null and aluno.endereco.cidade != null}">______</span>
+            </td>
+            <td class="label">Estado</td>
+            <td>
+                <span class="field-value" th:if="${aluno.endereco != null and aluno.endereco.estado != null}" th:text="${aluno.endereco.estado}">AM</span>
+                <span class="field-value" th:unless="${aluno.endereco != null and aluno.endereco.estado != null}">______</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">CEP:</td>
+            <td colspan="3">
+                <span class="field-value" th:if="${aluno.endereco != null and aluno.endereco.cep != null}" th:text="${aluno.endereco.cep}">69.090.-160</span>
+                <span class="field-value" th:unless="${aluno.endereco != null and aluno.endereco.cep != null}">______</span>
+            </td>
+        </tr>
+        <!-- Bloco do representante legal deve aparecer sempre neste modelo (menor),
+             mesmo que os dados estejam em branco -->
+        <tr>
+            <td class="label">e seu representante legal</td>
+            <td class="label">Nome:</td>
+            <td colspan="2">
+                <span class="field-value" th:if="${aluno.responsavel != null and aluno.responsavel.nomeCompleto != null}" th:text="${aluno.responsavel.nomeCompleto}">Lucimar Carvalho Farias</span>
+                <span class="field-value" th:unless="${aluno.responsavel != null and aluno.responsavel.nomeCompleto != null}">________________________________</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">Grau de Parentesco:</td>
+            <td>
+                <span class="field-value" th:if="${aluno.grauParentesco != null and !aluno.grauParentesco.trim().isEmpty()}" th:text="${aluno.grauParentesco}">Pai/Mãe</span>
+                <span class="field-value" th:unless="${aluno.grauParentesco != null and !aluno.grauParentesco.trim().isEmpty()}">________________________________</span>
+            </td>
+            <td class="label">CPF:</td>
+            <td>
+                <span class="field-value" th:if="${aluno.responsavel != null and aluno.responsavel.cpf != null}" th:text="${aluno.responsavel.cpf}">435.589.332-49</span>
+                <span class="field-value" th:unless="${aluno.responsavel != null and aluno.responsavel.cpf != null}">______</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">Telefone:</td>
+            <td>
+                <span class="field-value" th:if="${aluno.responsavel != null and aluno.responsavel.telefone != null}" th:text="${aluno.responsavel.telefone}">(92) 99999-9999</span>
+                <span class="field-value" th:unless="${aluno.responsavel != null and aluno.responsavel.telefone != null}">______</span>
+            </td>
+            <td class="label">Email:</td>
+            <td>
+                <span class="field-value" th:if="${aluno.responsavel != null and aluno.responsavel.email != null}" th:text="${aluno.responsavel.email}">email@exemplo.com</span>
+                <span class="field-value" th:unless="${aluno.responsavel != null and aluno.responsavel.email != null}">________________________________</span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: center; font-style: italic;">
+                , entre si justo e contratado o que segue:
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">DO OBJETO</div>
+
+    <table class="table-object">
+        <thead>
+            <tr>
+                <th>CURSO</th>
+                <th>PACOTE</th>
+                <th>TURNO E HORÁRIO</th>
+                <th>VALOR</th>
+                <th>OBSERVAÇÃO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span th:if="${turma != null and turma.idioma != null and !turma.idioma.trim().isEmpty()}" th:text="${turma.idioma}">COREANO</span>
+                    <span th:unless="${turma != null and turma.idioma != null and !turma.idioma.trim().isEmpty()}">—</span>
+                </td>
+                <td th:text="${turma != null and turma.modalidade != null ? turma.modalidade.toString() : 'REGULAR'}">REGULAR</td>
+                <td>
+                    <span th:text="${turma != null and turma.diaTurma != null ? turma.diaTurma : 'SÁBADO'}">SÁBADO</span>
+                    <span th:if="${turma != null and turma.horaInicio != null and !turma.horaInicio.isEmpty()}">
+                        <span th:text="${turma.horaInicio}">14h00m</span>
+                    </span>
+                    <span th:if="${turma != null and turma.horaInicio != null and !turma.horaInicio.isEmpty()}"> ATÉ </span>
+                    <span th:if="${turma != null and turma.horaTermino != null and !turma.horaTermino.isEmpty()}">
+                        <span th:text="${turma.horaTermino}">17h00m</span>
+                    </span>
+                </td>
+                <td>
+                    <span th:if="${contrato.valorMatricula != null and contrato.valorMatricula > 0 and contrato.valorMensalidade != null}">
+                        <span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto.add(valorMensalidadeComDesconto))}">R$ 300,00</span>
+                        <br/>
+                        <span style="font-size: 0.85em; color: #666;">(Matrícula: <span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto)}">R$ 150,00</span> + Mensalidade: <span th:text="${#numbers.formatCurrency(valorMensalidadeComDesconto)}">R$ 150,00</span>)</span>
+                    </span>
+                    <span th:unless="${contrato.valorMatricula != null and contrato.valorMatricula > 0}">
+                        <span th:text="${#numbers.formatCurrency(valorMensalidadeComDesconto)}">R$ 150,00</span>
+                    </span>
+                </td>
+                <td th:text="${turma != null and turma.formato != null ? turma.formato.descricao : 'PRESENCIAL'}">PRESENCIAL</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 1ª.</span> O presente contrato tem como objeto a prestação dos serviços educacionais 
+        durante o período de <strong>
+            <span th:if="${contrato.dataInicioVigencia != null}" th:text="${#temporals.format(contrato.dataInicioVigencia, 'dd/MM/yyyy')}">10/01/2026</span>
+            <span th:unless="${contrato.dataInicioVigencia != null}">______</span>
+        </strong> 
+        até <strong>
+            <span th:if="${contrato.dataFimVigencia != null}" th:text="${#temporals.format(contrato.dataFimVigencia, 'dd/MM/yyyy')}">25/07/2025</span>
+            <span th:unless="${contrato.dataFimVigencia != null}">______</span>
+        </strong>, 
+        ao aluno beneficiário deste documento, correspondente à língua <strong>
+            <span th:if="${turma != null and turma.idioma != null and !turma.idioma.trim().isEmpty()}">
+                <span th:if="${#strings.equalsIgnoreCase(turma.idioma, 'Coreano')}">COREANA</span>
+                <span th:if="${#strings.equalsIgnoreCase(turma.idioma, 'Francês')}">FRANCESA</span>
+                <span th:if="${#strings.equalsIgnoreCase(turma.idioma, 'Inglês')}">INGLESA</span>
+                <span th:if="${#strings.equalsIgnoreCase(turma.idioma, 'Mandarim')}">MANDARIM</span>
+                <span th:if="${#strings.equalsIgnoreCase(turma.idioma, 'Japonês')}">JAPONESA</span>
+                <span th:if="${#strings.equalsIgnoreCase(turma.idioma, 'Espanhol')}">ESPANHOLA</span>
+                <span th:if="${!#strings.equalsIgnoreCase(turma.idioma, 'Coreano') and !#strings.equalsIgnoreCase(turma.idioma, 'Francês') and !#strings.equalsIgnoreCase(turma.idioma, 'Inglês') and !#strings.equalsIgnoreCase(turma.idioma, 'Mandarim') and !#strings.equalsIgnoreCase(turma.idioma, 'Japonês') and !#strings.equalsIgnoreCase(turma.idioma, 'Espanhol')}" th:text="${#strings.toUpperCase(turma.idioma)}">idioma</span>
+            </span>
+            <span th:unless="${turma != null and turma.idioma != null and !turma.idioma.trim().isEmpty()}">—</span>
+        </strong> 
+        no modo <strong><span th:text="${turma != null and turma.modalidade != null ? turma.modalidade.toString() : 'REGULAR'}">REGULAR</span></strong> 
+        no local disponibilizado pelo(a) <strong>INSTITUTO ARIRANG</strong>.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo primeiro.</strong> A adesão do <strong>CONTRATANTE</strong> se efetiva diante o deferimento do 
+        requerimento de matrícula devidamente preenchido e o recebimento pela <strong>CONTRATADA</strong> da taxa de matrícula de 
+        <strong><span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto)}">R$ 150,00</span></strong> 
+        <span th:if="${valorMatriculaComDesconto != null and valorMatriculaComDesconto.compareTo(T(java.math.BigDecimal).valueOf(150L)) == 0}">cento e cinquenta reais</span>
+        <span th:if="${valorMatriculaComDesconto == null or valorMatriculaComDesconto.compareTo(T(java.math.BigDecimal).valueOf(150L)) != 0}">(valor conforme contrato)</span>.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo segundo.</strong> A parcela da <strong>CONTRATANTE</strong> se mantém de acordo com o calendário 
+        escolar previamente elaborado e disponibilizado pela <strong>CONTRATADA</strong>, sendo assim, fica acordado 
+        <strong><span th:text="${contrato.numeroParcelas != null ? contrato.numeroParcelas : '7'}">7</span> PARCELAS</strong> 
+        do mês de <strong>
+            <span th:if="${contrato.dataInicioVigencia != null}" th:text="${#temporals.format(contrato.dataInicioVigencia, 'MMMM')}">JANEIRO</span>
+            <span th:unless="${contrato.dataInicioVigencia != null}">JANEIRO</span>
+        </strong> 
+        até <strong>
+            <span th:if="${contrato.dataFimVigencia != null}" th:text="${#temporals.format(contrato.dataFimVigencia, 'MMMM')}">JUNHO</span>
+            <span th:unless="${contrato.dataFimVigencia != null}">JUNHO</span>
+        </strong>.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo terceiro.</strong> A <strong>CONTRATADA</strong> poderá alterar ao seu critério o calendário escolar, 
+        respeitadas as exigências legais de carga horário e de dias letivos, devendo comunicar ao aluno a ocorrência da alteração.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo quarto.</strong> O aluno estará sujeito às normas do Regimento Escolar e demais Portarias, Resoluções e 
+        Normas Internas da Instituição, aos quais se integra o presente instrumento para esclarecimento dos possíveis casos omissos. 
+        O <strong>CONTRATANTE</strong> declara ter pelo conhecimento das normas referidas, que se encontram à sua disposição, na secretaria da <strong>CONTRATADA</strong>.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo quinto.</strong> Não estão inclusos neste contrato serviços especiais, tais como: recuperação, reforço, 
+        segunda chamada, exames especiais, transporte escolar, declarações, 2ª via de documentos, merenda escolar, atividades de frequência 
+        facultativa para o aluno, nem fornecimento de materiais de uso individual obrigatório, cujos valores serão fixados pela <strong>TESOURARIA</strong>.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo sexto.</strong> O <strong>CONTRATANTE</strong> se compromete a manter o <strong>CONTRATADO</strong> sempre informado, 
+        através de documentos específicos, sobre seus corretos e atuais dados, como: endereço, números de telefone, ou quaisquer alteração de 
+        identificação e qualificação constante no preâmbulo deste contrato, sob pena de, ocorrendo a devolução de qualquer e/ou notificação que 
+        lhe for enviada, ter-se como recebida e aceita, mesmo que se trate de recisão do presente contrato.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo sétimo.</strong> Reserva-se a escola o direito de, no prazo de 15 (quinze) dias após o início de cada período letivo, 
+        cancelar qualquer turma cujo número de alunos seja inferior a 5 (cinco) alunos, sendo facultada a possibilidade de pleitear uma vaga em 
+        outra turma do mesmo nível, em turno diverso do qual foi cancelado, desde que existente, devendo o aluno efetuar o pagamento da mensalidade 
+        correspondente ao turno e ao curso o disponível a ser contratado.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo oitavo.</strong> O aluno receberá no final do curso o certificado emitido pela escola sem taxas se houver 70% de frequência 
+        e média 7 (sete). Caso o aluno queira algum comprovante ele pode pedir da secretaria uma <strong>DECLARAÇÃO</strong> e deve pagar a taxa estipulada pela Tesouraria.
+    </div>
+
+    <div class="section-title">PREÇO / PAGAMENTO / INADIMPLÊNCIA</div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 2ª.</span> O <strong>CONTRATANTE</strong> indenizará ao <strong>INSTITUTO ARIRANG</strong> de qualquer 
+        dano causado ao patrimônio da instituição ao preço de mercado.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo primeiro.</strong> O <strong>CONTRATANTE</strong> está completamente ciente de que é proibido comercializar produtos comestíveis, 
+        roupas, cosméticos, calçados, etc., dentro das dependências da <strong>CONTRATANTE</strong>, salvo se expressamente autorizado pela Direção sob pena 
+        de lhe ser aplicado as penas previstas nesta IES.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 3ª.</span> Pelos serviços educacionais a serem prestados, o <strong>CONTRATANTE</strong> pagará à <strong>CONTRATADA</strong> 
+        <span th:if="${contrato.valorMatricula != null and contrato.valorMatricula > 0}">
+            o valor de <strong><span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto.add(valorMensalidadeComDesconto))}">R$ 300,00</span></strong> 
+            para a primeira mensalidade (incluindo taxa de matrícula de <strong><span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto)}">R$ 150,00</span></strong>), 
+            e o valor de <strong><span th:text="${#numbers.formatCurrency(valorMensalidadeComDesconto)}">R$ 150,00</span></strong> 
+            para as demais mensalidades, conforme o requerimento de matrícula, a ser paga da seguinte forma:
+        </span>
+        <span th:unless="${contrato.valorMatricula != null and contrato.valorMatricula > 0}">
+            o valor de <strong><span th:text="${#numbers.formatCurrency(valorMensalidadeComDesconto)}">R$ 150,00</span></strong> 
+            sendo a mensalidade conforme o requerimento de matrícula, a ser paga da seguinte forma:
+        </span>
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo primeiro.</strong> A primeira parcela mensal inclui a taxa de matrícula e o valor da primeira mensalidade, totalizando 
+        <strong>
+            <span th:if="${contrato.valorMatricula != null and contrato.valorMensalidade != null}">
+                <span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto.add(valorMensalidadeComDesconto))}">R$ 300,00</span>
+            </span>
+            <span th:unless="${contrato.valorMatricula != null and contrato.valorMensalidade != null}">
+                (valor conforme contrato)
+            </span>
+        </strong>
+        (Matrícula: <strong><span th:text="${#numbers.formatCurrency(valorMatriculaComDesconto)}">R$ 150,00</span></strong> 
+        + Primeira Mensalidade: <strong><span th:text="${#numbers.formatCurrency(valorMensalidadeComDesconto)}">R$ 150,00</span></strong>), 
+        como sinal, arras ou princípio de pagamento e condição de concretização do contrato de prestação de serviços, razão pela qual não será devolvida, 
+        no todo ou em parte, no caso de desistência por parte do <strong>CONTRATANTE</strong>.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo segundo.</strong> As demais parcelas deverão ser pagas sucessivamente e mensalmente a partir do segundo mês da prestação a que se refere este contrato, 
+        sempre com vencimento no dia décimo do dia do mês, no valor de <strong><span th:text="${#numbers.formatCurrency(valorMensalidadeComDesconto)}">R$ 150,00</span></strong> cada.<br>
+        Os pagamentos das mensalidades poderão ser efetuados via boleto bancário, transferência bancária, depósito bancário, no cartão de crédito ou débito das principais bandeiras, 
+        via PIX ou na própria escola por carnê.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo terceiro.</strong> A rematricula terá o mesmo valor da matrícula a cada início de módulo proposto pelo calendário escolar informado previamente pela escola.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo quarto.</strong> O pagamento das obrigações financeiras do <strong>CONTRATANTE</strong> comprovar-se-á mediante apresentação do respectivo comprovante pago.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 4ª.</span> Tolera-se eventualmente o atraso no pagamento até o vigésimo dia do mês, sem a incidência de multa ou juros, não caracterizando 
+        essa tolerância uma novação contratual. Deve-se observar que tal liberdade não significa alteração das datas previstas para pagamento.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo único.</strong> Ocorrendo o atraso superior ao mencionado no caput desta Cláusula, referente a qualquer parcela, o <strong>CONTRATANTE</strong> pagará o principal, 
+        devidamente atualizado com base no IGP-M, calculada cumulativamente até o efetivo pagamento. Na impossibilidade de aplicação de tal índice indexador será aplicado o que melhor 
+        refletir a real desvalorização da moeda nacional, desde a data do inadimplemento até o efetivo pagamento. Será acrescida multa de <strong>2%</strong> sobre o valor principal corrigido 
+        mais juros de mora de <strong>1%</strong> ao mês.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 5ª.</span> Ocorrendo atraso do pagamento superior a 30 dias, a <strong>CONTRATADA</strong> poderá:<br>
+        1- Efetuar a inclusão do nome do <strong>CONTRATANTE</strong> no cadastro de Serviço de Proteção de Crédito - SPC, consoante autorização da legislação vigente;<br>
+        2- Efetuar cobrança judicial e extrajudicial da parcela em aberto, mais o reembolso de honorários advocatícios, podendo, além destes, utilizar-se de outros meios previstos na 
+        legislação comum aplicável, para buscar a solvência do débito.<br>
+        3- Recusar a matrícula para o semestre seguinte.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 6ª.</span> A <strong>CONTRATADA</strong> poderá ou não, a seu critério, renovar a matrícula do aluno para o semestre seguinte, se houver débito 
+        relativo ao período anterior ou se tiver havido inadimplência de parcela por período superior a 60 (sessenta) dias.
+    </div>
+
+    <div class="section-title">PRAZO</div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 7ª.</span> O presente contrato tem duração até o final do módulo contratado, podendo ser rescindido, de acordo com o estipulado na cláusula 9ª e 12ª
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo único.</strong> O prazo de vigência do presente contrato poderá ser prorrogado por tantos semestres iguais e subsequentes, até a conclusão do curso do <strong>CONTRATANTE</strong>, 
+        desde de que o mesmo esteja em dias com todas as suas obrigações financeiras. A renovação de que trata esta cláusula não se dará de forma automaticamente, devendo o <strong>CONTRATANTE</strong> 
+        comparecer em data estipulada para a ciência de alguns ajustes e assinatura do termo, após o pagamento da primeira taxa de rematricula/ mensalidade do módulo seguinte.
+    </div>
+
+    <div class="section-title">DESLIGAMENTO</div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 8ª.</span> Os pedidos de transferência, cancelamento, desistência da matrícula deverão ser requeridos presencialmente pelo <strong>CONTRATANTE</strong> 
+        na secretaria da escola.<br>
+        A escola terá um prazo de até 30 (trinta) dias úteis para fornecer a documentação de interesse do aluno contado da data do protocolo de pedido da secretaria.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 9ª.</span> O presente contrato poderá ser rescindido pela <strong>CONTRATANTE</strong>, a qualquer tempo, ficando o mesmo responsável pelo pagamento de 
+        <strong>20%</strong> do débito total com a escola.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 10ª.</span> Ao efetuar o desligamento do estabelecimento de ensino, conforme termo assinado pelas partes, perdem efeito os eventuais títulos de crédito 
+        dados em garantia do pagamento das parcelas vincendas após o efetivo desligamento.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 11ª.</span> Se depois de formalizada a matrícula, houver desistência pela <strong>CONTRATANTE</strong>, antes que sejam iniciados os serviços previstos na 
+        cláusula primeira, serão devolvidos <strong>80%</strong> do valor pago na matrícula, sem correção, ficano retido <strong>20%</strong> para a <strong>CONTRATADA</strong>, desde que a comunicação da 
+        desistência seja feita por escrito até o último dia do mês.
+    </div>
+
+    <div class="paragraph">
+        <strong>Parágrafo único.</strong> Após a data limite especificada na cláusula 10ª, será retido o valor integral pago na matrícula
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 12ª.</span> O presente contrato poderá ser rescindido pela <strong>CONTRATADA</strong> em caso de prática pelo <strong>ALUNO</strong>, de atos de indisciplina 
+        ou outros previstos no Regime Escolar bem como por inadimplência contratual de parcelas vencidas superior a 90 (noventa) dias sendo devidas as mensalidades até a data do efetivo desligamento.
+    </div>
+
+    <div class="section-title">DISCUSSÃO SOCIAL</div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 13ª.</span> Em caso de discussão judicial sobre o presente contrato, o contratante continuará pagando diretamente a contratada o valor pactuado, até decisão 
+        final, fazendo-se então as compensações necessárias.
+    </div>
+
+    <div class="clause">
+        <span class="clause-number">CLÁUSULA 14ª</span> Fica eleito o foro da comarca de Manaus - AM para dirimir eventuais dúvidas e controvérsias oriundas do presente contrato. E por estarem assim 
+        justos e contratados, firmam o presente instrumento em duas vias de igual teor com duas testemunhas.
+    </div>
+
+    <div class="date-time">
+        Manaus <span th:if="${contrato.dataContrato != null}" th:text="${#temporals.format(contrato.dataContrato, 'dd')}">______</span>
+        <span th:unless="${contrato.dataContrato != null}">______</span> de 
+        <span th:if="${contrato.dataContrato != null}" th:text="${#temporals.format(contrato.dataContrato, 'MMMM')}">________</span>
+        <span th:unless="${contrato.dataContrato != null}">______</span> de 
+        <span th:if="${contrato.dataContrato != null}" th:text="${#temporals.format(contrato.dataContrato, 'yyyy')}">2023</span>
+        <span th:unless="${contrato.dataContrato != null}">____</span><br>
+        <span th:text="${#temporals.format(#temporals.createNow(), 'HH:mm:ss')}">12:37:37</span>
+    </div>
+
+    <div class="signature-section" style="page-break-inside: avoid; margin-top: 60px; padding: 20px 0;">
+        <!-- INSTITUTO / DIRETOR / CONTRATANTE (lado a lado) -->
+        <div style="width: 100%; margin-bottom: 50px; display: table;">
+            <!-- Instituto / Diretor -->
+            <div style="display: table-cell; width: 50%; padding-right: 3%; vertical-align: top;">
+                <div style="border-top: 2px solid #000; padding-top: 15px; min-height: 80px; text-align: center;">
+                    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6px;">
+                        INSTITUTO ARIRANG - IA
+                    </div>
+                    <div style="font-size: 10pt; margin-bottom: 4px;">
+                        CNPJ: 34.099.780/0001-90
+                    </div>
+                    <div style="font-size: 10pt;">
+                        Diretor: ERYSTENYS REIS COSTA FILHO
+                    </div>
+                </div>
+            </div>
+            <!-- Contratante (Responsável/Aluno) -->
+            <div style="display: table-cell; width: 50%; padding-left: 3%; vertical-align: top;">
+                <div style="border-top: 2px solid #000; padding-top: 15px; min-height: 80px; text-align: center;">
+                    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6px;">
+                        CONTRATANTE / RESPONSÁVEL
+                    </div>
+                    <div style="font-size: 10pt;">
+                        CPF:
+                        <!-- Para menor de idade, priorizar sempre o CPF do responsável quando existir -->
+                        <span th:if="${aluno.responsavel != null and aluno.responsavel.cpf != null}" th:text="${aluno.responsavel.cpf}">______</span>
+                        <span th:if="${(aluno.responsavel == null or aluno.responsavel.cpf == null) and aluno.cpf != null}" th:text="${aluno.cpf}">______</span>
+                        <span th:if="${(aluno.responsavel == null or aluno.responsavel.cpf == null) and aluno.cpf == null}">______</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TESTEMUNHAS (lado a lado) -->
+        <div style="width: 100%; margin-top: 20px; clear: both; display: table;">
+            <div style="display: table-cell; width: 50%; padding-right: 3%; vertical-align: top;">
+                <div style="border-top: 2px solid #000; padding-top: 15px; min-height: 80px; text-align: center;">
+                    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6px;">
+                        TESTEMUNHA 1
+                    </div>
+                    <div style="font-size: 10pt;">
+                        CPF: ______________________________
+                    </div>
+                </div>
+            </div>
+            <div style="display: table-cell; width: 50%; padding-left: 3%; vertical-align: top;">
+                <div style="border-top: 2px solid #000; padding-top: 15px; min-height: 80px; text-align: center;">
+                    <div style="font-size: 11pt; font-weight: bold; margin-bottom: 6px;">
+                        TESTEMUNHA 2
+                    </div>
+                    <div style="font-size: 10pt;">
+                        CPF: ______________________________
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Av. Floriano Peixoto, Nº394 – CENTRO, CEP 69055-070, Manaus – AM</p>
+        <p>CNPJ: 34.099.780/0001-90 | Contato: + 55 (92) 99240-7587</p>
+        <p>"뭐든지 할 수 있어요"</p>
+    </div>
+    </div>
+    
+    <!-- Script de download automático quando em modo download -->
+    <script th:if="${downloadMode != null and downloadMode == true}" src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script th:if="${downloadMode != null and downloadMode == true}" th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            const nomeArquivo = /*[[${nomeArquivo}]]*/ 'contrato.pdf';
+            
+            // Função para aguardar todas as imagens carregarem
+            function waitForImages(callback) {
+                const images = document.querySelectorAll('img');
+                let loadedCount = 0;
+                const totalImages = images.length;
+                
+                if (totalImages === 0) {
+                    callback();
+                    return;
+                }
+                
+                images.forEach(function(img) {
+                    if (img.complete) {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            callback();
+                        }
+                    } else {
+                        img.onload = function() {
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                callback();
+                            }
+                        };
+                        img.onerror = function() {
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                callback();
+                            }
+                        };
+                    }
+                });
+                
+                // Timeout de segurança
+                setTimeout(callback, 5000);
+            }
+            
+            // Aguardar imagens e renderização completa
+            waitForImages(function() {
+                setTimeout(function() {
+                    try {
+                        const element = document.body;
+                        
+                        if (!element) {
+                            throw new Error('Conteúdo do contrato não encontrado');
+                        }
+                        
+                        // Configurações otimizadas para renderização fiel ao HTML
+                        const opt = {
+                            margin: [25, 25, 25, 25], // Margens em mm (equivalente a @page margin: 2.5cm)
+                            filename: nomeArquivo,
+                            image: { 
+                                type: 'jpeg', 
+                                quality: 1.0 // Qualidade máxima
+                            },
+                            html2canvas: { 
+                                scale: 2, // Escala alta para melhor qualidade
+                                useCORS: true, // Permite carregar imagens de outras origens
+                                logging: false,
+                                letterRendering: true, // Melhora renderização de texto
+                                backgroundColor: '#ffffff', // Fundo branco
+                                windowWidth: element.scrollWidth, // Largura real do conteúdo
+                                windowHeight: element.scrollHeight, // Altura real do conteúdo
+                                onclone: function(clonedDoc) {
+                                    // Garantir que estilos sejam aplicados no clone
+                                    const clonedBody = clonedDoc.body;
+                                    clonedBody.style.fontFamily = "Times New Roman, serif";
+                                    clonedBody.style.color = "#000";
+                                    clonedBody.style.backgroundColor = "#fff";
+                                }
+                            },
+                            jsPDF: { 
+                                unit: 'mm', 
+                                format: 'a4', 
+                                orientation: 'portrait',
+                                precision: 16 // Alta precisão
+                            },
+                            pagebreak: { 
+                                mode: ['avoid-all', 'css', 'legacy'],
+                                avoid: ['tr', '.signature-section', '.section'] // Evita quebrar em elementos importantes
+                            }
+                        };
+                        
+                        // Gerar e baixar PDF
+                        html2pdf().set(opt).from(element).save().then(function() {
+                            // Fechar a janela após download
+                            setTimeout(function() {
+                                if (window.opener) {
+                                    window.close();
+                                } else {
+                                    window.location.href = '/contratos';
+                                }
+                            }, 1000);
+                        }).catch(function(error) {
+                            console.error('Erro ao gerar PDF:', error);
+                            alert('Erro ao gerar PDF automaticamente. Você pode usar Ctrl+P -> Salvar como PDF com o nome: ' + nomeArquivo);
+                            if (window.opener) {
+                                window.close();
+                            } else {
+                                window.location.href = '/contratos';
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Erro ao processar contrato:', error);
+                        alert('Erro ao processar contrato: ' + error.message + '. Você pode usar Ctrl+P -> Salvar como PDF com o nome: ' + nomeArquivo);
+                        if (window.opener) {
+                            window.close();
+                        } else {
+                            window.location.href = '/contratos';
+                        }
+                    }
+                }, 1000); // Aguardar 1 segundo adicional após imagens carregarem
+            });
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>
+

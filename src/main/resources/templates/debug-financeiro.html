@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Financeiro - Plataforma Arirang</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>Plataforma Arirang
+            </a>
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link" href="/alunos">Alunos</a>
+                <a class="nav-link" href="/turmas">Turmas</a>
+                <a class="nav-link" href="/boletim">Boletins</a>
+                <a class="nav-link" href="/contratos-v2">Contratos V2</a>
+                <a class="nav-link active" href="/financeiro">Financeiro</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-bug me-2"></i>Debug Financeiro</h1>
+            <div>
+                <a href="/financeiro" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Voltar
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h2 class="h5 mb-0"><i class="fas fa-chart-bar me-2"></i>Movimentos Financeiros (<span th:text="${totalMovimentos}">0</span>)</h2>
+            </div>
+            <div class="card-body">
+                <div th:if="${movimentos.isEmpty()}" class="alert alert-info">
+                    Nenhum movimento financeiro encontrado no banco de dados.
+                </div>
+                <div th:unless="${movimentos.isEmpty()}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Confirmado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="movimento : ${movimentos}">
+                                <td th:text="${movimento.id}"></td>
+                                <td>
+                                    <span th:if="${movimento.tipoMovimento.name() == 'RECEITA'}" class="badge badge-success">💰 Receita</span>
+                                    <span th:if="${movimento.tipoMovimento.name() == 'DESPESA'}" class="badge badge-danger">💸 Despesa</span>
+                                </td>
+                                <td th:text="${#numbers.formatDecimal(movimento.valor, 1, 2)}">R$ 0,00</td>
+                                <td th:text="${#temporals.format(movimento.dataMovimento, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${movimento.descricao}"></td>
+                                <td th:text="${movimento.categoria}"></td>
+                                <td>
+                                    <span th:if="${movimento.confirmado}" class="badge badge-success">✅ Sim</span>
+                                    <span th:unless="${movimento.confirmado}" class="badge badge-warning">⏳ Não</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h5 mb-0"><i class="fas fa-info-circle me-2"></i>Informações de Debug</h2>
+            </div>
+            <div class="card-body">
+                <p>Esta página exibe todos os movimentos financeiros diretamente do banco de dados para auxiliar na depuração.</p>
+                <p>Se você não vê movimentos aqui, mas criou alguns, pode haver um problema com:</p>
+                <ul>
+                    <li>Persistência no banco de dados</li>
+                    <li>Transações não commitadas</li>
+                    <li>Problemas de configuração do banco</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

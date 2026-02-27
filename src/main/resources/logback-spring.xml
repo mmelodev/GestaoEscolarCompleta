@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <springProperty scope="context" name="LOG_PATH" source="LOG_PATH" defaultValue="logs" />
+    <springProperty scope="context" name="LOG_SQL_LEVEL" source="LOG_SQL_LEVEL" defaultValue="WARN" />
+    <property name="APP_NAME" value="plataforma" />
+    <property name="FILE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+    <property name="CONSOLE_PATTERN" value="%d{HH:mm:ss.SSS} %-5level [%thread] %cyan(%logger{36}) - %msg%n" />
+
+    <!-- ===== Console appenders ===== -->
+    <appender name="ConsoleDev" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ConsoleProd" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== File appenders ===== -->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/${APP_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ===== Async wrapper to avoid blocking ===== -->
+    <appender name="AsyncFile" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="RollingFile" />
+    </appender>
+
+    <!-- ===== Profiles ===== -->
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="ConsoleDev" />
+            <appender-ref ref="AsyncFile" />
+        </root>
+
+        <logger name="br.com.arirang.plataforma" level="DEBUG" />
+        <logger name="org.springframework" level="INFO" />
+        <logger name="org.hibernate.SQL" level="${LOG_SQL_LEVEL}" />
+        <logger name="org.hibernate.type.descriptor.sql" level="${LOG_SQL_LEVEL}" />
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="ConsoleProd" />
+            <appender-ref ref="AsyncFile" />
+        </root>
+
+        <logger name="br.com.arirang.plataforma" level="INFO" />
+        <logger name="org.springframework" level="WARN" />
+        <logger name="org.hibernate" level="WARN" />
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="ERROR">
+            <appender-ref ref="ConsoleProd" />
+        </root>
+        <logger name="br.com.arirang.plataforma" level="ERROR" />
+    </springProfile>
+
+</configuration>
+
+

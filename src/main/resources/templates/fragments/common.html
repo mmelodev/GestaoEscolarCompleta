@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8" />
+    <title th:text="${title}">AriranG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" th:href="@{/css/cadastro.css?v=1.0}" />
+    <link rel="stylesheet" th:href="@{/css/forms.css}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header th:fragment="header">
+    <div style="padding: 1rem 2rem; background:#f4f6f8; border-bottom:1px solid #e0e0e0;">
+        <a th:href="@{/}" style="text-decoration:none; color:#111; font-weight:bold;">AriranG</a>
+        <nav style="margin-top:.5rem; display:flex; gap:1rem;">
+            <a th:href="@{/alunos/lista}">Alunos</a>
+            <a th:href="@{/professores}">Professores</a>
+            <a th:href="@{/turmas}">Turmas</a>
+            <a th:href="@{/cadastro}">Cadastros</a>
+        </nav>
+    </div>
+</header>
+
+<footer th:fragment="footer">
+    <div style="padding:1rem 2rem; border-top:1px solid #e0e0e0; color:#1a1a1a; font-size:.9rem;">
+        © <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2024</span> AriranG
+    </div>
+</footer>
+
+<!-- Fragmento para token CSRF -->
+<input th:fragment="csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+</body>
+</html>
+
+

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css?v=2.1}" />
+    <link rel="stylesheet" th:href="@{/css/cadastro-mobile.css?v=1.0}" />
+</head>
+<body>
+
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element active">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Cadastro Geral</h1>
+        <div class="top-actions">
+            <form method="get" th:action="@{/cadastro}" class="filter-form">
+                <input type="text" name="search" placeholder="Pesquisar..." class="search-bar" th:value="${searchTerm}" />
+                <button type="submit" class="btn pesquisar">Pesquisar</button>
+                <a th:href="@{/cadastro}" class="btn cadastrar">Limpar</a>
+            </form>
+            <div class="cadastrar-options" style="display: flex; gap: 10px;">
+                <a th:href="@{/alunos/novo}" class="btn cadastrar">+ Cadastrar Aluno</a>
+                <a th:href="@{/professores/novo}" class="btn cadastrar">+ Cadastrar Professor</a>
+                <a th:href="@{/turmas/novo}" class="btn cadastrar">+ Cadastrar Turma</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${cadastros}">
+                <td data-label="Tipo" th:text="${item.tipo}"></td>
+                <td data-label="Nome" th:text="${item.nome}"></td>
+                <td data-label="E-mail" th:text="${item.email != null ? item.email : '-'}"></td>
+                <td data-label="Telefone" th:text="${item.telefone != null ? item.telefone : '-'}"></td>
+                <td data-label="Ações" class="acoes">
+                    <a th:href="@{/alunos/editar/{id}(id=${item.id})}" th:if="${item.tipo == 'Aluno'}" class="btn editar">Editar</a>
+                    <a th:href="@{/professores/editar/{id}(id=${item.id})}" th:if="${item.tipo == 'Professor'}" class="btn editar">Editar</a>
+                    <a th:href="@{/turmas/editar/{id}(id=${item.id})}" th:if="${item.tipo == 'Turma'}" class="btn editar">Editar</a>
+                    <a th:href="@{/alunos/deletar/{id}(id=${item.id})}" th:if="${item.tipo == 'Aluno'}" class="btn deletar">Deletar</a>
+                    <a th:href="@{/professores/deletar/{id}(id=${item.id})}" th:if="${item.tipo == 'Professor'}" class="btn deletar">Deletar</a>
+                    <a th:href="@{/turmas/deletar/{id}(id=${item.id})}" th:if="${item.tipo == 'Turma'}" class="btn deletar">Deletar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer></footer>
+
+<script th:src="@{/js/mobile-menu.js?v=1.0}" defer></script>
+
+<!-- Modal de Erro/Sucesso -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+    text-decoration: none !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.close:hover {
+    color: black;
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+// Verificar se há erro ou sucesso (via flash attribute ou URL)
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar flash attributes primeiro (Thymeleaf) - evita problemas de codificação
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    
+    if (errorFlash) {
+        mostrarMensagem('Erro', errorFlash);
+    } else if (successFlash) {
+        mostrarMensagem('Sucesso', successFlash);
+    } else {
+        // Fallback: verificar URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const success = urlParams.get('success');
+        
+        if (error) {
+            // Decodificar corretamente caracteres especiais
+            const errorDecoded = decodeURIComponent(error.replace(/\+/g, ' '));
+            mostrarMensagem('Erro', errorDecoded);
+            // Limpar a URL removendo o parâmetro de erro
+            const url = new URL(window.location);
+            url.searchParams.delete('error');
+            window.history.replaceState({}, document.title, url);
+        } else if (success) {
+            // Decodificar corretamente caracteres especiais
+            const successDecoded = decodeURIComponent(success.replace(/\+/g, ' '));
+            mostrarMensagem('Sucesso', successDecoded);
+            // Limpar a URL removendo o parâmetro de sucesso
+            const url = new URL(window.location);
+            url.searchParams.delete('success');
+            window.history.replaceState({}, document.title, url);
+        }
+    }
+});
+
+function mostrarMensagem(titulo, mensagem) {
+    document.getElementById('messageTitle').textContent = titulo;
+    document.getElementById('messageText').textContent = mensagem;
+    document.getElementById('messageModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+// Fechar modal ao clicar no X
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.onclick = fecharModal;
+    }
+});
+
+// Fechar modal ao clicar fora dele
+window.onclick = function(event) {
+    const modal = document.getElementById('messageModal');
+    if (event.target === modal) {
+        fecharModal();
+    }
+}
+/*]]>*/
+</script>
+
+</body>
+</html>

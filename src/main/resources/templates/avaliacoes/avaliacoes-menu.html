@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliações - Plataforma Arirang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stats-card h3 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .stats-card p {
+            margin-bottom: 0;
+            opacity: 0.9;
+        }
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+        .action-card h5 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-outline-primary {
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+        .btn-outline-primary:hover {
+            background: #667eea;
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        .icon-large {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row">
+            <div class="col-12">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="/">
+                            <i class="fas fa-graduation-cap me-2"></i>
+                            Plataforma Arirang
+                        </a>
+                        <div class="navbar-nav ms-auto">
+                            <a class="nav-link" href="/alunos">Alunos</a>
+                            <a class="nav-link" href="/turmas">Turmas</a>
+                            <a class="nav-link" href="/boletim">Boletins</a>
+                            <a class="nav-link active" href="/avaliacoes">Avaliações</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Título -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="text-center">
+                    <i class="fas fa-clipboard-check me-3"></i>
+                    Sistema de Avaliações
+                </h1>
+                <p class="text-center text-muted">Gerencie avaliações e notas dos alunos</p>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stats-card text-center">
+                    <h3 th:text="${totalAvaliacoes}">0</h3>
+                    <p><i class="fas fa-clipboard-list me-2"></i>Total de Avaliações</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card text-center">
+                    <h3 th:text="${avaliacoesAtivas}">0</h3>
+                    <p><i class="fas fa-play-circle me-2"></i>Avaliações Ativas</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card text-center">
+                    <h3 th:text="${avaliacoesFinalizadas}">0</h3>
+                    <p><i class="fas fa-check-circle me-2"></i>Avaliações Finalizadas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="action-card text-center">
+                    <i class="fas fa-plus-circle icon-large"></i>
+                    <h5>Criar Nova Avaliação</h5>
+                    <p class="text-muted mb-3">Crie uma nova avaliação para uma turma específica</p>
+                    <a href="/avaliacoes/nova" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Criar Avaliação
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="action-card text-center">
+                    <i class="fas fa-list icon-large"></i>
+                    <h5>Listar Avaliações</h5>
+                    <p class="text-muted mb-3">Visualize todas as avaliações cadastradas</p>
+                    <a href="/avaliacoes/lista" class="btn btn-outline-primary">
+                        <i class="fas fa-list me-2"></i>Ver Lista
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avaliações Recentes -->
+        <div class="row mt-4" th:if="${avaliacoes != null and !avaliacoes.empty}">
+            <div class="col-12">
+                <div class="action-card">
+                    <h5><i class="fas fa-clock me-2"></i>Avaliações Recentes</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nome da Avaliação</th>
+                                    <th>Turma</th>
+                                    <th>Tipo</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="avaliacao : ${avaliacoes}" th:if="${avaliacao.ativa}">
+                                    <td th:text="${avaliacao.nomeAvaliacao}">Nome da Avaliação</td>
+                                    <td th:text="${avaliacao.turmaNome}">Nome da Turma</td>
+                                    <td>
+                                        <span class="badge bg-info" th:text="${avaliacao.tipoAvaliacao.descricao}">Tipo</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(avaliacao.dataAvaliacao, 'dd/MM/yyyy')}">Data</td>
+                                    <td>
+                                        <span class="badge bg-success" th:if="${avaliacao.ativa}">Ativa</span>
+                                        <span class="badge bg-secondary" th:unless="${avaliacao.ativa}">Finalizada</span>
+                                    </td>
+                                    <td>
+                                        <a th:href="@{/avaliacoes/{id}(id=${avaliacao.id})}" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a th:href="@{/avaliacoes/{id}/editar(id=${avaliacao.id})}" class="btn btn-sm btn-outline-warning me-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successMessage}">Mensagem de sucesso</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorMessage}">Mensagem de erro</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debug Contratos V2 - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos-v2}"><li class="nav-element active">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Debug Contratos V2</h1>
+        <div class="top-actions">
+            <a th:href="@{/contratos-v2/novo}" class="btn editar">🧪 Criar Contrato de Teste</a>
+            <a th:href="@{/contratos-v2}" class="btn turma">📋 Ver Lista</a>
+        </div>
+    </section>
+
+    <section style="margin: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; border-left: 4px solid #007bff;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0; font-size: 14px;">Total de Contratos</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin: 0;"
+               th:text="${totalContratos != null ? totalContratos : 0}">0</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; border-left: 4px solid #17a2b8;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0; font-size: 14px;">Próximo ID</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin: 0;"
+               th:text="${proximoId != null ? proximoId : 0}">0</p>
+        </div>
+    </section>
+
+    <section class="tabela-container" th:if="${contratos != null and !contratos.isEmpty()}">
+        <h2 style="color: aliceblue !important; text-decoration: none !important; margin-bottom: 20px;">🧠 Contratos na Memória</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Aluno</th>
+                <th>Turma</th>
+                <th>Matrícula</th>
+                <th>Mensalidade</th>
+                <th>Parcelas</th>
+                <th>Data</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="contrato : ${contratos}">
+                <td th:text="${contrato.id}">1</td>
+                <td th:text="${contrato.alunoNome}">João Silva</td>
+                <td th:text="${contrato.turmaNome}">Zebra</td>
+                <td th:text="${#numbers.formatCurrency(contrato.valorMatricula)}">R$ 0,00</td>
+                <td th:text="${#numbers.formatCurrency(contrato.valorMensalidade)}">R$ 0,00</td>
+                <td th:text="${contrato.numeroParcelas}">0</td>
+                <td th:text="${contrato.dataContrato != null ? #temporals.format(contrato.dataContrato, 'dd/MM/yyyy') : '-'}">-</td>
+                <td>
+                    <span class="situacao-badge situacao-indefinida"
+                          th:text="${contrato.situacaoContrato != null ? contrato.situacaoContrato : (contrato.status != null ? contrato.status : 'INDEFINIDO')}">INDEFINIDO</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="tabela-container" th:if="${contratos == null or contratos.isEmpty()}">
+        <div style="text-align: center; padding: 40px; color: aliceblue;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important;">✅ Nenhum contrato na memória</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important;">Os contratos em memória são perdidos quando a aplicação reinicia.</p>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+
+<!-- Modal de Erro/Sucesso/Aviso -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+    text-decoration: none !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.close:hover {
+    color: black;
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+document.addEventListener('DOMContentLoaded', function() {
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    const warningFlash = /*[[${warning}]]*/ null;
+
+    if (errorFlash) { mostrarMensagem('Erro', errorFlash); return; }
+    if (warningFlash) { mostrarMensagem('Aviso', warningFlash); return; }
+    if (successFlash) { mostrarMensagem('Sucesso', successFlash); return; }
+});
+
+function mostrarMensagem(titulo, mensagem) {
+    document.getElementById('messageTitle').textContent = titulo;
+    document.getElementById('messageText').textContent = mensagem;
+    document.getElementById('messageModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) closeBtn.onclick = fecharModal;
+});
+
+window.onclick = function(event) {
+    const modal = document.getElementById('messageModal');
+    if (event.target === modal) fecharModal();
+}
+/*]]>*/
+</script>
+</body>
+</html>

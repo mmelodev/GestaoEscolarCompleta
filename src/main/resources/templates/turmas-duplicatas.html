@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Turmas Duplicadas - AriranG</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        .duplicatas-container {
+            margin: 2rem auto;
+            max-width: 1200px;
+            padding: 1rem;
+        }
+        .duplicata-group {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .duplicata-group h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .duplicata-ids {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 4px;
+        }
+        .duplicata-ids span {
+            display: inline-block;
+            margin: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+        .no-duplicatas {
+            text-align: center;
+            padding: 2rem;
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            color: #155724;
+        }
+        p {
+            color: #1a1a1a;
+        }
+        .duplicata-group p {
+            color: #1a1a1a;
+        }
+        .no-duplicatas p {
+            color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element active">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element">Financeiro</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Verificação de Turmas Duplicadas</h1>
+        <div class="top-actions">
+            <a th:href="@{/turmas}" class="btn cadastrar">← Voltar para Turmas</a>
+        </div>
+    </section>
+
+    <section class="duplicatas-container">
+        <div th:if="${temDuplicatas}">
+            <div th:each="duplicata : ${duplicatas}" class="duplicata-group">
+                <h3 th:text="'Turma: ' + ${duplicata.nomeTurma}"></h3>
+                <p><strong>Quantidade de duplicatas:</strong> <span th:text="${duplicata.quantidade}"></span></p>
+                <div class="duplicata-ids">
+                    <strong>IDs das turmas duplicadas:</strong>
+                    <span th:each="id : ${duplicata.ids}" th:text="'ID: ' + ${id}"></span>
+                </div>
+            </div>
+        </div>
+        <div th:if="${!temDuplicatas}" class="no-duplicatas">
+            <h2>✅ Nenhuma duplicata encontrada!</h2>
+            <p>Todas as turmas têm nomes únicos.</p>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+</body>
+</html>
+

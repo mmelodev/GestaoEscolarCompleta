@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TERMO DE AUTORIZAÇÃO DE USO DE IMAGEM E VOZ - ADULTO</title>
+    <style>
+        @page {
+            margin: 2.5cm;
+            size: A4;
+        }
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.8;
+            color: #000;
+            background-color: #fff;
+        }
+        .page {
+            max-width: 18cm;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            position: relative;
+            padding-top: 60px;
+        }
+        .logo-container {
+            text-align: left;
+            margin-bottom: 10px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .logo-container img {
+            max-width: 140px;
+            height: auto;
+        }
+        .content {
+            text-align: justify;
+            margin: 20px 0;
+        }
+        .field-line {
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 300px;
+            padding: 0 5px;
+            margin: 0 5px;
+        }
+        .field-value {
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 250px;
+            padding: 0 5px;
+            margin: 0 5px;
+            text-align: left;
+        }
+        .field-value-small {
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            display: inline-block;
+            min-width: 150px;
+            padding: 0 5px;
+            margin: 0 5px;
+            text-align: left;
+        }
+        .paragraph {
+            margin: 15px 0;
+            text-align: justify;
+        }
+        .signature-section {
+            margin-top: 60px;
+            page-break-inside: avoid;
+            padding: 30px 0;
+            clear: both;
+            display: block;
+            width: 100%;
+        }
+        .signature-line {
+            border-top: 2px solid #000;
+            margin-top: 20px;
+            padding-top: 20px;
+            min-height: 100px;
+            width: 100%;
+            font-size: 11pt;
+        }
+        .date-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 10pt;
+            text-align: center;
+            color: #333;
+        }
+        .action-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .action-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .btn-print {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-print:hover {
+            background-color: #0056b3;
+        }
+        .btn-close {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-close:hover {
+            background-color: #545b62;
+        }
+        @media print {
+            .action-buttons {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Botões de Ação -->
+    <div class="action-buttons">
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-close" onclick="window.close()">❌ Sair</button>
+    </div>
+    <div class="page">
+    <div class="header">
+        <div class="logo-container">
+                <img th:src="@{/img/horizontal.png}" alt="AriranG Logo" />
+        </div>
+        TERMO DE AUTORIZAÇÃO DE USO DE IMAGEM E VOZ ADULTO
+    </div>
+
+    <div class="content">
+        <p class="paragraph">
+            Neste ato, eu, <span class="field-value">
+                <span th:if="${aluno.nomeCompleto != null}" th:text="${aluno.nomeCompleto}">Nome do Aluno</span>
+                <span th:unless="${aluno.nomeCompleto != null}">_____________________________________________________________</span>
+            </span><span th:if="${turma != null and turma.idioma != null and !turma.idioma.trim().isEmpty()}">
+                , interessado(a) em estudar <strong th:text="${turma.idioma}">idioma</strong>
+            </span>, 
+            nacionalidade <span class="field-value">
+                <span th:if="${aluno.nacionalidade != null}" th:text="${aluno.nacionalidade}">Brasileira</span>
+                <span th:unless="${aluno.nacionalidade != null}">__________________________________</span>
+            </span> 
+            estado civil <span class="field-value-small">_________________</span>, Portador da 
+            Cédula de Identidade RG nº <span class="field-value">
+                <span th:if="${aluno.rg != null}" th:text="${aluno.rg}">RG</span>
+                <span th:unless="${aluno.rg != null}">________________________________________</span>
+            </span>, 
+            Inscrito no CPF sob nº <span class="field-value">
+                <span th:if="${aluno.cpf != null}" th:text="${aluno.cpf}">CPF</span>
+                <span th:unless="${aluno.cpf != null}">_____________________________________________</span>
+            </span>, 
+            residente à Av/Rua <span class="field-value">
+                <span th:if="${aluno.endereco != null and aluno.endereco.logradouro != null}" th:text="${aluno.endereco.logradouro}">Av/Rua</span>
+                <span th:unless="${aluno.endereco != null and aluno.endereco.logradouro != null}">______________________________________________________</span>
+            </span>, 
+            nº. <span class="field-value-small">
+                <span th:if="${aluno.endereco != null and aluno.endereco.numero != null}" th:text="${aluno.endereco.numero}">Número</span>
+                <span th:unless="${aluno.endereco != null and aluno.endereco.numero != null}">_________</span>
+            </span> 
+            Cidade de <span class="field-value">
+                <span th:if="${aluno.endereco != null and aluno.endereco.cidade != null}" th:text="${aluno.endereco.cidade}">Cidade</span>
+                <span th:unless="${aluno.endereco != null and aluno.endereco.cidade != null}">________________________________________________________________</span>
+            </span>, 
+            Estado <span class="field-value-small">
+                <span th:if="${aluno.endereco != null and aluno.endereco.estado != null}" th:text="${aluno.endereco.estado}">AM</span>
+                <span th:unless="${aluno.endereco != null and aluno.endereco.estado != null}">___________________________________</span>
+            </span>, 
+            CEP <span class="field-value-small">
+                <span th:if="${aluno.endereco != null and aluno.endereco.cep != null}" th:text="${aluno.endereco.cep}">69000-000</span>
+                <span th:unless="${aluno.endereco != null and aluno.endereco.cep != null}">________________</span>
+            </span>. 
+            <strong>AUTORIZO</strong> ao <strong>INSTITUTO ARIRANG</strong> o uso de minha imagem e voz em todo e qualquer material entre fotos, vídeos e documentos, para 
+            ser utilizada em campanhas promocionais e institucionais, sejam essas destinadas à divulgação ao público em geral. A presente autorização é concedida a título gratuito, 
+            abrangendo o uso da imagem e voz acima mencionada em todo território nacional e no exterior, das seguintes formas: outdoor; busdoor; folhetos em geral (encartes, mala direta, 
+            catálogo, etc.); folder de apresentação; anúncios em revistas e jornais em geral; home page, facebook, instagram, whatsapp e outros do gênero; cartazes; back-light; mídia 
+            eletrônica (painéis, vídeo-tapes, televisão, cinema, programa para rádio, entre outros) com referência ao <strong>Programa Ações Formativas Integradas - AFIN</strong>. 
+            Por esta ser a expressão da minha vontade declaro que autorizo o uso acima descrito sem que nada haja a ser reclamado a título de direitos 
+            conexos à minha imagem e voz ou a qualquer outro.
+        </p>
+    </div>
+
+    <div class="date-section">
+        <p>
+            Manaus <span class="field-value">
+                <span th:if="${contrato.dataContrato != null}" th:text="${#temporals.format(contrato.dataContrato, 'dd')}">______</span>
+                <span th:unless="${contrato.dataContrato != null}">______</span>
+            </span> de 
+            <span class="field-value">
+                <span th:if="${contrato.dataContrato != null}" th:text="${#temporals.format(contrato.dataContrato, 'MMMM')}">________</span>
+                <span th:unless="${contrato.dataContrato != null}">______</span>
+            </span> de 
+            <span class="field-value">
+                <span th:if="${contrato.dataContrato != null}" th:text="${#temporals.format(contrato.dataContrato, 'yyyy')}">2023</span>
+                <span th:unless="${contrato.dataContrato != null}">____</span>
+            </span>
+        </p>
+    </div>
+
+    <div class="signature-section" style="page-break-inside: avoid;">
+        <!-- DECLARANTE -->
+        <div style="width: 100%; margin-top: 40px; clear: both;">
+            <div style="border-top: 2px solid #000; padding-top: 20px; min-height: 100px;">
+                <div style="font-size: 11pt; margin-bottom: 15px; text-align: center;">
+                    <span th:if="${aluno.nomeCompleto != null}" th:text="${aluno.nomeCompleto}">Nome do Aluno</span>
+                    <span th:unless="${aluno.nomeCompleto != null}">______________________________________________________________</span>
+                </div>
+                <div style="font-size: 11pt; text-align: center; font-weight: bold; margin-top: 10px;">
+                    <strong>DECLARANTE</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>INSTITUTO ARIRANG - IA</p>
+        <p>Av. Floriano Peixoto, Nº394 – CENTRO, CEP 69055-070, Manaus – AM</p>
+        <p>CNPJ: 34.099.780/0001-90 | Contato: + 55 (92) 99240-7587</p>
+    </div>
+    </div>
+    
+    <!-- Script de download automático quando em modo download -->
+    <script th:if="${downloadMode != null and downloadMode == true}" src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script th:if="${downloadMode != null and downloadMode == true}" th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            const nomeArquivo = /*[[${nomeArquivo}]]*/ 'contrato.pdf';
+            
+            // Função para aguardar todas as imagens carregarem
+            function waitForImages(callback) {
+                const images = document.querySelectorAll('img');
+                let loadedCount = 0;
+                const totalImages = images.length;
+                
+                if (totalImages === 0) {
+                    callback();
+                    return;
+                }
+                
+                images.forEach(function(img) {
+                    if (img.complete) {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            callback();
+                        }
+                    } else {
+                        img.onload = function() {
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                callback();
+                            }
+                        };
+                        img.onerror = function() {
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                callback();
+                            }
+                        };
+                    }
+                });
+                
+                // Timeout de segurança
+                setTimeout(callback, 5000);
+            }
+            
+            // Aguardar imagens e renderização completa
+            waitForImages(function() {
+                setTimeout(function() {
+                    try {
+                        const element = document.body;
+                        
+                        if (!element) {
+                            throw new Error('Conteúdo do contrato não encontrado');
+                        }
+                        
+                        // Configurações otimizadas para renderização fiel ao HTML
+                        const opt = {
+                            margin: [25, 25, 25, 25], // Margens em mm (equivalente a @page margin: 2.5cm)
+                            filename: nomeArquivo,
+                            image: { 
+                                type: 'jpeg', 
+                                quality: 1.0 // Qualidade máxima
+                            },
+                            html2canvas: { 
+                                scale: 2, // Escala alta para melhor qualidade
+                                useCORS: true, // Permite carregar imagens de outras origens
+                                logging: false,
+                                letterRendering: true, // Melhora renderização de texto
+                                backgroundColor: '#ffffff', // Fundo branco
+                                windowWidth: element.scrollWidth, // Largura real do conteúdo
+                                windowHeight: element.scrollHeight, // Altura real do conteúdo
+                                onclone: function(clonedDoc) {
+                                    // Garantir que estilos sejam aplicados no clone
+                                    const clonedBody = clonedDoc.body;
+                                    clonedBody.style.fontFamily = "Times New Roman, serif";
+                                    clonedBody.style.color = "#000";
+                                    clonedBody.style.backgroundColor = "#fff";
+                                }
+                            },
+                            jsPDF: { 
+                                unit: 'mm', 
+                                format: 'a4', 
+                                orientation: 'portrait',
+                                precision: 16 // Alta precisão
+                            },
+                            pagebreak: { 
+                                mode: ['avoid-all', 'css', 'legacy'],
+                                avoid: ['tr', '.signature-section', '.section'] // Evita quebrar em elementos importantes
+                            }
+                        };
+                        
+                        // Gerar e baixar PDF
+                        html2pdf().set(opt).from(element).save().then(function() {
+                            // Fechar a janela após download
+                            setTimeout(function() {
+                                if (window.opener) {
+                                    window.close();
+                                } else {
+                                    window.location.href = '/contratos';
+                                }
+                            }, 1000);
+                        }).catch(function(error) {
+                            console.error('Erro ao gerar PDF:', error);
+                            alert('Erro ao gerar PDF automaticamente. Você pode usar Ctrl+P -> Salvar como PDF com o nome: ' + nomeArquivo);
+                            if (window.opener) {
+                                window.close();
+                            } else {
+                                window.location.href = '/contratos';
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Erro ao processar contrato:', error);
+                        alert('Erro ao processar contrato: ' + error.message + '. Você pode usar Ctrl+P -> Salvar como PDF com o nome: ' + nomeArquivo);
+                        if (window.opener) {
+                            window.close();
+                        } else {
+                            window.location.href = '/contratos';
+                        }
+                    }
+                }, 1000); // Aguardar 1 segundo adicional após imagens carregarem
+            });
+        });
+        /*]]>*/
+    </script>
+</body>
+</html>
+
+
+
+

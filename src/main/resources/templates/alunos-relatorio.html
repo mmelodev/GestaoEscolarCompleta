@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Relatório - Alunos por Turma</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.0}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <style>
+        .report-container { padding: 16px; }
+        .filters { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+        .filters select { padding: 6px 8px; }
+        .btn { padding: 8px 12px; border-radius: 8px; background: #0ea5e9; color: #fff; text-decoration: none; border: 0; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border-bottom: 1px solid #333; }
+        th { text-align: left; }
+    </style>
+    </head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+            </ul>
+        </nav>
+    </div>
+    </header>
+
+<main class="report-container">
+    <h1>Relatório: Alunos por Turma</h1>
+    <form method="get" th:action="@{/alunos/relatorio}" class="filters">
+        <label for="turmaId">Turma</label>
+        <select id="turmaId" name="turmaId">
+            <option th:value="" th:selected="${turmaSelecionada == null}">Selecione...</option>
+            <option th:each="t : ${turmas}"
+                    th:value="${t.id}"
+                    th:selected="${turmaSelecionada} == ${t.id}"
+                    th:text="${t.nomeTurma}"></option>
+        </select>
+        <button type="submit" class="btn">Filtrar</button>
+        <a th:href="@{/alunos/relatorio}" class="btn" style="background:#64748b">Limpar</a>
+    </form>
+
+    <section class="tabela-container" th:if="${alunos} != null">
+        <table>
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Turmas</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="aluno : ${alunos}">
+                <td th:text="${aluno.nomeCompleto}"></td>
+                <td th:text="${aluno.email}"></td>
+                <td th:text="${aluno.telefone}"></td>
+                <td>
+                    <span th:each="nome, iterStat : ${aluno.turmaNomes}">
+                        <span th:text="${nome}"></span>
+                        <span th:if="${!iterStat.last}">, </span>
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer></footer>
+</body>
+</html>
+
+

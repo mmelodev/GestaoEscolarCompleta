@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard Financeiro - AriranG</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo AriranG" /></a>
+        </div>
+        <nav>
+            <!-- Botão Hambúrguer - Mobile -->
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navList">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element active">Financeiro</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Dashboard Financeiro</h1>
+        <div class="top-actions">
+            <a th:href="@{/financeiro/mensalidades}" class="btn cadastrar">📅 Mensalidades</a>
+            <a th:href="@{/financeiro/receitas}" class="btn cadastrar">📊 Receitas</a>
+            <a th:href="@{/financeiro/pagamentos}" class="btn cadastrar">💳 Pagamentos</a>
+            <a th:href="@{/financeiro/pagamentos/novo}" class="btn editar">+ Novo Pagamento</a>
+        </div>
+    </section>
+
+    <!-- Cards de Estatísticas Gerais (Sincronizado com Mensalidades) -->
+    <section style="margin: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+        <!-- Mensalidades Pendentes -->
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; border-left: 4px solid #ffc107;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0; font-size: 14px;">Mensalidades Pendentes</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin: 0 0 5px 0;" 
+               th:text="${estatisticasMensalidades != null ? #numbers.formatCurrency(estatisticasMensalidades.valorTotalPendente) : 'R$ 0,00'}">R$ 0,00</p>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 12px; margin: 0; opacity: 0.8;" 
+               th:text="${estatisticasMensalidades != null ? (estatisticasMensalidades.totalPendentes + ' mensalidades') : '0 mensalidades'}">0 mensalidades</p>
+        </div>
+
+        <!-- Mensalidades Pagas -->
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; border-left: 4px solid #28a745;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0; font-size: 14px;">Mensalidades Pagas</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin: 0 0 5px 0;" 
+               th:text="${estatisticasMensalidades != null ? #numbers.formatCurrency(estatisticasMensalidades.valorTotalPago) : 'R$ 0,00'}">R$ 0,00</p>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 12px; margin: 0; opacity: 0.8;" 
+               th:text="${estatisticasMensalidades != null ? (estatisticasMensalidades.totalPagas + ' mensalidades') : '0 mensalidades'}">0 mensalidades</p>
+        </div>
+
+        <!-- Mensalidades Vencidas -->
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; border-left: 4px solid #dc3545;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0; font-size: 14px;">Mensalidades Vencidas</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin: 0 0 5px 0;" 
+               th:text="${estatisticasMensalidades != null ? #numbers.formatCurrency(estatisticasMensalidades.valorTotalVencido) : 'R$ 0,00'}">R$ 0,00</p>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 12px; margin: 0; opacity: 0.8;" 
+               th:text="${estatisticasMensalidades != null ? (estatisticasMensalidades.totalVencidas + ' mensalidades') : '0 mensalidades'}">0 mensalidades</p>
+        </div>
+
+        <!-- Total Pago (Mês) -->
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; border-left: 4px solid #17a2b8;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0; font-size: 14px;">Total Pago (Mês)</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 28px; font-weight: bold; margin: 0 0 5px 0;" 
+               th:text="${estatisticasPagamentos != null ? #numbers.formatCurrency(estatisticasPagamentos.totalDinheiro) : 'R$ 0,00'}">R$ 0,00</p>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 12px; margin: 0; opacity: 0.8;" 
+               th:text="${estatisticasPagamentos != null ? ((estatisticasPagamentos.qtdDinheiro + estatisticasPagamentos.qtdPix + estatisticasPagamentos.qtdCartao) + ' pagamentos') : '0 pagamentos'}">0 pagamentos</p>
+        </div>
+    </section>
+
+    <!-- Receitas Vencidas -->
+    <section class="tabela-container" th:if="${receitasVencidas != null and !receitasVencidas.empty}">
+        <h2 style="color: aliceblue !important; text-decoration: none !important; margin-bottom: 20px;">⚠️ Receitas Vencidas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Contrato</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Dias Atraso</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="receita : ${receitasVencidas}">
+                    <td th:text="${receita.alunoNome}"></td>
+                    <td th:text="${receita.numeroContrato != null ? receita.numeroContrato : '-'}"></td>
+                    <td th:text="${receita.descricao != null ? receita.descricao : receita.tipoReceita}"></td>
+                    <td th:text="${#numbers.formatCurrency(receita.valorFinal)}"></td>
+                    <td th:text="${#temporals.format(receita.dataVencimento, 'dd/MM/yyyy')}"></td>
+                    <td>
+                        <span class="situacao-badge situacao-inativo" 
+                              th:text="${receita.diasAtraso != null ? receita.diasAtraso + ' dias' : 'N/A'}"
+                              style="text-decoration: none !important;">
+                        </span>
+                    </td>
+                    <td class="acoes">
+                        <a th:href="@{'/financeiro/receitas/' + ${receita.id}}" class="btn turma">Ver Detalhes</a>
+                        <a th:href="@{'/financeiro/pagamentos/novo?receitaId=' + ${receita.id}}" class="btn editar">Registrar Pagamento</a>
+                        <a th:href="@{'/financeiro/carne/' + ${receita.alunoId}}" class="btn cadastrar">Carnê</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Mensagem quando não há receitas vencidas -->
+    <section class="tabela-container" th:if="${receitasVencidas == null or receitasVencidas.empty}">
+        <div style="text-align: center; padding: 40px; color: aliceblue;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important;">✅ Nenhuma receita vencida</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important;">Todas as receitas estão em dia!</p>
+        </div>
+    </section>
+
+    <!-- Links Rápidos -->
+    <section style="margin: 20px;">
+        <h2 style="color: aliceblue !important; text-decoration: none !important; margin-bottom: 20px;">🔗 Ações Rápidas</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <a th:href="@{/financeiro/mensalidades}" 
+               style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; text-decoration: none !important; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform 0.2s;"
+               onmouseover="this.style.transform='scale(1.05)'" 
+               onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size: 2.5em;">📅</div>
+                <div style="font-weight: 500; color: aliceblue !important; text-decoration: none !important;">Mensalidades</div>
+            </a>
+            <a th:href="@{/financeiro/receitas}" 
+               style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; text-decoration: none !important; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform 0.2s;"
+               onmouseover="this.style.transform='scale(1.05)'" 
+               onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size: 2.5em;">📊</div>
+                <div style="font-weight: 500; color: aliceblue !important; text-decoration: none !important;">Todas as Receitas</div>
+            </a>
+            <a th:href="@{/financeiro/pagamentos}" 
+               style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; text-decoration: none !important; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform 0.2s;"
+               onmouseover="this.style.transform='scale(1.05)'" 
+               onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size: 2.5em;">💳</div>
+                <div style="font-weight: 500; color: aliceblue !important; text-decoration: none !important;">Todos os Pagamentos</div>
+            </a>
+            <a th:href="@{/financeiro/pagamentos/novo}" 
+               style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; text-decoration: none !important; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform 0.2s;"
+               onmouseover="this.style.transform='scale(1.05)'" 
+               onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size: 2.5em;">➕</div>
+                <div style="font-weight: 500; color: aliceblue !important; text-decoration: none !important;">Registrar Pagamento</div>
+            </a>
+            <a th:href="@{/contratos}" 
+               style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center; text-decoration: none !important; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform 0.2s;"
+               onmouseover="this.style.transform='scale(1.05)'" 
+               onmouseout="this.style.transform='scale(1)'">
+                <div style="font-size: 2.5em;">📋</div>
+                <div style="font-weight: 500; color: aliceblue !important; text-decoration: none !important;">Contratos</div>
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer></footer>
+
+<!-- Modal de Erro/Sucesso -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+    text-decoration: none !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.close:hover {
+    color: black;
+}
+
+.acoes {
+    white-space: nowrap;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+// Verificar se há erro ou sucesso (via flash attribute ou URL)
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar flash attributes primeiro (Thymeleaf) - evita problemas de codificação
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    
+    if (errorFlash) {
+        mostrarMensagem('Erro', errorFlash);
+    } else if (successFlash) {
+        mostrarMensagem('Sucesso', successFlash);
+    } else {
+        // Fallback: verificar URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const success = urlParams.get('success');
+        
+        if (error) {
+            // Decodificar corretamente caracteres especiais
+            const errorDecoded = decodeURIComponent(error.replace(/\+/g, ' '));
+            mostrarMensagem('Erro', errorDecoded);
+            // Limpar a URL removendo o parâmetro de erro
+            const url = new URL(window.location);
+            url.searchParams.delete('error');
+            window.history.replaceState({}, document.title, url);
+        } else if (success) {
+            // Decodificar corretamente caracteres especiais
+            const successDecoded = decodeURIComponent(success.replace(/\+/g, ' '));
+            mostrarMensagem('Sucesso', successDecoded);
+            // Limpar a URL removendo o parâmetro de sucesso
+            const url = new URL(window.location);
+            url.searchParams.delete('success');
+            window.history.replaceState({}, document.title, url);
+        }
+    }
+});
+
+function mostrarMensagem(titulo, mensagem) {
+    document.getElementById('messageTitle').textContent = titulo;
+    document.getElementById('messageText').textContent = mensagem;
+    document.getElementById('messageModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+// Fechar modal ao clicar no X
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.onclick = fecharModal;
+    }
+});
+
+// Fechar modal ao clicar fora dele
+window.onclick = function(event) {
+    const modal = document.getElementById('messageModal');
+    if (event.target === modal) {
+        fecharModal();
+    }
+}
+/*]]>*/
+</script>
+
+</body>
+</html>

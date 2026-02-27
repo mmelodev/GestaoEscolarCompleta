@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mensalidades - AriranG Financeiro</title>
+    <link rel="stylesheet" th:href="@{/css/alunos.css?v=1.2}" />
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+</head>
+<body>
+<header>
+    <div class="main-nav">
+        <div class="logo">
+            <a th:href="@{/}"><img th:src="@{/img/horizontal_negativa.png}" alt="Logo" /></a>
+        </div>
+        <nav>
+            <ul class="nav-list" id="navList">
+                <a th:href="@{/}"><li class="nav-element">Home</li></a>
+                <a th:href="@{/alunos/lista}"><li class="nav-element">Alunos</li></a>
+                <a th:href="@{/turmas}"><li class="nav-element">Turmas</li></a>
+                <a th:href="@{/contratos}"><li class="nav-element">Contratos</li></a>
+                <a th:href="@{/financeiro}"><li class="nav-element active">Financeiro</li></a>
+                <a th:href="@{/cadastro}"><li class="nav-element">Cadastro</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/perfil}"><li class="nav-element">Meu Perfil</li></a>
+                <a sec:authorize="isAuthenticated()" th:href="@{/configuracao}"><li class="nav-element">🎨 Personalização</li></a>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="alunos-header">
+        <h1>Cadastro e Controle de Mensalidades</h1>
+        <div class="top-actions">
+            <form method="get" th:action="@{/financeiro/mensalidades}" class="filter-form">
+                <div class="filter-row">
+                    <input type="text" name="search" placeholder="Pesquisar por aluno..." class="search-bar" th:value="${searchTerm}" />
+                </div>
+                
+                <div class="filter-row">
+                    <label for="alunoId">Aluno</label>
+                    <select id="alunoId" name="alunoId" class="select-filter">
+                        <option th:value="${null}" th:selected="${alunoSelecionado == null}">Todos</option>
+                        <option th:each="a : ${alunos}"
+                                th:value="${a.id}"
+                                th:selected="${alunoSelecionado} == ${a.id}"
+                                th:text="${a.nomeCompleto}"></option>
+                    </select>
+                </div>
+                
+                <div class="filter-row">
+                    <label for="contratoId">Contrato</label>
+                    <select id="contratoId" name="contratoId" class="select-filter">
+                        <option th:value="${null}" th:selected="${contratoSelecionado == null}">Todos</option>
+                        <option th:each="c : ${contratos}"
+                                th:value="${c.id}"
+                                th:selected="${contratoSelecionado} == ${c.id}"
+                                th:text="${c.numeroContrato} + ' - ' + ${c.alunoNome}"></option>
+                    </select>
+                </div>
+                
+                <div class="filter-row">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="select-filter">
+                        <option th:value="${null}" th:selected="${statusSelecionado == null}">Todos</option>
+                        <option value="PENDENTE" th:selected="${statusSelecionado == 'PENDENTE'}">Pendente</option>
+                        <option value="PAGA" th:selected="${statusSelecionado == 'PAGA'}">Paga</option>
+                        <option value="EM_ATRASO" th:selected="${statusSelecionado == 'EM_ATRASO'}">Em Atraso</option>
+                        <option value="CANCELADA" th:selected="${statusSelecionado == 'CANCELADA'}">Cancelada</option>
+                    </select>
+                </div>
+                
+                <div class="filter-row">
+                    <label for="dataInicio">Data Início</label>
+                    <input type="date" id="dataInicio" name="dataInicio" class="select-filter" th:value="${dataInicio}" />
+                </div>
+                
+                <div class="filter-row">
+                    <label for="dataFim">Data Fim</label>
+                    <input type="date" id="dataFim" name="dataFim" class="select-filter" th:value="${dataFim}" />
+                </div>
+                
+                <div class="filter-row filter-actions">
+                    <button type="submit" class="btn cadastrar">Filtrar</button>
+                    <a th:href="@{/financeiro/mensalidades}" class="btn cadastrar">Limpar</a>
+                </div>
+            </form>
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <a th:href="@{/financeiro}" class="btn cadastrar dashboard-btn">📊 Dashboard</a>
+                <form th:action="@{/financeiro/mensalidades/sincronizar}" method="post" style="display: inline;">
+                    <button type="submit" class="btn" style="background-color: #17a2b8; color: white; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold;" 
+                            onclick="return confirm('Deseja sincronizar o status das parcelas? Isso irá atualizar parcelas pagas que aparecem como pendentes.');">
+                        🔄 Sincronizar Parcelas
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estatísticas -->
+    <section th:if="${estatisticas != null}" style="margin: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Total</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${estatisticas.totalMensalidades}">0</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Pendentes</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${estatisticas.totalPendentes}">0</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Pagas</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${estatisticas.totalPagas}">0</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Vencidas</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${estatisticas.totalVencidas}">0</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Total Pendente</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${#numbers.formatCurrency(estatisticas.valorTotalPendente)}">R$ 0,00</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Total Pago</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${#numbers.formatCurrency(estatisticas.valorTotalPago)}">R$ 0,00</p>
+        </div>
+        <div style="background-color: rgba(26, 26, 26, 0.95); padding: 20px; border-radius: 1rem; color: aliceblue; text-align: center;">
+            <h3 style="color: aliceblue !important; text-decoration: none !important; margin: 0 0 10px 0;">Total Vencido</h3>
+            <p style="color: aliceblue !important; text-decoration: none !important; font-size: 24px; font-weight: bold; margin: 0;" th:text="${#numbers.formatCurrency(estatisticas.valorTotalVencido)}">R$ 0,00</p>
+        </div>
+    </section>
+
+    <section class="tabela-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Contrato</th>
+                    <th>Turma</th>
+                    <th>Parcela</th>
+                    <th>Valor</th>
+                    <th>Vencimento</th>
+                    <th>Pagamento</th>
+                    <th>Valor Pago</th>
+                    <th>Juros/Multa</th>
+                    <th>Desconto</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="mensalidade : ${mensalidades}" th:if="${mensalidades != null and !mensalidades.empty}">
+                    <td>
+                        <div th:text="${mensalidade.alunoNome}"></div>
+                        <div style="font-size: 12px; color: #888;" th:if="${mensalidade.alunoEmail != null}" th:text="${mensalidade.alunoEmail}"></div>
+                    </td>
+                    <td th:text="${mensalidade.numeroContrato}"></td>
+                    <td th:text="${mensalidade.turmaNome != null ? mensalidade.turmaNome : '-'}"></td>
+                    <td th:text="${mensalidade.numeroParcela}"></td>
+                    <td th:text="${#numbers.formatCurrency(mensalidade.valorParcela)}"></td>
+                    <td>
+                        <span th:text="${#temporals.format(mensalidade.dataVencimento, 'dd/MM/yyyy')}"></span>
+                        <span th:if="${mensalidade.vencida}" style="color: #dc3545; font-weight: bold; margin-left: 5px;">⚠️</span>
+                    </td>
+                    <td th:text="${mensalidade.dataPagamento != null ? #temporals.format(mensalidade.dataPagamento, 'dd/MM/yyyy') : '-'}"></td>
+                    <td th:text="${mensalidade.valorPago != null ? #numbers.formatCurrency(mensalidade.valorPago) : '-'}"></td>
+                    <td>
+                        <span th:if="${mensalidade.jurosAplicados != null and mensalidade.jurosAplicados.compareTo(java.math.BigDecimal.ZERO) > 0}" 
+                              style="color: #ffc107;">J: <span th:text="${#numbers.formatCurrency(mensalidade.jurosAplicados)}"></span></span>
+                        <span th:if="${mensalidade.multaAplicada != null and mensalidade.multaAplicada.compareTo(java.math.BigDecimal.ZERO) > 0}" 
+                              style="color: #dc3545; margin-left: 5px;">M: <span th:text="${#numbers.formatCurrency(mensalidade.multaAplicada)}"></span></span>
+                        <span th:if="${(mensalidade.jurosAplicados == null or mensalidade.jurosAplicados.compareTo(java.math.BigDecimal.ZERO) == 0) and (mensalidade.multaAplicada == null or mensalidade.multaAplicada.compareTo(java.math.BigDecimal.ZERO) == 0)}">-</span>
+                    </td>
+                    <td th:text="${mensalidade.descontoAplicado != null and mensalidade.descontoAplicado.compareTo(java.math.BigDecimal.ZERO) > 0 ? #numbers.formatCurrency(mensalidade.descontoAplicado) : '-'}"></td>
+                    <td>
+                        <span class="situacao-badge" 
+                              th:classappend="${mensalidade.statusParcela == 'PAGA'} ? 'situacao-ativo' : 
+                                            (${mensalidade.statusParcela == 'PENDENTE'} ? 'situacao-trancado' : 
+                                            (${mensalidade.statusParcela == 'EM_ATRASO'} ? 'situacao-inativo' : 
+                                            'situacao-indefinida'))"
+                              th:text="${mensalidade.statusParcela != null ? mensalidade.statusParcela : 'Não definido'}">
+                        </span>
+                    </td>
+                    <td class="acoes">
+                        <a th:href="@{'/financeiro/pagamentos/novo?parcelaId=' + ${mensalidade.id}}" 
+                           th:if="${mensalidade.statusParcela != 'PAGA'}" 
+                           class="btn editar">Registrar Pagamento</a>
+                        <a th:href="@{'/contratos/' + ${mensalidade.contratoId}}" 
+                           class="btn turma">Ver Contrato</a>
+                    </td>
+                </tr>
+                <tr th:if="${mensalidades == null or mensalidades.empty}">
+                    <td colspan="12" style="text-align: center; padding: 40px; color: aliceblue;">
+                        <h4>Nenhuma mensalidade encontrada</h4>
+                        <p>Não há mensalidades cadastradas ou que correspondam aos filtros selecionados.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
+<footer></footer>
+
+<!-- Modal de Erro/Sucesso -->
+<div id="messageModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="messageTitle"></h3>
+        <p id="messageText"></p>
+        <button onclick="fecharModal()" class="btn">OK</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h3,
+.modal-content p {
+    color: #1a1a1a !important;
+    text-decoration: none !important;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+.close:hover {
+    color: black;
+}
+
+.acoes {
+    white-space: nowrap;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+/* Responsividade para o formulário de filtros */
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.filter-row label {
+    color: #00bfff;
+    font-weight: bold;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.filter-row .search-bar {
+    min-width: 200px;
+    flex: 1 1 auto;
+}
+
+.filter-row .select-filter {
+    min-width: 150px;
+    flex: 1 1 auto;
+}
+
+.filter-actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-actions .btn {
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.dashboard-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+
+.top-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    align-items: flex-start;
+}
+
+/* Media queries para telas menores */
+@media (max-width: 1200px) {
+    .filter-row {
+        flex: 1 1 calc(33.333% - 8px);
+        min-width: 150px;
+    }
+    
+    .filter-row .search-bar {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-row {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+    
+    .filter-row .search-bar,
+    .filter-row .select-filter {
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .filter-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .filter-actions .btn {
+        width: 100%;
+    }
+    
+    .dashboard-btn {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    .top-actions {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-form {
+        padding: 10px;
+    }
+    
+    .filter-row label {
+        font-size: 0.85em;
+    }
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+// Verificar se há erro ou sucesso (via flash attribute ou URL)
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar flash attributes primeiro (Thymeleaf) - evita problemas de codificação
+    const errorFlash = /*[[${error}]]*/ null;
+    const successFlash = /*[[${success}]]*/ null;
+    
+    if (errorFlash) {
+        mostrarMensagem('Erro', errorFlash);
+    } else if (successFlash) {
+        mostrarMensagem('Sucesso', successFlash);
+    } else {
+        // Fallback: verificar URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const success = urlParams.get('success');
+        
+        if (error) {
+            // Decodificar corretamente caracteres especiais
+            const errorDecoded = decodeURIComponent(error.replace(/\+/g, ' '));
+            mostrarMensagem('Erro', errorDecoded);
+            // Limpar a URL removendo o parâmetro de erro
+            const url = new URL(window.location);
+            url.searchParams.delete('error');
+            window.history.replaceState({}, document.title, url);
+        } else if (success) {
+            // Decodificar corretamente caracteres especiais
+            const successDecoded = decodeURIComponent(success.replace(/\+/g, ' '));
+            mostrarMensagem('Sucesso', successDecoded);
+            // Limpar a URL removendo o parâmetro de sucesso
+            const url = new URL(window.location);
+            url.searchParams.delete('success');
+            window.history.replaceState({}, document.title, url);
+        }
+    }
+});
+
+function mostrarMensagem(titulo, mensagem) {
+    document.getElementById('messageTitle').textContent = titulo;
+    document.getElementById('messageText').textContent = mensagem;
+    document.getElementById('messageModal').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
+// Fechar modal ao clicar no X
+document.addEventListener('DOMContentLoaded', function() {
+    const closeBtn = document.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.onclick = fecharModal;
+    }
+});
+
+// Fechar modal ao clicar fora dele
+window.onclick = function(event) {
+    const modal = document.getElementById('messageModal');
+    if (event.target === modal) {
+        fecharModal();
+    }
+}
+/*]]>*/
+</script>
+
+</body>
+</html>
+

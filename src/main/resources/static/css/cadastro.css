@@ -1,0 +1,160 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(90deg, #01004e, #860213);
+    color: aliceblue;
+}
+
+/* Navbar */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a1a;
+    padding: 10px 20px;
+    margin: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 2rem;
+}
+.logo img {
+    width: 110px;
+    height: 50px;
+}
+.nav-list {
+    padding: 0;
+}
+.nav-list li {
+    list-style: none;
+    display: inline-block;
+    margin-right: 20px;
+    font-size: 1.2em;
+    color: aliceblue;
+    transition: color 0.3s ease;
+}
+.nav-list li:hover,
+.nav-list .active {
+    color: #007bff;
+}
+
+/* Header de cadastro */
+.alunos-header {
+    padding: 20px;
+    text-align: center;
+}
+.top-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+.search-bar {
+    padding: 10px 20px;
+    width: 250px;
+    border-radius: 2rem;
+    border: none;
+    outline: none;
+    font-size: 1em;
+}
+.pesquisar {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Botões */
+.btn {
+    padding: 10px 15px;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.btn:hover {
+    transform: scale(1.05);
+}
+.cadastrar {
+    background-color: #007bff;
+    color: white;
+}
+.editar {
+    background-color: #ffc107;
+    color: black;
+}
+.turma {
+    background-color: #17a2b8;
+    color: white;
+}
+.deletar {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Tabela */
+.tabela-container {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(26, 26, 26, 0.95);
+    border-radius: 1rem;
+    max-width: 90%;
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+thead {
+    background-color: #222;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+th {
+    color: #00bfff;
+}
+tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.acoes {
+    display: flex;
+    gap: 5px;
+}
+
+/* ============================================
+   Mobile adjustments (keep desktop intact)
+   ============================================ */
+@media (max-width: 767px) {
+    .main-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 10px 14px;
+        margin: 10px 12px;
+    }
+
+    .logo img {
+        width: 96px;
+        height: auto;
+    }
+
+    .nav-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0;
+    }
+
+    .nav-list li {
+        display: block;
+        margin-right: 0;
+        font-size: 1rem;
+        padding: 6px 0;
+    }
+}
