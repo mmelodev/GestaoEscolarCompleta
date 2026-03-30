@@ -1,4 +1,4 @@
-# 🎓 AriranG Plataforma
+# 🎓 Gestão Escolar Completa
 
 > Sistema completo de gestão para escolas de idiomas
 
@@ -9,7 +9,7 @@
 
 ## 📋 Sobre o Projeto
 
-O **AriranG Plataforma** é uma aplicação web robusta desenvolvida para gestão completa de escolas de idiomas. O sistema oferece funcionalidades abrangentes para gerenciamento de alunos, professores, turmas, boletins e muito mais, com foco em usabilidade e segurança.
+Uma aplicação web robusta desenvolvida para gestão completa de escolas de idiomas. O sistema oferece funcionalidades abrangentes para gerenciamento de alunos, professores, turmas, boletins e muito mais, com foco em usabilidade e segurança.
 
 ## ⚡ Quick Start
 
