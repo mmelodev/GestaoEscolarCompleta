@@ -35,7 +35,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
-        // Com JWT, o logout é feito no frontend removendo o token
+
         return ResponseEntity.ok("Logout realizado com sucesso");
     }
 }

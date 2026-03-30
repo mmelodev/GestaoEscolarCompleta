@@ -12,7 +12,7 @@ public class PlataformaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(PlataformaApplication.class);
-		// Registrar RailwayDatabaseConfig explicitamente para garantir execução
+	
 		app.addListeners(new RailwayDatabaseConfig());
 		app.run(args);
 	}

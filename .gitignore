@@ -1,12 +1,11 @@
 HELP.md
 
-# Upload directories
 uploads/
 plataforma/uploads/
 
 node_modules/
 
-# Logs
+
 logs/
 plataforma/logs/
 
@@ -15,7 +14,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
 .apt_generated
 .classpath
 .factorypath
@@ -24,13 +22,12 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -40,10 +37,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+
 .vscode/
 
-# Maven
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 .mvn/
@@ -55,24 +52,24 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 
-# Eclipse
+
 *.launch
 .settings/
 .project
 .classpath
 .metadata/
 
-# IntelliJ (caso você abra em outra IDE futuramente)
+
 .idea/
 *.iml
 *.iws
 out/
 
-# Sistema Operacional
+
 .DS_Store
 Thumbs.db
 
-# Logs
+
 *.log
 hs_err_pid*.log
 replay_pid*.log
@@ -80,7 +77,7 @@ debug.log
 LOG_PATH_IS_UNDEFINED/
 logs/archive/
 
-# Arquivos temporários e backups
+
 *.swp
 *.tmp
 *.bak
@@ -88,13 +85,13 @@ logs/archive/
 *.rej
 build-log*.txt
 
-# VS Code (caso use)
+
 .vscode/
 
-# Arquivos de build temporário
+
 bin/
 
-# Arquivos com informações sensíveis (NUNCA commitar!)
+
 SECRETS_BACKUP.txt
 *.env
 .env.local
